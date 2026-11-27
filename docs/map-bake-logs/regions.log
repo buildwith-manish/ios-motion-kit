@@ -1,33 +1,31 @@
-downloading https://www2.census.gov/geo/tiger/GENZ2023/shp/cb_2023_us_state_500k.zip (attempt 1/5)
+vintage 2025
+downloading https://www2.census.gov/geo/tiger/GENZ2025/shp/cb_2025_us_state_500k.zip (attempt 1/5)
 [simplify] Repaired 36 intersections
 [clean] Retained 56 of 56 features
 [o] Wrote /home/runner/work/ios-motion-kit/ios-motion-kit/public/kit/map/regions/states.json
-baked states: 221.7 KB, 56 features
-downloading https://www2.census.gov/geo/tiger/GENZ2023/shp/cb_2023_us_county_500k.zip (attempt 1/5)
+baked states: 221.6 KB, 56 features
+downloading https://www2.census.gov/geo/tiger/GENZ2025/shp/cb_2025_us_county_500k.zip (attempt 1/5)
 [simplify] Repaired 40 intersections
 [clean] Retained 3,235 of 3,235 features
 [o] Wrote /home/runner/work/ios-motion-kit/ios-motion-kit/public/kit/map/regions/counties.json
-baked counties: 1022.9 KB, 3235 features
-downloading https://www2.census.gov/geo/tiger/GENZ2023/shp/cb_2023_us_cbsa_500k.zip (attempt 1/5)
-Error: [filter-fields] Table is missing one or more fields:
- MEMI 
-Existing fields: 
-  CSAFP     CBSAFP    GEOIDFQ   GEOID     NAME      NAMELSAD  LSAD      ALAND
-  AWATER  
-Run mapshaper -h to view help
-Error: Command failed: /home/runner/work/ios-motion-kit/ios-motion-kit/node_modules/.bin/mapshaper -i /home/runner/work/ios-motion-kit/ios-motion-kit/.cache/census/2023/cb_2023_us_cbsa_500k.zip name=cbsa -proj wgs84 -filter-fields CBSAFP,NAME,LSAD,MEMI -simplify dp 8% keep-shapes -clean -o format=topojson quantization=100000 id-field=CBSAFP target=cbsa /home/runner/work/ios-motion-kit/ios-motion-kit/public/kit/map/regions/cbsa.json
-    at genericNodeError (node:internal/errors:984:15)
-    at wrappedFn (node:internal/errors:538:14)
-    at checkExecSyncError (node:child_process:891:11)
-    at execFileSync (node:child_process:927:15)
-    at mapshaper (file:///home/runner/work/ios-motion-kit/ios-motion-kit/scripts/map_bake_regions.mjs:78:3)
-    at bakeNamedLayer (file:///home/runner/work/ios-motion-kit/ios-motion-kit/scripts/map_bake_regions.mjs:134:3)
+baked counties: 1023.5 KB, 3235 features
+downloading https://www2.census.gov/geo/tiger/GENZ2025/shp/cb_2025_us_cbsa_500k.zip (attempt 1/5)
+[simplify] Repaired 28 intersections
+[clean] Retained 935 of 935 features
+[o] Wrote /home/runner/work/ios-motion-kit/ios-motion-kit/public/kit/map/regions/cbsa.json
+baked cbsa: 424.0 KB, 935 features
+downloading https://www2.census.gov/geo/tiger/GENZ2025/shp/cb_2025_us_zcta520_500k.zip (attempt 1/5)
+  failed: HTTP 404 Not Found
+downloading https://www2.census.gov/geo/tiger/GENZ2025/shp/cb_2025_us_zcta520_500k.zip (attempt 2/5)
+  failed: HTTP 404 Not Found
+downloading https://www2.census.gov/geo/tiger/GENZ2025/shp/cb_2025_us_zcta520_500k.zip (attempt 3/5)
+  failed: HTTP 404 Not Found
+downloading https://www2.census.gov/geo/tiger/GENZ2025/shp/cb_2025_us_zcta520_500k.zip (attempt 4/5)
+  failed: HTTP 404 Not Found
+downloading https://www2.census.gov/geo/tiger/GENZ2025/shp/cb_2025_us_zcta520_500k.zip (attempt 5/5)
+  failed: HTTP 404 Not Found
+Error: giving up on https://www2.census.gov/geo/tiger/GENZ2025/shp/cb_2025_us_zcta520_500k.zip: HTTP 404 Not Found
+    at download (file:///home/runner/work/ios-motion-kit/ios-motion-kit/scripts/map_bake_regions.mjs:83:9)
     at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
-    at async main (file:///home/runner/work/ios-motion-kit/ios-motion-kit/scripts/map_bake_regions.mjs:209:21) {
-  status: 1,
-  signal: null,
-  output: [ null, null, null ],
-  pid: 2207,
-  stdout: null,
-  stderr: null
-}
+    at async bakeNamedLayer (file:///home/runner/work/ios-motion-kit/ios-motion-kit/scripts/map_bake_regions.mjs:142:3)
+    at async main (file:///home/runner/work/ios-motion-kit/ios-motion-kit/scripts/map_bake_regions.mjs:220:21)
