@@ -1,0 +1,47 @@
+# Renders kit-map demo stills (1080p + 4K crops + city stills) and measures seconds per frame; commits them to kit-map.
+# Run: Actions -> "Map stills" -> Run workflow (after the region and city bakes).
+name: Map stills
+on:
+  workflow_dispatch:
+    inputs:
+      cities:
+        description: 'city ids (blank = all in cities.json)'
+        default: ''
+permissions:
+  contents: write
+concurrency:
+  group: map-stills
+  cancel-in-progress: false
+jobs:
+  stills:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: kit-map
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - name: Render
+        continue-on-error: true
+        run: |
+          set -o pipefail
+          mkdir -p docs/map-bake-logs
+          ARGS=""
+          if [ -n "${{ inputs.cities }}" ]; then ARGS="--cities=${{ inputs.cities }}"; fi
+          node scripts/map_stills.mjs $ARGS 2>&1 | tee docs/map-bake-logs/stills.log
+      - name: Commit stills + log
+        if: always()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/previews/kit-map docs/map-bake-logs
+          if git diff --cached --quiet; then echo "no change"; exit 0; fi
+          git commit -m "kit-map: stills + perf [skip ci]"
+          for i in 1 2 3 4 5 6; do
+            git pull --rebase origin kit-map && git push origin HEAD:kit-map && exit 0
+            sleep $((RANDOM % 15 + 5))
+          done
+          exit 1
