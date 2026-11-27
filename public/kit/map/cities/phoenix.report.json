@@ -1,0 +1,64 @@
+{
+ "rows": [
+  {
+   "city": "phoenix",
+   "detail": "light",
+   "kb": 27.8,
+   "budget": {
+    "scale": 1,
+    "dropped": []
+   },
+   "primary": 36,
+   "secondary": 9,
+   "water": 124,
+   "waterPolys": 0,
+   "parks": 0
+  },
+  {
+   "city": "phoenix",
+   "detail": "rich",
+   "kb": 248.1,
+   "budget": {
+    "scale": 1,
+    "dropped": []
+   },
+   "primary": 37,
+   "secondary": 9,
+   "local": 4006,
+   "ramp": 253,
+   "service": 0,
+   "other": 96,
+   "water": 130,
+   "waterPolys": 14,
+   "parks": 0
+  }
+ ],
+ "unmapped": {
+  "H1100": 1
+ },
+ "counties": [
+  "04013"
+ ],
+ "sources": [
+  {
+   "layer": "roads",
+   "vintage": "2025",
+   "files": 1
+  },
+  {
+   "layer": "areawater",
+   "vintage": "2025",
+   "files": 1
+  },
+  {
+   "layer": "linearwater",
+   "vintage": "2025",
+   "files": 1
+  },
+  {
+   "layer": "arealm",
+   "vintage": null,
+   "files": 0
+  }
+ ]
+}
