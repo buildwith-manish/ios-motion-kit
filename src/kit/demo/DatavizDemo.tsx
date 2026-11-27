@@ -22,7 +22,7 @@ interface DemoLayout {
  */
 export const datavizDemoLayout = (theme: Theme): DemoLayout => {
   const portrait = theme.canvas.height > theme.canvas.width;
-  const safe = safeRect(theme, portrait ? 'action' : 'title');
+  const safe = safeRect(theme, 'title');
   const gap = space(theme, 6);
   const at = (x: number, y: number, w: number, h: number): DvRect => ({x: safe.left + x, y: safe.top + y, w, h});
   if (!portrait) {

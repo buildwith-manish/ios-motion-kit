@@ -2,7 +2,7 @@ import React from 'react';
 import {Composition, useCurrentFrame} from 'remotion';
 import {CameraRig, DepthLayer, DepthLayers, RackFocus, RackLayer, Tilt3D, type CameraKeyframe, type FocusKeyframe} from '../camera';
 import {Glass} from '../glass';
-import {CANVAS, createTheme, type Canvas, type Theme} from '../tokens';
+import {CANVAS, createTheme, safeRect, safeText, type Canvas, type Theme} from '../tokens';
 
 /** Demo length in seconds. */
 export const CAMERA_DEMO_SECONDS = 10;
@@ -75,9 +75,9 @@ const CardBox: React.FC<{theme: Theme; label: string; sub: string; at: {x: numbe
     <div style={{position: 'absolute', left: w / 2 + at.x - size.w / 2, top: h / 2 + at.y - size.h / 2, width: size.w, height: size.h}}>
       <Tilt3D rotateY={tilt} rotateX={1.5} sway={{periodSeconds: 9}} frame={frame} theme={theme} width="100%" height="100%">
         <Glass tier="card" width="100%" height="100%" theme={theme} frame={frame} shimmerAt={0.8}>
-          <div style={{position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: m * 0.04, fontFamily: theme.fonts.body, color: theme.colors.text.primary}}>
+          <div style={{position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: m * 0.04, fontFamily: theme.fonts.body, color: safeText(theme, 'primary', 'card')}}>
             <div style={{fontSize: m * 0.075, fontWeight: 700, letterSpacing: -1}}>{label}</div>
-            <div style={{fontSize: m * 0.03, color: theme.colors.text.secondary, marginTop: m * 0.01}}>{sub}</div>
+            <div style={{fontSize: m * 0.03, color: safeText(theme, 'secondary', 'card'), marginTop: m * 0.01}}>{sub}</div>
           </div>
         </Glass>
       </Tilt3D>
@@ -133,7 +133,7 @@ export const CameraDemoFrame: React.FC<CameraDemoProps & {frame: number}> = ({fr
           </DepthLayers>
         )}
       </CameraRig>
-      <div style={{position: 'absolute', left: m * 0.04, top: m * 0.04, padding: `${m * 0.01}px ${m * 0.02}px`, borderRadius: m * 0.03, background: 'rgba(0,0,0,0.55)', color: '#fff', fontFamily: theme.fonts.body, fontSize: m * 0.03, zIndex: 100}}>
+      <div style={{position: 'absolute', left: safeRect(theme, 'title').left, top: safeRect(theme, 'title').top, padding: `${m * 0.01}px ${m * 0.02}px`, borderRadius: m * 0.03, background: 'rgba(0,0,0,0.55)', color: '#fff', fontFamily: theme.fonts.body, fontSize: m * 0.03, zIndex: 100}}>
         {t.toFixed(1)}s · {phase(t)}
       </div>
     </div>
