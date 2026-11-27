@@ -7,25 +7,25 @@ Downloading Chrome Headless Shell - 38.2 Mb/88.2 Mb
 Downloading Chrome Headless Shell - 47.7 Mb/88.2 Mb
 Downloading Chrome Headless Shell - 57.3 Mb/88.2 Mb
 Downloading Chrome Headless Shell - 66.8 Mb/88.2 Mb
-Downloading Chrome Headless Shell - 76.3 Mb/88.2 Mb
+Downloading Chrome Headless Shell - 76.4 Mb/88.2 Mb
 Downloading Chrome Headless Shell - 85.9 Mb/88.2 Mb
 Downloading Chrome Headless Shell - 88.2 Mb/88.2 Mb
 {
   "landscape": {
-    "median": 0.69,
-    "max": 1.47,
-    "maxAt": "3.0",
+    "median": 0.896,
+    "max": 1.509,
+    "maxAt": "1.5",
     "budget": 1.5
   },
   "portrait": {
-    "median": 0.678,
-    "max": 0.972,
-    "maxAt": "7.5",
+    "median": 0.811,
+    "max": 1.325,
+    "maxAt": "10.0",
     "budget": 1.5
   }
 }
-Stitched 590/780
-Stitched 611/780
-Stitched 624/780
-Stitched 780/780
-[34m+                    docs/previews/kit-map/fly/video/fly-landscape.mp4[39m [90m3.6 MB[39m
+Stitched 615/804
+Stitched 634/804
+Stitched 643/804
+Stitched 804/804
+[34m○                    docs/previews/kit-map/fly/video/fly-landscape.mp4[39m [90m4 MB[39m
