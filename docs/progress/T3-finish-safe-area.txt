@@ -1,0 +1,14 @@
+bundling src/kit/demo/finishEntry.tsx ...
+browser: KIT_CHROME
+Kit-Finish-Demo: 6 frames, 0 finding(s)
+Kit-Finish-Demo-Vertical: 3 frames, 0 finding(s)
+Kit-Finish-Demo-30fps: 6 frames, 0 finding(s)
+
+Outside the title-safe area
+composition               type  what        overshoot  seen  samples
+------------------------  ----  ----------  ---------  ----  -------
+Kit-Finish-Demo           -     all inside  -          -     -
+Kit-Finish-Demo-Vertical  -     all inside  -          -     -
+Kit-Finish-Demo-30fps     -     all inside  -          -     -
+
+JSON: docs/progress/T3-qa-out/safe-area.json

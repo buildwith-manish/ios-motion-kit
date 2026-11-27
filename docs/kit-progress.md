@@ -322,3 +322,29 @@ The GitHub token was used for clone and push only (the camera session cloned wit
 ### NOT verified
 
 - GitHub Actions run `46059189770` completed successfully for contrast, safe-area, and motion checks on all 3 Atmosphere compositions. Contrast and safe-area reported 0 findings each. Motion audit reported static stretches longer than 1 second in all 3 compositions (6 landscape, 10 vertical, 6 30 fps); the workflow uses `--no-fail`, so these findings remain unverified rather than passing motion QA.
+
+## T3 — Finishing kit
+
+### Built
+
+- `src/kit/finish/` adds `<Finish level="off|light|full">` with an S-curve/channel split-tone grade, lens vignette, thresholded highlight bloom (10 logical px blur; 20px at 4K scale), and deterministic grain.
+- `<ChromaSplit>` offsets RGB channels by at most 3 logical pixels from an optional event time and springs back using the theme's snappy response.
+- `finalOnly` gates bloom and grain on `kitRender.profile === "final"`; three demo compositions are in `src/kit/demo/FinishDemo.tsx`.
+- API docs are in `src/kit/finish/README.md`; the 1080p before/after still, 4K crop, and 3-second hit clip are `finish-before-after-1080p.png`, `finish-after-4k-crop.jpg`, and `finish-chroma-hit-3s.mp4` in `docs/previews/kit/`.
+
+### Deviations
+
+- Halation is optional in the plan and omitted to avoid another full-frame filter layer.
+- Finish uses inline SVG filter primitives; no parent-repository code was imported.
+
+### Verified
+
+- Contrast, safe-area, and motion audits pass on landscape, vertical, and 30 fps demos. Contrast also passes with the `final` render profile; logs are in `docs/progress/T3-finish-*.txt`.
+- The initial contrast run found two text lines below 4.5:1 over the bright sample glow. A token-colored dark text backing fixed them; preview and final-profile reruns report 0 findings.
+- Motion audit reports 0 static stretches; all text stays inside title-safe bounds.
+- 60-frame 1920x1080 render cost (bundling and browser startup excluded): `off` 0.687, `light` 0.750, `full` 0.992 seconds/frame. Full mode includes final-profile bloom and grain.
+- The 1080p still and 4K crop were viewed; no visible edge or legibility issue remained. The 3-second clip was rendered and a frame during the hit confirmed the RGB split decays cleanly.
+
+### NOT verified
+
+- No known outstanding T3 verification items.

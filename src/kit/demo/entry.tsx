@@ -26,3 +26,4 @@ registerRoot(() => (
   </>
 ));
 export {KitNumberRollCompositions} from './NumberRollDemo';
+export {KitFinishCompositions} from './FinishDemo';

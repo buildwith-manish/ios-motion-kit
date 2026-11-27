@@ -1,0 +1,14 @@
+bundling src/kit/demo/finishEntry.tsx ...
+browser: KIT_CHROME
+Kit-Finish-Demo: 30 samples, 0 static stretch(es)
+Kit-Finish-Demo-Vertical: 15 samples, 0 static stretch(es)
+Kit-Finish-Demo-30fps: 30 samples, 0 static stretch(es)
+
+Static stretches longer than 1 s
+composition               from  to  length  peak mean  peak changed
+------------------------  ----  --  ------  ---------  ------------
+Kit-Finish-Demo           -     -   none    -          -
+Kit-Finish-Demo-Vertical  -     -   none    -          -
+Kit-Finish-Demo-30fps     -     -   none    -          -
+
+JSON: docs/progress/T3-qa-out/motion-audit.json
