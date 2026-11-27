@@ -27,7 +27,10 @@ Only Michigan landscape is available as a reference so far; Colorado, Florida an
 - Pin: small light dot with a faint ring; thin light leader line to the card's left edge (landscape).
 - Card: glass, upper right; title block top-left ("REGION SPOTLIGHT" in accent teal, state name below).
 
-## Differences seen in the earlier render
-- Lower-peninsula top face is lighter and greyer (#2d5f7e at centre vs reference #14415d).
-- Card fill is much lighter (#6f7e96 vs #21314c).
-- Rim and walls are heavier and the coast looks more stepped than the reference.
+## Baseline render of kit-map f8b8db4 (CI run 46032261616) vs reference
+Side by side: `compare-baseline-michigan-landscape.png` (left = CI render, right = reference). Correction: my first note called the card too light; that was a bad pixel sample. Card fill is already close (CI #22395c vs ref #21314c).
+- Upper Peninsula top face: CI #28a3a4 (greener, more saturated) vs ref #358f93 (greyer).
+- Lower peninsula: CI #176081 / #13496a vs ref #1d516d / #143f5e (CI slightly bluer, lighter at the upper-left).
+- Reference has a stronger tilt (taller visible walls), a larger shape in frame, a stronger teal glow on the west/south walls and ground, and neighbours drawn as darker filled shapes with faint outlines.
+- Reference text is Inter; CI render falls back to a DejaVu-style font (likely missing font in CI).
+- Reference card is smaller relative to the frame.
