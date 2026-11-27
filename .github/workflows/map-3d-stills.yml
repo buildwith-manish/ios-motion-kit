@@ -60,37 +60,18 @@ jobs:
         run: |
           mkdir -p logs
           node scripts/map_3d_still.mjs --id=${{ matrix.state.id }} --name=${{ matrix.state.name }} --shape=${{ matrix.shape }} --scale=${{ inputs.scale || '2' }} --times=${{ inputs.times || '0.6,1.2,2.8' }} --out=out 2>&1 | grep -v "^Bundling\|^Copying" | tee logs/${{ matrix.state.name }}-${{ matrix.shape }}.log
-      - uses: actions/upload-artifact@v4
+      - name: Commit stills (no artifact storage needed)
         if: always()
-        with:
-          name: still-${{ matrix.state.name }}-${{ matrix.shape }}
-          path: |
-            out/*.png
-            logs/*.log
-  commit:
-    needs: render
-    if: always()
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          ref: kit-map
-      - uses: actions/download-artifact@v4
-        with:
-          path: collected
-          pattern: still-*
-          merge-multiple: true
-      - name: Commit
         run: |
           mkdir -p docs/previews/kit-map/three-premium docs/map-bake-logs
-          cp collected/*.png docs/previews/kit-map/three-premium/ 2>/dev/null || true
-          cat collected/*.log > docs/map-bake-logs/three-premium.log 2>/dev/null || true
+          cp out/*.png docs/previews/kit-map/three-premium/ 2>/dev/null || true
+          cp logs/*.log docs/map-bake-logs/ 2>/dev/null || true
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add docs/previews/kit-map/three-premium docs/map-bake-logs
           if git diff --cached --quiet; then echo "no change"; exit 0; fi
-          git commit -m "kit-map: premium 3D region stills (4K) + timings [skip ci]"
-          for i in 1 2 3 4 5 6; do
+          git commit -m "kit-map: premium 3D stills ${{ matrix.state.name }} ${{ matrix.shape }} (4K) [skip ci]"
+          for i in 1 2 3 4 5 6 7 8; do
             git pull --rebase origin kit-map && git push origin HEAD:kit-map && exit 0
             sleep $((RANDOM % 15 + 5))
           done
