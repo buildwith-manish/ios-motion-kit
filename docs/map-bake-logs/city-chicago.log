@@ -9,11 +9,25 @@ chicago: box 14 km at 41.8781,-87.6298; counties 17031
 [merge-layers] Use the target= option to specify multiple layers for merging
 [o] Wrote /home/runner/work/ios-motion-kit/ios-motion-kit/.cache/city-tmp/chicago/linearwater.json
   linearwater: 4 features in box (TIGER2025)
-  arealm 17031: not published, skipped
-  arealm: 0 features in box (TIGER-)
+[merge-layers] Use the target= option to specify multiple layers for merging
+[dissolve2] Dissolved 4,056 features into 37 features
+[o] Wrote /home/runner/work/ios-motion-kit/ios-motion-kit/.cache/city-tmp/chicago/arealm.json
+  arealm: 12 features in box (TIGER2025)
 ┌─────────┬───────────┬─────────┬───────┬───────────────────────────┬─────────┬───────────┬───────┬────────────┬───────┬───────┬──────┬─────────┬───────┐
 │ (index) │ city      │ detail  │ kb    │ budget                    │ primary │ secondary │ water │ waterPolys │ parks │ local │ ramp │ service │ other │
 ├─────────┼───────────┼─────────┼───────┼───────────────────────────┼─────────┼───────────┼───────┼────────────┼───────┼───────┼──────┼─────────┼───────┤
 │ 0       │ 'chicago' │ 'light' │ 32.9  │ { scale: 1, dropped: [] } │ 57      │ 36        │ 21    │ 0          │ 0     │       │      │         │       │
-│ 1       │ 'chicago' │ 'rich'  │ 312.3 │ { scale: 1, dropped: [] } │ 57      │ 37        │ 22    │ 15         │ 0     │ 2489  │ 300  │ 119     │ 3449  │
+│ 1       │ 'chicago' │ 'rich'  │ 319.2 │ { scale: 1, dropped: [] } │ 57      │ 37        │ 22    │ 15         │ 15    │ 2489  │ 300  │ 119     │ 3449  │
 └─────────┴───────────┴─────────┴───────┴───────────────────────────┴─────────┴───────────┴───────┴────────────┴───────┴───────┴──────┴─────────┴───────┘
+MTFCC codes in the data but not in the table (audit against the official list): {
+  K2540: 1,
+  K1236: 1,
+  K1231: 1,
+  K2543: 1,
+  K1235: 1,
+  K2564: 1,
+  K1237: 1,
+  K2165: 1,
+  K1227: 1,
+  K1239: 1
+}

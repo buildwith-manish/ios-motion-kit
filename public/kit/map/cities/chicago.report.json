@@ -17,7 +17,7 @@
   {
    "city": "chicago",
    "detail": "rich",
-   "kb": 312.3,
+   "kb": 319.2,
    "budget": {
     "scale": 1,
     "dropped": []
@@ -30,10 +30,21 @@
    "other": 3449,
    "water": 22,
    "waterPolys": 15,
-   "parks": 0
+   "parks": 15
   }
  ],
- "unmapped": {},
+ "unmapped": {
+  "K2540": 1,
+  "K1236": 1,
+  "K1231": 1,
+  "K2543": 1,
+  "K1235": 1,
+  "K2564": 1,
+  "K1237": 1,
+  "K2165": 1,
+  "K1227": 1,
+  "K1239": 1
+ },
  "counties": [
   "17031"
  ],
@@ -55,8 +66,8 @@
   },
   {
    "layer": "arealm",
-   "vintage": null,
-   "files": 0
+   "vintage": "2025",
+   "files": 1
   }
  ]
 }
