@@ -26,6 +26,10 @@
     {
       "name": "tracts/08",
       "source": "https://www2.census.gov/geo/tiger/GENZ2025/shp/cb_2025_08_tract_500k.zip"
+    },
+    {
+      "name": "zcta-metro/19740",
+      "source": "https://www2.census.gov/geo/tiger/GENZ2020/shp/cb_2020_us_zcta520_500k.zip"
     }
   ],
   "note": "ZCTAs (ZIP Code Tabulation Areas) approximate ZIP codes; they are not exact ZIP boundaries (the Postal Service does not publish ZIP boundary data). See src/kit/map/README.md."

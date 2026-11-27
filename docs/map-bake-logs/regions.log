@@ -1,15 +1,15 @@
 vintage 2025
-downloading https://www2.census.gov/geo/tiger/GENZ2025/shp/cb_2025_us_state_500k.zip (attempt 1/5)
+cache hit  /home/runner/work/ios-motion-kit/ios-motion-kit/.cache/census/2025/cb_2025_us_state_500k.zip
 [simplify] Repaired 36 intersections
 [clean] Retained 56 of 56 features
 [o] Wrote /home/runner/work/ios-motion-kit/ios-motion-kit/public/kit/map/regions/states.json
 baked states: 221.6 KB, 56 features
-downloading https://www2.census.gov/geo/tiger/GENZ2025/shp/cb_2025_us_county_500k.zip (attempt 1/5)
+cache hit  /home/runner/work/ios-motion-kit/ios-motion-kit/.cache/census/2025/cb_2025_us_county_500k.zip
 [simplify] Repaired 40 intersections
 [clean] Retained 3,235 of 3,235 features
 [o] Wrote /home/runner/work/ios-motion-kit/ios-motion-kit/public/kit/map/regions/counties.json
 baked counties: 1023.5 KB, 3235 features
-downloading https://www2.census.gov/geo/tiger/GENZ2025/shp/cb_2025_us_cbsa_500k.zip (attempt 1/5)
+cache hit  /home/runner/work/ios-motion-kit/ios-motion-kit/.cache/census/2025/cb_2025_us_cbsa_500k.zip
 [simplify] Repaired 28 intersections
 [clean] Retained 935 of 935 features
 [o] Wrote /home/runner/work/ios-motion-kit/ios-motion-kit/public/kit/map/regions/cbsa.json
@@ -29,7 +29,7 @@ downloading https://www2.census.gov/geo/tiger/GENZ2022/shp/cb_2022_us_zcta520_50
 downloading https://www2.census.gov/geo/tiger/GENZ2021/shp/cb_2021_us_zcta520_500k.zip (attempt 1/5)
   failed: HTTP 404
   cb_2021_us_zcta520_500k.zip: not published for 2021, trying older
-downloading https://www2.census.gov/geo/tiger/GENZ2020/shp/cb_2020_us_zcta520_500k.zip (attempt 1/5)
+cache hit  /home/runner/work/ios-motion-kit/ios-motion-kit/.cache/census/2020/cb_2020_us_zcta520_500k.zip
 [simplify] Repaired 1,180 intersections
 [clean] Removed 6 of 722 slivers using 3.2+ sqkm variable threshold
 [clean] Retained 33,781 of 33,791 features
@@ -45,11 +45,36 @@ cache hit  /home/runner/work/ios-motion-kit/ios-motion-kit/.cache/census/2025/cb
 [merge-layers] Warning: Field [STATEFP] is missing from one or more layers
 [o] Wrote /home/runner/work/ios-motion-kit/ios-motion-kit/public/kit/map/regions/outline.json
 baked outline (+AK/HI inset composite): 175.8 KB
-downloading https://www2.census.gov/geo/tiger/GENZ2025/shp/cb_2025_08_tract_500k.zip (attempt 1/5)
+cache hit  /home/runner/work/ios-motion-kit/ios-motion-kit/.cache/census/2025/cb_2025_08_tract_500k.zip
 [simplify] Repaired 5 intersections
 [clean] Retained 1,447 of 1,447 features
 [o] Wrote /home/runner/work/ios-motion-kit/ios-motion-kit/public/kit/map/regions/tracts/08.json
 baked tracts/08: 369.5 KB, 1447 features
+cache hit  /home/runner/work/ios-motion-kit/ios-motion-kit/.cache/census/2025/cb_2025_us_cbsa_500k.zip
+downloading https://www2.census.gov/geo/tiger/GENZ2025/shp/cb_2025_us_zcta520_500k.zip (attempt 1/5)
+  failed: HTTP 404
+  cb_2025_us_zcta520_500k.zip: not published for 2025, trying older
+downloading https://www2.census.gov/geo/tiger/GENZ2024/shp/cb_2024_us_zcta520_500k.zip (attempt 1/5)
+  failed: HTTP 404
+  cb_2024_us_zcta520_500k.zip: not published for 2024, trying older
+downloading https://www2.census.gov/geo/tiger/GENZ2023/shp/cb_2023_us_zcta520_500k.zip (attempt 1/5)
+  failed: HTTP 404
+  cb_2023_us_zcta520_500k.zip: not published for 2023, trying older
+downloading https://www2.census.gov/geo/tiger/GENZ2022/shp/cb_2022_us_zcta520_500k.zip (attempt 1/5)
+  failed: HTTP 404
+  cb_2022_us_zcta520_500k.zip: not published for 2022, trying older
+downloading https://www2.census.gov/geo/tiger/GENZ2021/shp/cb_2021_us_zcta520_500k.zip (attempt 1/5)
+  failed: HTTP 404
+  cb_2021_us_zcta520_500k.zip: not published for 2021, trying older
+cache hit  /home/runner/work/ios-motion-kit/ios-motion-kit/.cache/census/2020/cb_2020_us_zcta520_500k.zip
+[filter] Retained 1 of 935 features
+[o] Wrote /home/runner/work/ios-motion-kit/ios-motion-kit/.cache/census/cbsa-19740.json
+[filter] Retained 251 of 33,791 features
+[simplify] Repaired 4,200 intersections
+[clean] Removed 1 of 1 sliver using 0.66+ sqkm variable threshold
+[clean] Retained 251 of 251 features
+[o] Wrote /home/runner/work/ios-motion-kit/ios-motion-kit/public/kit/map/regions/zcta-metro/19740.json
+baked zcta-metro/19740: 120.4 KB, 251 features
 
 wrote /home/runner/work/ios-motion-kit/ios-motion-kit/public/kit/map/regions/manifest.json
 wrote /home/runner/work/ios-motion-kit/ios-motion-kit/public/kit/map/regions/credits.json
