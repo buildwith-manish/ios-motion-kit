@@ -48,7 +48,7 @@ Config.overrideWebpackConfig((config) => ({
 ```
 
 Do **not** run `npm install` inside `src/kit-vendor/` (it would install a second copy of `react`/`remotion`). The video repo supplies them.
-Symlink note: if `public/kit` is a symlink and your Remotion bundle misses the audio, use the `cp -R` form instead.
+Symlink note: the symlink form was tested with Remotion 4.0.250 (`remotion bundle` copied all `public/kit` files). If your setup ever misses the audio, use the `cp -R` form.
 
 ### Update
 
