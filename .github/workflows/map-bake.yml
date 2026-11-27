@@ -73,19 +73,30 @@ jobs:
           key: tiger-${{ matrix.id }}-${{ github.run_id }}
           restore-keys: tiger-${{ matrix.id }}-
       - name: Bake ${{ matrix.id }}
+        id: bake
+        continue-on-error: true
         run: |
           set -o pipefail
           mkdir -p docs/map-bake-logs
           node scripts/map_bake_city.mjs ${{ matrix.id }} --detail=${{ inputs.detail || 'both' }} --budget=${{ inputs.budget || '400' }} --force=${{ inputs.force == 'true' && '1' || '' }} 2>&1 | tee docs/map-bake-logs/city-${{ matrix.id }}.log
-      - uses: actions/upload-artifact@v4
+      # Artifacts are not used (the repo's artifact storage quota can be exhausted): each job commits its own files.
+      - name: Commit ${{ matrix.id }} (data + log, even on failure)
         if: always()
-        with:
-          name: city-${{ matrix.id }}
-          path: |
-            public/kit/map/cities/${{ matrix.id }}*.json
-            docs/map-bake-logs/city-${{ matrix.id }}.log
-          if-no-files-found: ignore
-  commit:
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add public/kit/map/cities docs/map-bake-logs
+          if git diff --cached --quiet; then echo "no change"; exit 0; fi
+          git commit -m "kit-map: bake city ${{ matrix.id }} [skip ci]"
+          for i in 1 2 3 4 5 6; do
+            git pull --rebase origin kit-map && git push origin HEAD:kit-map && exit 0
+            sleep $((RANDOM % 15 + 5))
+          done
+          exit 1
+      - name: Fail the job if the bake failed
+        if: steps.bake.outcome == 'failure'
+        run: exit 1
+  finish:
     needs: [plan, bake]
     if: ${{ always() && needs.plan.result == 'success' }}
     runs-on: ubuntu-latest
@@ -98,23 +109,21 @@ jobs:
           node-version: 20
           cache: npm
       - run: npm ci
-      - uses: actions/download-artifact@v4
-        with:
-          pattern: city-*
-          merge-multiple: true
-          path: .
-        continue-on-error: true
       - name: Alignment (needs regions/outline.json), credits, table
         run: |
           mkdir -p docs/map-bake-logs
           (node scripts/map_bake_alignment.mjs 2>&1 | tee docs/map-bake-logs/alignment.log) || echo "alignment failed (see log)"
           node scripts/map_bake_city_report.mjs 2>&1 | tee docs/map-bake-logs/report.log || true
       - name: Commit
+        if: always()
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add public/kit/map/cities docs
           if git diff --cached --quiet; then echo "no change"; exit 0; fi
-          git commit -m "kit-map: bake city detail [skip ci]"
-          git pull --rebase origin kit-map
-          git push origin HEAD:kit-map
+          git commit -m "kit-map: city alignment, credits, bake table [skip ci]"
+          for i in 1 2 3 4 5 6; do
+            git pull --rebase origin kit-map && git push origin HEAD:kit-map && exit 0
+            sleep $((RANDOM % 15 + 5))
+          done
+          exit 1
