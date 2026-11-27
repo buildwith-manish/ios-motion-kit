@@ -6,14 +6,26 @@ philadelphia: box 14 km at 39.9526,-75.1652; counties 34007, 42045, 42091, 42101
   areawater: 3 features in box (TIGER2025)
 [o] Wrote /home/runner/work/ios-motion-kit/ios-motion-kit/.cache/city-tmp/philadelphia/linearwater.json
   linearwater: 103 features in box (TIGER2025)
-  arealm 34007: not published, skipped
-  arealm 42045: not published, skipped
-  arealm 42091: not published, skipped
-  arealm 42101: not published, skipped
-  arealm: 0 features in box (TIGER-)
+[dissolve2] Dissolved 5,020 features into 46 features
+[o] Wrote /home/runner/work/ios-motion-kit/ios-motion-kit/.cache/city-tmp/philadelphia/arealm.json
+  arealm: 16 features in box (TIGER2025)
 ┌─────────┬────────────────┬─────────┬───────┬─────────────────────────────┬─────────┬───────────┬───────┬────────────┬───────┬───────┬──────┬─────────┬───────┐
 │ (index) │ city           │ detail  │ kb    │ budget                      │ primary │ secondary │ water │ waterPolys │ parks │ local │ ramp │ service │ other │
 ├─────────┼────────────────┼─────────┼───────┼─────────────────────────────┼─────────┼───────────┼───────┼────────────┼───────┼───────┼──────┼─────────┼───────┤
 │ 0       │ 'philadelphia' │ 'light' │ 93.8  │ { scale: 1, dropped: [] }   │ 48      │ 295       │ 142   │ 0          │ 0     │       │      │         │       │
-│ 1       │ 'philadelphia' │ 'rich'  │ 385.3 │ { scale: 1.5, dropped: [] } │ 48      │ 297       │ 155   │ 47         │ 0     │ 5563  │ 404  │ 150     │ 27    │
+│ 1       │ 'philadelphia' │ 'rich'  │ 389.1 │ { scale: 1.5, dropped: [] } │ 48      │ 297       │ 155   │ 47         │ 16    │ 5563  │ 404  │ 150     │ 27    │
 └─────────┴────────────────┴─────────┴───────┴─────────────────────────────┴─────────┴───────────┴───────┴────────────┴───────┴───────┴──────┴─────────┴───────┘
+MTFCC codes in the data but not in the table (audit against the official list): {
+  K2540: 1,
+  K2582: 1,
+  K1236: 1,
+  K1231: 1,
+  K2165: 1,
+  K1235: 1,
+  C3023: 1,
+  K1237: 1,
+  K2564: 1,
+  K2457: 1,
+  K1121: 1,
+  K1238: 1
+}
