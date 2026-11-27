@@ -11,9 +11,9 @@ import {CBSA_OF} from './MetroDemo';
 const WEST = {lat: 34.05, lng: -118.24};
 const EAST = {lat: 40.71, lng: -74.0};
 const METRO_ID = 'chicago';
-const METRO = {lat: 41.8781, lng: -87.6298};
-/** Inside the 14 km baked city box (the street layer only exists there), a few km from the centre. */
-const SPOTS = {core: {lat: 41.8819, lng: -87.6278}, north: {lat: 41.9217, lng: -87.654}, south: {lat: 41.85, lng: -87.617}};
+const METRO = {lat: 41.882, lng: -87.635};
+/** Inside the 14 km baked city box (the street layer only exists there) and inside the landed 16 x 9 km view. */
+const SPOTS = {core: {lat: 41.8819, lng: -87.6278}, north: {lat: 41.902, lng: -87.654}, south: {lat: 41.862, lng: -87.632}};
 
 /** Seconds. Leg 1 crosses the country, leg 2 flies into the metro. */
 export const FLY_PLAN = {
@@ -62,7 +62,7 @@ const Scene: React.FC = () => {
             <MapCallouts
               layoutPose={countryPose}
               items={[
-                {id: 'west', ...WEST, at: leg1.lands + 1.2, title: 'Sample A, units', value: 1280, decimals: 0},
+                {id: 'west', ...WEST, at: leg1.lands + 1.2, title: 'Sample A', value: 1280, decimals: 0},
                 {id: 'east', ...EAST, at: leg1.lands + 1.5, title: 'Sample B', value: 94.6, decimals: 1, suffix: '%'},
               ]}
             />
@@ -78,8 +78,8 @@ const Scene: React.FC = () => {
           pinScale={1}
           items={[
             {id: 'core', ...SPOTS.core, at: leg2.lands + 1.5, title: 'Core', value: 4210, decimals: 0, prefix: '$'},
-            {id: 'north', ...SPOTS.north, at: leg2.lands + 1.8, title: 'North, minutes', value: 37.2, decimals: 1},
-            {id: 'south', ...SPOTS.south, at: leg2.lands + 2.1, title: 'South, stops', value: 18, decimals: 0},
+            {id: 'north', ...SPOTS.north, at: leg2.lands + 1.8, title: 'North', value: 37.2, decimals: 1, suffix: '%'},
+            {id: 'south', ...SPOTS.south, at: leg2.lands + 2.1, title: 'South', value: 18, decimals: 0, suffix: '×'},
           ]}
         />
       </FlyMap>
