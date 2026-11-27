@@ -1,0 +1,24 @@
+Seconds-per-frame at 1080p for the atmosphere demo (T2 perf report)
+Command: node scripts/kit_render.mjs --profile review --comp Kit-Atmosphere-Demo --out out/kit-qa
+Run: 2026-11-27T21:15:17Z, this sandbox: 2 CPUs, software GL (swangle), Remotion headless shell, concurrency auto.
+
+Timing
+composition          profile  size       fps  frames  total s  s/frame  MB
+-------------------  -------  ---------  ---  ------  -------  -------  -----
+Kit-Atmosphere-Demo  review   1920x1080  60   1440    2431.8   1.689    10.33
+
+JSON: out/kit-qa/timing-report.json
+Full-frame layers the composition adds each frame (the kit rule: report s/frame for these):
+  - base linear gradient (paint once, animated only by nothing - static)
+  - 2-4 orb radial-gradients (drift every frame; radial-gradient falloff, NO filter blur)
+  - key-light radial gradient (moves on a spring between beats)
+  - vignette radial gradient (static)
+  - grain tile layer, soft-light blend, background-position shifts every other frame
+  - glass card + pill with backdrop-filter blur/saturate sampling the animated background each frame
+
+For comparison, the same sandbox class measured Kit-Audio-Demo at 0.078 s/frame (review profile; no full-bleed
+animated background under glass). The atmosphere demo is ~22x slower; the dominant cost in software GL is the
+glass backdrop-filter re-sampling the animated full-bleed background every frame, plus the blended grain layer.
+Atmosphere itself uses no CSS filter blur at any radius (kit rule: none above 20px full-layer).
+
+NOT measured: per-layer breakdown, hardware GL, a bigger machine, 4K (--scale 2) video render.

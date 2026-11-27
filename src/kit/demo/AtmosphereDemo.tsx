@@ -31,10 +31,16 @@ const AtmosphereDemoFrame: React.FC<AtmosphereDemoProps & {frame: number}> = ({f
   const cardHeight = portrait ? 430 * u : 390 * u;
   const cardX = (width - cardWidth) / 2;
   const cardY = (height - cardHeight) / 2;
+  // Key-light beats within THIS slot (absolute frame time), so the light springs to the number, then the pill,
+  // then back — continuously, not once across the whole 24 s demo.
+  const slotAt = slot * SLOT_SECONDS;
   const beats = focusPoints([
-    {x: cardX, y: cardY, width: cardWidth * 0.42, height: cardHeight},
-    {x: cardX + cardWidth * 0.58, y: cardY, width: cardWidth * 0.42, height: cardHeight},
-  ], theme.canvas, {duration: DEMO_SECONDS});
+    {x: cardX, y: cardY, width: cardWidth, height: cardHeight * 0.6},
+    {x: cardX + cardWidth * 0.5, y: cardY + cardHeight, width: cardWidth * 0.1, height: 1},
+  ], theme.canvas, {start: slotAt, duration: SLOT_SECONDS * 0.9});
+  // The number rolls once per slot (and the roll restarts per slot, so every preset shows a mid-roll moment).
+  const rollFrom = [0, 2468, 135, 7][slot % 4];
+  const rollTo = [3168, 4210, 246, 12][slot % 4];
 
   return (
     <ThemeProvider theme={theme}>
@@ -53,15 +59,17 @@ const AtmosphereDemoFrame: React.FC<AtmosphereDemoProps & {frame: number}> = ({f
             <div style={{...textStyle(theme, 'body'), color: safeText(theme, 'secondary', 'card')}}>Atmosphere stays behind the story.</div>
             <NumberText
               frame={localFrame}
-              from={3168}
-              to={3168}
+              from={rollFrom}
+              to={rollTo}
+              duration={1.1}
+              layout="reserve"
               prefix="$"
               role="number"
               color={safeText(theme, 'primary', 'card')}
               fontSize={104 * u}
             />
           </Glass>
-          <Glass tier="pill" style={{padding: `${space(theme, 3)}px ${space(theme, 6)}px`, borderRadius: theme.radius.pill, color: safeText(theme, 'primary', 'pill')}}>
+          <Glass tier="pill" style={{padding: `${space(theme, 3)}px ${space(theme, 6)}px`, borderRadius: theme.radius.pill}}>
             <span style={textStyle(theme, 'caption', {color: safeText(theme, 'primary', 'pill')})}>Quiet colour, clear type</span>
           </Glass>
         </div>
