@@ -46,14 +46,17 @@ jobs:
           TRACTS: ${{ inputs.tracts || '08' }}
           VINTAGE: ${{ inputs.vintage }}
         run: |
+          set -o pipefail
+          mkdir -p docs/map-bake-logs
           ARGS="--layers=$LAYERS --tracts=$TRACTS"
           if [ -n "$VINTAGE" ]; then ARGS="$ARGS --vintage=$VINTAGE"; fi
-          node scripts/map_bake_regions.mjs $ARGS
-      - name: Commit result
+          node scripts/map_bake_regions.mjs $ARGS 2>&1 | tee docs/map-bake-logs/regions.log
+      - name: Commit result (data + log, even on failure)
+        if: always()
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add public/kit/map/regions
+          git add public/kit/map/regions docs/map-bake-logs
           if git diff --cached --quiet; then echo "no change"; exit 0; fi
           git commit -m "kit-map: bake region layers [skip ci]"
           git pull --rebase origin kit-map
