@@ -7,7 +7,8 @@
     "dev": "remotion studio src/index.ts --port=3000 --ipv4 --no-open",
     "typecheck": "tsc --noEmit",
     "build": "tsc --noEmit",
-    "lint": "tsc --noEmit"
+    "lint": "tsc --noEmit",
+    "kit:contrast": "node scripts/kit_contrast_tokens.mjs"
   },
   "dependencies": {
     "@remotion/bundler": "4.0.250",
