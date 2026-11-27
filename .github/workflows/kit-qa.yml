@@ -1,0 +1,59 @@
+# Manual only: contrast, safe-area and motion checks on the kit demos, each split over 3 parallel runners.
+#   gh workflow run kit-qa.yml -f comps=all
+name: kit-qa
+on:
+  workflow_dispatch:
+    inputs:
+      comps:
+        description: "'all' demo compositions, or a comma-separated list of ids"
+        default: all
+permissions:
+  contents: read
+jobs:
+  qa:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix:
+        check: [contrast_check, safe_area_check, motion_audit]
+        shard: [0, 1, 2]
+    name: ${{ matrix.check }} ${{ matrix.shard }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: command -v ffmpeg || (sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg)
+      - name: Run check
+        env:
+          COMPS: ${{ inputs.comps }}
+          SHARD: ${{ matrix.shard }}
+          CHECK: ${{ matrix.check }}
+        run: |
+          cat > node_modules/.kit-qa-shard.mjs <<'JS'
+          import {writeFileSync} from 'node:fs';
+          import {getBundle, openRemotionBrowser, pickCompositions} from '../scripts/kit_qa_common.mjs';
+          const serveUrl = await getBundle({});
+          const puppeteerInstance = await openRemotionBrowser();
+          const wanted = process.env.COMPS || 'all';
+          const list = await pickCompositions({serveUrl, puppeteerInstance, all: wanted === 'all', comp: wanted});
+          await puppeteerInstance.close({silent: true});
+          const mine = list.map((c) => c.id).filter((_, i) => i % 3 === Number(process.env.SHARD));
+          writeFileSync('shard.env', `SERVE=${serveUrl}\nIDS=${mine.join(',')}\n`);
+          JS
+          node node_modules/.kit-qa-shard.mjs
+          . ./shard.env
+          mkdir -p qa-out
+          if [ -z "$IDS" ]; then echo "nothing in this shard"; exit 0; fi
+          node "scripts/kit_${CHECK}.mjs" --comp "$IDS" --serve-url "$SERVE" --out qa-out --no-fail 2>&1 | tee "qa-out/${CHECK}-${SHARD}.log"
+          exit "${PIPESTATUS[0]}"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: qa-${{ matrix.check }}-${{ matrix.shard }}
+          path: qa-out
+          retention-days: 7
+          if-no-files-found: ignore
