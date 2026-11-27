@@ -1,5 +1,6 @@
 import {buildGlassTiers} from './glassTiers';
 import {CANVAS} from './canvas';
+import './fonts';
 import type {MotionTokens, RadiusKey, SafeAreaSet, SpacingKey, Theme, TypeRole, TypeStyle} from './types';
 
 const RADIUS: Theme['radius'] = {xs: 8, sm: 12, md: 16, lg: 24, xl: 32, xxl: 44, pill: 9999} satisfies Record<RadiusKey, number>;
@@ -38,10 +39,10 @@ const MOTION: MotionTokens = {
   },
 };
 
-/** Generic iOS-flavoured stacks. A video that loads its own fonts overrides `fonts` via createTheme(). */
+/** Bundled Inter first (loaded from public/kit/fonts, matches the width tables in text/fonts), then iOS-flavoured fallbacks. A video that loads its own fonts overrides `fonts` via createTheme(). */
 const FONTS: Theme['fonts'] = {
-  display: '-apple-system, "SF Pro Display", "Inter", system-ui, "Helvetica Neue", Arial, sans-serif',
-  body: '-apple-system, "SF Pro Text", "Inter", system-ui, "Helvetica Neue", Arial, sans-serif',
+  display: '"Inter", -apple-system, "SF Pro Display", system-ui, "Helvetica Neue", Arial, sans-serif',
+  body: '"Inter", -apple-system, "SF Pro Text", system-ui, "Helvetica Neue", Arial, sans-serif',
 };
 
 /** Exactly two weights. */
