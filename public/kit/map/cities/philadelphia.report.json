@@ -1,0 +1,65 @@
+{
+ "rows": [
+  {
+   "city": "philadelphia",
+   "detail": "light",
+   "kb": 93.8,
+   "budget": {
+    "scale": 1,
+    "dropped": []
+   },
+   "primary": 48,
+   "secondary": 295,
+   "water": 142,
+   "waterPolys": 0,
+   "parks": 0
+  },
+  {
+   "city": "philadelphia",
+   "detail": "rich",
+   "kb": 385.3,
+   "budget": {
+    "scale": 1.5,
+    "dropped": []
+   },
+   "primary": 48,
+   "secondary": 297,
+   "local": 5563,
+   "ramp": 404,
+   "service": 150,
+   "other": 27,
+   "water": 155,
+   "waterPolys": 47,
+   "parks": 0
+  }
+ ],
+ "unmapped": {},
+ "counties": [
+  "34007",
+  "42045",
+  "42091",
+  "42101"
+ ],
+ "sources": [
+  {
+   "layer": "roads",
+   "vintage": "2025",
+   "files": 4
+  },
+  {
+   "layer": "areawater",
+   "vintage": "2025",
+   "files": 4
+  },
+  {
+   "layer": "linearwater",
+   "vintage": "2025",
+   "files": 4
+  },
+  {
+   "layer": "arealm",
+   "vintage": null,
+   "files": 0
+  }
+ ]
+}
