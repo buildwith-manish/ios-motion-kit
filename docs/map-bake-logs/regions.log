@@ -15,17 +15,19 @@ downloading https://www2.census.gov/geo/tiger/GENZ2025/shp/cb_2025_us_cbsa_500k.
 [o] Wrote /home/runner/work/ios-motion-kit/ios-motion-kit/public/kit/map/regions/cbsa.json
 baked cbsa: 424.0 KB, 935 features
 downloading https://www2.census.gov/geo/tiger/GENZ2025/shp/cb_2025_us_zcta520_500k.zip (attempt 1/5)
-  failed: HTTP 404 Not Found
-downloading https://www2.census.gov/geo/tiger/GENZ2025/shp/cb_2025_us_zcta520_500k.zip (attempt 2/5)
-  failed: HTTP 404 Not Found
-downloading https://www2.census.gov/geo/tiger/GENZ2025/shp/cb_2025_us_zcta520_500k.zip (attempt 3/5)
-  failed: HTTP 404 Not Found
-downloading https://www2.census.gov/geo/tiger/GENZ2025/shp/cb_2025_us_zcta520_500k.zip (attempt 4/5)
-  failed: HTTP 404 Not Found
-downloading https://www2.census.gov/geo/tiger/GENZ2025/shp/cb_2025_us_zcta520_500k.zip (attempt 5/5)
-  failed: HTTP 404 Not Found
-Error: giving up on https://www2.census.gov/geo/tiger/GENZ2025/shp/cb_2025_us_zcta520_500k.zip: HTTP 404 Not Found
-    at download (file:///home/runner/work/ios-motion-kit/ios-motion-kit/scripts/map_bake_regions.mjs:83:9)
+  failed: HTTP 404
+  cb_2025_us_zcta520_500k.zip: not published for 2025, trying older
+downloading https://www2.census.gov/geo/tiger/GENZ2024/shp/cb_2024_us_zcta520_500k.zip (attempt 1/5)
+  failed: HTTP 404
+  cb_2024_us_zcta520_500k.zip: not published for 2024, trying older
+downloading https://www2.census.gov/geo/tiger/GENZ2023/shp/cb_2023_us_zcta520_500k.zip (attempt 1/5)
+  failed: HTTP 404
+  cb_2023_us_zcta520_500k.zip: not published for 2023, trying older
+downloading https://www2.census.gov/geo/tiger/GENZ2022/shp/cb_2022_us_zcta520_500k.zip (attempt 1/5)
+  failed: HTTP 404
+  cb_2022_us_zcta520_500k.zip: not published for 2022, trying older
+Error: no vintage <= 2025 publishes cb_2025_us_zcta520_500k.zip
+    at getZip (file:///home/runner/work/ios-motion-kit/ios-motion-kit/scripts/map_bake_regions.mjs:103:9)
     at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
-    at async bakeNamedLayer (file:///home/runner/work/ios-motion-kit/ios-motion-kit/scripts/map_bake_regions.mjs:142:3)
-    at async main (file:///home/runner/work/ios-motion-kit/ios-motion-kit/scripts/map_bake_regions.mjs:220:21)
+    at async bakeNamedLayer (file:///home/runner/work/ios-motion-kit/ios-motion-kit/scripts/map_bake_regions.mjs:153:32)
+    at async main (file:///home/runner/work/ios-motion-kit/ios-motion-kit/scripts/map_bake_regions.mjs:228:21)
