@@ -5,6 +5,7 @@ import {
   allFeatures, CityLayer, cityAlignmentTransform, featureById, fitAlbers, fitAlbersUsa, mapStyle, MapCanvas, MapSourceLine,
   outlineLand, RegionLayer, useBakedTopo, useCity, type MapStyleName,
 } from '../map';
+import {MAP_CHOROPLETH_SECONDS, MAP_HIGHLIGHT_SECONDS, MapChoroplethDemo, MapHighlightDemo} from './MapHighlightDemo';
 
 /** Generic samples only: the US, Colorado, the Denver CBSA. Nothing PayRanked-specific. */
 export const MAP_DEMO_SECONDS = 9;
@@ -100,12 +101,26 @@ const wrap = (themeName: ThemeName, canvas: Canvas) => ({style}: {style: MapStyl
   <ThemeProvider theme={createTheme({canvas}, themeName)}><MapDemo style={style} /></ThemeProvider>
 );
 
-/** Registers Kit-Map-<Night|Light|Mono>-<Landscape|Portrait> and Kit-Map-City (props: cityId, detail, theme). */
+const themed = (canvas: Canvas, themeName: ThemeName, node: React.ReactNode) => <ThemeProvider theme={createTheme({canvas}, themeName)}>{node}</ThemeProvider>;
+
+/**
+ * Registers Kit-Map-<Night|Light|Mono>-<Landscape|Portrait>, Kit-Map-City (props: cityId, detail, theme),
+ * Kit-Map-Highlight-<Landscape|Portrait> (props: theme) and Kit-Map-Choropleth-<Landscape|Portrait> (props: theme, scale).
+ */
 export const KitMapCompositions: React.FC = () => (
   <>
     {THEMES.flatMap(({name, style}) => SHAPES.map(({key, canvas}) => (
       <Composition key={`${name}${key}`} id={`Kit-Map-${style[0].toUpperCase()}${style.slice(1)}-${key}`} component={wrap(name, canvas)} durationInFrames={MAP_DEMO_SECONDS * canvas.fps} width={canvas.width} height={canvas.height} fps={canvas.fps} defaultProps={{style}} />
     )))}
+    {SHAPES.map(({key, canvas}) => (
+      <React.Fragment key={key}>
+        <Composition id={`Kit-Map-Highlight-${key}`} durationInFrames={MAP_HIGHLIGHT_SECONDS * canvas.fps} width={canvas.width} height={canvas.height} fps={canvas.fps}
+          component={({theme}: {theme: ThemeName}) => themed(canvas, theme, <MapHighlightDemo />)} defaultProps={{theme: 'midnight' as ThemeName}} />
+        <Composition id={`Kit-Map-Choropleth-${key}`} durationInFrames={MAP_CHOROPLETH_SECONDS * canvas.fps} width={canvas.width} height={canvas.height} fps={canvas.fps}
+          component={({theme, scale}: {theme: ThemeName; scale: 'sequential' | 'diverging'}) => themed(canvas, theme, <MapChoroplethDemo scale={scale} />)}
+          defaultProps={{theme: 'midnight' as ThemeName, scale: 'sequential' as const}} />
+      </React.Fragment>
+    ))}
     <Composition
       id="Kit-Map-City" durationInFrames={60} width={1920} height={1080} fps={60}
       component={({cityId, detail, theme}: {cityId: string; detail: 'light' | 'rich'; theme: ThemeName}) => (
