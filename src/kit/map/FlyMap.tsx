@@ -1,6 +1,6 @@
 import React from 'react';
 import type {CSSProperties} from 'react';
-import type {GeoProjection} from 'd3-geo';
+import {geoAlbers, type GeoConicProjection, type GeoProjection} from 'd3-geo';
 import {sampleCamera, type CameraKeyframe} from '../camera';
 import {useTheme} from '../tokens';
 import {blurDissolve} from '../transitions';
@@ -26,11 +26,16 @@ const layerCss = (l: LayerState): CSSProperties => ({
   transform: l.scale !== 1 || l.tx || l.ty ? `translate(${l.tx}px, ${l.ty}px) scale(${l.scale})` : undefined,
 });
 
-/** The projection scaled by K (plane x K), so path digits stay below a quarter pixel at the current zoom. */
+/**
+ * The kit projection scaled by K (plane x K), so path digits stay below a quarter pixel at the current zoom.
+ * d3-geo 3.1 projections have no copy(): the kit projection is a plain geoAlbers (see fitUsOutline), so rebuild it from
+ * its own parameters.
+ */
 const scaledProjection = (p: GeoProjection, k: number): GeoProjection => {
-  const q = (p as GeoProjection & {copy(): GeoProjection}).copy();
+  const c = p as GeoConicProjection;
   const [tx, ty] = p.translate();
-  return q.scale(p.scale() * k).translate([tx * k, ty * k]);
+  return geoAlbers().parallels(c.parallels()).rotate(c.rotate()).center(c.center()).precision(p.precision())
+    .scale(p.scale() * k).translate([tx * k, ty * k]);
 };
 
 /**
