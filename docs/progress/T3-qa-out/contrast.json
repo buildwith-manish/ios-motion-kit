@@ -1,0 +1,57 @@
+{
+  "generatedAt": "2026-11-27T20:06:46.852Z",
+  "settings": {
+    "required": 4.5,
+    "minOpacity": 0.35,
+    "maxBlur": 0.5,
+    "minVisible": 0.6,
+    "minSamples": 2
+  },
+  "compositions": [
+    {
+      "id": "Kit-Finish-Demo",
+      "width": 1920,
+      "height": 1080,
+      "sampledFrames": 6,
+      "textRunsMeasured": 10,
+      "skippedObservations": {
+        "faint": 0,
+        "blurred": 0,
+        "clipped": 0,
+        "notPainted": 0
+      },
+      "findings": [],
+      "image": null
+    },
+    {
+      "id": "Kit-Finish-Demo-Vertical",
+      "width": 1080,
+      "height": 1920,
+      "sampledFrames": 3,
+      "textRunsMeasured": 10,
+      "skippedObservations": {
+        "faint": 0,
+        "blurred": 0,
+        "clipped": 0,
+        "notPainted": 0
+      },
+      "findings": [],
+      "image": null
+    },
+    {
+      "id": "Kit-Finish-Demo-30fps",
+      "width": 1920,
+      "height": 1080,
+      "sampledFrames": 6,
+      "textRunsMeasured": 10,
+      "skippedObservations": {
+        "faint": 0,
+        "blurred": 0,
+        "clipped": 0,
+        "notPainted": 0
+      },
+      "findings": [],
+      "image": null
+    }
+  ]
+}

@@ -1,0 +1,73 @@
+{
+  "generatedAt": "2026-11-27T20:07:31.643Z",
+  "settings": {
+    "kind": "title",
+    "tolerance": 2,
+    "minOpacity": 0.5
+  },
+  "compositions": [
+    {
+      "id": "Kit-Finish-Demo",
+      "width": 1920,
+      "height": 1080,
+      "safeArea": {
+        "kind": "title",
+        "rect": {
+          "top": 54,
+          "right": 96,
+          "bottom": 54,
+          "left": 96,
+          "width": 1728,
+          "height": 972
+        },
+        "themeName": "midnight",
+        "fromProps": false
+      },
+      "sampledFrames": 6,
+      "findings": [],
+      "image": null
+    },
+    {
+      "id": "Kit-Finish-Demo-Vertical",
+      "width": 1080,
+      "height": 1920,
+      "safeArea": {
+        "kind": "title",
+        "rect": {
+          "top": 192,
+          "right": 64.8,
+          "bottom": 422.4,
+          "left": 64.8,
+          "width": 950.4000000000001,
+          "height": 1305.6
+        },
+        "themeName": "midnight",
+        "fromProps": false
+      },
+      "sampledFrames": 3,
+      "findings": [],
+      "image": null
+    },
+    {
+      "id": "Kit-Finish-Demo-30fps",
+      "width": 1920,
+      "height": 1080,
+      "safeArea": {
+        "kind": "title",
+        "rect": {
+          "top": 54,
+          "right": 96,
+          "bottom": 54,
+          "left": 96,
+          "width": 1728,
+          "height": 972
+        },
+        "themeName": "midnight",
+        "fromProps": false
+      },
+      "sampledFrames": 6,
+      "findings": [],
+      "image": null
+    }
+  ]
+}

@@ -1,0 +1,53 @@
+{
+  "generatedAt": "2026-11-27T20:08:02.187Z",
+  "settings": {
+    "targetFps": 10,
+    "scale": 0.25,
+    "minSeconds": 1,
+    "thresholds": {
+      "mean": 0.15,
+      "changed": 0.001
+    }
+  },
+  "compositions": [
+    {
+      "id": "Kit-Finish-Demo",
+      "fps": 60,
+      "width": 1920,
+      "height": 1080,
+      "sampleFps": 10,
+      "sampledFrom": 0,
+      "sampledTo": 2.9,
+      "samples": 30,
+      "staticSeconds": 0,
+      "stretches": [],
+      "wallSeconds": 12.204
+    },
+    {
+      "id": "Kit-Finish-Demo-Vertical",
+      "fps": 60,
+      "width": 1080,
+      "height": 1920,
+      "sampleFps": 10,
+      "sampledFrom": 0,
+      "sampledTo": 1.4,
+      "samples": 15,
+      "staticSeconds": 0,
+      "stretches": [],
+      "wallSeconds": 3.238
+    },
+    {
+      "id": "Kit-Finish-Demo-30fps",
+      "fps": 30,
+      "width": 1920,
+      "height": 1080,
+      "sampleFps": 10,
+      "sampledFrom": 0,
+      "sampledTo": 2.9,
+      "samples": 30,
+      "staticSeconds": 0,
+      "stretches": [],
+      "wallSeconds": 13.39
+    }
+  ]
+}
