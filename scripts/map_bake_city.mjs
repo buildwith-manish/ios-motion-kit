@@ -164,8 +164,8 @@ const enc = (pts, close) => 'M' + pts.map((p) => `${r1(p[0])} ${r1(p[1])}`).join
 const onEdge = (a, b) => { const e = 0.05; return (Math.abs(a[0] - bbox.minX) < e && Math.abs(b[0] - bbox.minX) < e) || (Math.abs(a[0] - bbox.maxX) < e && Math.abs(b[0] - bbox.maxX) < e) || (Math.abs(a[1] - bbox.minY) < e && Math.abs(b[1] - bbox.minY) < e) || (Math.abs(a[1] - bbox.maxY) < e && Math.abs(b[1] - bbox.maxY) < e); };
 /** ring -> polylines, dropping the stretches that only run along the clip box (they are not coastline). */
 const ringToLines = (ring) => { const out = []; let cur = [ring[0]]; for (let i = 1; i < ring.length; i++) { if (onEdge(ring[i - 1], ring[i])) { if (cur.length > 1) out.push(cur); cur = [ring[i]]; } else cur.push(ring[i]); } if (cur.length > 1) out.push(cur); return out; };
-const lines = (g) => g.type === 'LineString' ? [g.coordinates] : g.type === 'MultiLineString' ? g.coordinates : [];
-const polys = (g) => g.type === 'Polygon' ? [g.coordinates] : g.type === 'MultiPolygon' ? g.coordinates : [];
+const lines = (g) => !g ? [] : g.type === 'LineString' ? [g.coordinates] : g.type === 'MultiLineString' ? g.coordinates : [];
+const polys = (g) => !g ? [] : g.type === 'Polygon' ? [g.coordinates] : g.type === 'MultiPolygon' ? g.coordinates : [];
 
 // ---- download + clip per layer ---------------------------------------------------------------------------------------
 const LAYERS = {roads: ['ROADS', 'roads'], areawater: ['AREAWATER', 'areawater'], linearwater: ['LINEARWATER', 'linearwater'], arealm: ['AREALM', 'arealm']};
