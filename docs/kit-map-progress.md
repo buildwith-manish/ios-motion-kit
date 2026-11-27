@@ -20,11 +20,17 @@ Branch `kit-map`. Library in `src/kit/map/`, demos `MapDemo.tsx` and `MapHighlig
 - Stills rendered in CI for all demo scenes (`docs/previews/kit-map/`).
 - Timing, software GL on a GitHub-hosted runner, 1080p: max 1.19 s per frame, median 0.46 s, budget 1.5 s (`docs/previews/kit-map/perf.json`, `docs/map-bake-logs/stills.log`).
 
+## Also verified (final pass)
+
+- `tsc --noEmit` on the final branch state: exit 0, no errors.
+- Both demos rendered as videos in Actions (landscape, 1080p60, midnight): `docs/previews/kit-map/video/highlight-landscape.mp4` (10 s) and `choropleth-landscape.mp4` (6 s). Reviewed through contact sheets (`*-sheet.png`): highlight hands over Colorado, Missouri, Georgia with focus dimming and a title cross-fade; the choropleth fills in from the metro core outward with a stagger, then holds.
+- Video render speed: 0.10 s per frame including encode (2 workers, software GL, GitHub runner), well under the 1.5 s budget.
+- 4K: `choropleth-landscape-4k-clip.mp4` is 3840x2160, 90 frames. The existing 4K crops (`crop4k-highlight-*`, `crop4k-choropleth-*`) show crisp hairlines, sharp hatching for missing values, and an unclipped glow and lift.
+
 ## Not verified
 
-- `tsc` has not been run on the final branch state (the spec asks for one run at the end).
-- The two demos have not been rendered as short videos, so motion (spring fade-in, stagger, dimming, lift) has only been checked through stills.
-- Hairlines and edges at 4K (`--scale=2`) have not been checked on the final highlight and choropleth stills. Only an earlier `_4k` still existed, and it was removed.
+- Portrait videos were not rendered (portrait stills pass in CI).
+- The 4K check is by eye on crops and one short clip; no pixel-level or automated hairline test.
 - Colour-blind-safety of the default scales was checked with `scripts/map_check_scales.ts` during development; the result is not recorded in CI.
 - The choropleth demo uses synthetic sample data, so the legend and missing-value hatching have not been checked against real distributions.
 - MTFCC table: names that wrap across lines in the official PDF are compared on their first line only.
