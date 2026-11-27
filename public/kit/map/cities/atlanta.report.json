@@ -1,0 +1,63 @@
+{
+ "rows": [
+  {
+   "city": "atlanta",
+   "detail": "light",
+   "kb": 78.1,
+   "budget": {
+    "scale": 1,
+    "dropped": []
+   },
+   "primary": 28,
+   "secondary": 142,
+   "water": 137,
+   "waterPolys": 0,
+   "parks": 0
+  },
+  {
+   "city": "atlanta",
+   "detail": "rich",
+   "kb": 348.1,
+   "budget": {
+    "scale": 1.5,
+    "dropped": []
+   },
+   "primary": 28,
+   "secondary": 142,
+   "local": 4224,
+   "ramp": 317,
+   "service": 0,
+   "other": 125,
+   "water": 142,
+   "waterPolys": 19,
+   "parks": 0
+  }
+ ],
+ "unmapped": {},
+ "counties": [
+  "13089",
+  "13121"
+ ],
+ "sources": [
+  {
+   "layer": "roads",
+   "vintage": "2025",
+   "files": 2
+  },
+  {
+   "layer": "areawater",
+   "vintage": "2025",
+   "files": 2
+  },
+  {
+   "layer": "linearwater",
+   "vintage": "2025",
+   "files": 2
+  },
+  {
+   "layer": "arealm",
+   "vintage": null,
+   "files": 0
+  }
+ ]
+}

@@ -1,0 +1,17 @@
+atlanta: box 14 km at 33.749,-84.388; counties 13089, 13121
+[o] Wrote /home/runner/work/ios-motion-kit/ios-motion-kit/.cache/city-tmp/atlanta/roads.json
+  roads: 5283 features in box (TIGER2025)
+[dissolve2] Dissolved 1,367 features into 4 features
+[o] Wrote /home/runner/work/ios-motion-kit/ios-motion-kit/.cache/city-tmp/atlanta/areawater.json
+  areawater: 3 features in box (TIGER2025)
+[o] Wrote /home/runner/work/ios-motion-kit/ios-motion-kit/.cache/city-tmp/atlanta/linearwater.json
+  linearwater: 127 features in box (TIGER2025)
+  arealm 13089: not published, skipped
+  arealm 13121: not published, skipped
+  arealm: 0 features in box (TIGER-)
+┌─────────┬───────────┬─────────┬───────┬─────────────────────────────┬─────────┬───────────┬───────┬────────────┬───────┬───────┬──────┬─────────┬───────┐
+│ (index) │ city      │ detail  │ kb    │ budget                      │ primary │ secondary │ water │ waterPolys │ parks │ local │ ramp │ service │ other │
+├─────────┼───────────┼─────────┼───────┼─────────────────────────────┼─────────┼───────────┼───────┼────────────┼───────┼───────┼──────┼─────────┼───────┤
+│ 0       │ 'atlanta' │ 'light' │ 78.1  │ { scale: 1, dropped: [] }   │ 28      │ 142       │ 137   │ 0          │ 0     │       │      │         │       │
+│ 1       │ 'atlanta' │ 'rich'  │ 348.1 │ { scale: 1.5, dropped: [] } │ 28      │ 142       │ 142   │ 19         │ 0     │ 4224  │ 317  │ 0       │ 125   │
+└─────────┴───────────┴─────────┴───────┴─────────────────────────────┴─────────┴───────────┴───────┴────────────┴───────┴───────┴──────┴─────────┴───────┘
