@@ -7,128 +7,25 @@ Downloading Chrome Headless Shell - 38.2 Mb/88.2 Mb
 Downloading Chrome Headless Shell - 47.7 Mb/88.2 Mb
 Downloading Chrome Headless Shell - 57.3 Mb/88.2 Mb
 Downloading Chrome Headless Shell - 66.8 Mb/88.2 Mb
-Downloading Chrome Headless Shell - 76.4 Mb/88.2 Mb
+Downloading Chrome Headless Shell - 76.3 Mb/88.2 Mb
 Downloading Chrome Headless Shell - 85.9 Mb/88.2 Mb
 Downloading Chrome Headless Shell - 88.2 Mb/88.2 Mb
-[40m node_modules/react-dom/cjs/react-dom.production.min.js:187 [49m [31m[0mTypeError: p.copy is not a function[0m[39m
-[31m[0m    at scaledProjection (http://localhost:3000/bundle.js:18331:15)[0m[39m
-[31m[0m    at ShapeLayer (http://localhost:3000/bundle.js:18358:14)[0m[39m
-[31m[0m    at Nh (http://localhost:3000/bundle.js:207:137)[0m[39m
-[31m[0m    at cj (http://localhost:3000/bundle.js:243:258)[0m[39m
-[31m[0m    at Vk (http://localhost:3000/bundle.js:338:88)[0m[39m
-[31m[0m    at Uk (http://localhost:3000/bundle.js:326:389)[0m[39m
-[31m[0m    at Tk (http://localhost:3000/bundle.js:326:320)[0m[39m
-[31m[0m    at Ik (http://localhost:3000/bundle.js:326:180)[0m[39m
-[31m[0m    at Nk (http://localhost:3000/bundle.js:317:88)[0m[39m
-[31m[0m    at Gk (http://localhost:3000/bundle.js:314:429)[0m[39m
-[40m node_modules/react-dom/cjs/react-dom.production.min.js:187 [49m [31m[0mTypeError: p.copy is not a function[0m[39m
-[31m[0m    at scaledProjection (http://localhost:3000/bundle.js:18331:15)[0m[39m
-[31m[0m    at ShapeLayer (http://localhost:3000/bundle.js:18358:14)[0m[39m
-[31m[0m    at Nh (http://localhost:3000/bundle.js:207:137)[0m[39m
-[31m[0m    at cj (http://localhost:3000/bundle.js:243:258)[0m[39m
-[31m[0m    at Vk (http://localhost:3000/bundle.js:338:88)[0m[39m
-[31m[0m    at Uk (http://localhost:3000/bundle.js:326:389)[0m[39m
-[31m[0m    at Tk (http://localhost:3000/bundle.js:326:320)[0m[39m
-[31m[0m    at Ik (http://localhost:3000/bundle.js:326:180)[0m[39m
-[31m[0m    at Nk (http://localhost:3000/bundle.js:317:88)[0m[39m
-[31m[0m    at Gk (http://localhost:3000/bundle.js:314:429)[0m[39m
-node:internal/modules/run_main:123
-    triggerUncaughtException(
-    ^
-
-SymbolicateableError [TypeError]: p.copy is not a function
-    at scaledProjection (http://localhost:3000/bundle.js:18331:15)
-    at ShapeLayer (http://localhost:3000/bundle.js:18358:14)
-    at Nh (http://localhost:3000/bundle.js:207:137)
-    at cj (http://localhost:3000/bundle.js:243:258)
-    at Vk (http://localhost:3000/bundle.js:338:88)
-    at Uk (http://localhost:3000/bundle.js:326:389)
-    at Tk (http://localhost:3000/bundle.js:326:320)
-    at Ik (http://localhost:3000/bundle.js:326:180)
-    at Nk (http://localhost:3000/bundle.js:317:88)
-    at Gk (http://localhost:3000/bundle.js:314:429) {
-  stackFrame: [
-    {
-      columnNumber: 14,
-      fileName: 'http://localhost:3000/bundle.js',
-      functionName: 'scaledProjection',
-      lineNumber: 18330
-    },
-    {
-      columnNumber: 13,
-      fileName: 'http://localhost:3000/bundle.js',
-      functionName: 'ShapeLayer',
-      lineNumber: 18357
-    },
-    {
-      columnNumber: 136,
-      fileName: 'http://localhost:3000/bundle.js',
-      functionName: 'Nh',
-      lineNumber: 206
-    },
-    {
-      columnNumber: 257,
-      fileName: 'http://localhost:3000/bundle.js',
-      functionName: 'cj',
-      lineNumber: 242
-    },
-    {
-      columnNumber: 87,
-      fileName: 'http://localhost:3000/bundle.js',
-      functionName: 'Vk',
-      lineNumber: 337
-    },
-    {
-      columnNumber: 388,
-      fileName: 'http://localhost:3000/bundle.js',
-      functionName: 'Uk',
-      lineNumber: 325
-    },
-    {
-      columnNumber: 319,
-      fileName: 'http://localhost:3000/bundle.js',
-      functionName: 'Tk',
-      lineNumber: 325
-    },
-    {
-      columnNumber: 179,
-      fileName: 'http://localhost:3000/bundle.js',
-      functionName: 'Ik',
-      lineNumber: 325
-    },
-    {
-      columnNumber: 87,
-      fileName: 'http://localhost:3000/bundle.js',
-      functionName: 'Nk',
-      lineNumber: 316
-    },
-    {
-      columnNumber: 428,
-      fileName: 'http://localhost:3000/bundle.js',
-      functionName: 'Gk',
-      lineNumber: 313
-    },
-    {
-      columnNumber: 202,
-      fileName: 'http://localhost:3000/bundle.js',
-      functionName: 'J',
-      lineNumber: 9299
-    },
-    {
-      columnNumber: 127,
-      fileName: 'http://localhost:3000/bundle.js',
-      functionName: 'R',
-      lineNumber: 9300
-    }
-  ],
-  frame: null,
-  chunk: null,
-  delayRenderCall: null
+{
+  "landscape": {
+    "median": 0.69,
+    "max": 1.47,
+    "maxAt": "3.0",
+    "budget": 1.5
+  },
+  "portrait": {
+    "median": 0.678,
+    "max": 0.972,
+    "maxAt": "7.5",
+    "budget": 1.5
+  }
 }
-
-Node.js v20.20.2
-[90mat Ik [94m(node_modules/react-dom/cjs/react-dom.production.min.js:278)[39m[90m[39m
-[90mat Nk [94m(node_modules/react-dom/cjs/react-dom.production.min.js:269)[39m[90m[39m
-[90mat Gk [94m(node_modules/react-dom/cjs/react-dom.production.min.js:266)[39m[90m[39m
-[90mat J [94m(node_modules/scheduler/cjs/scheduler.production.min.js:12)[39m[90m[39m
-[90mat R [94m(node_modules/scheduler/cjs/scheduler.production.min.js:13)[39m[90m[39m
+Stitched 590/780
+Stitched 611/780
+Stitched 624/780
+Stitched 780/780
+[34m+                    docs/previews/kit-map/fly/video/fly-landscape.mp4[39m [90m3.6 MB[39m
