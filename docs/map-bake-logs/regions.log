@@ -26,8 +26,30 @@ downloading https://www2.census.gov/geo/tiger/GENZ2023/shp/cb_2023_us_zcta520_50
 downloading https://www2.census.gov/geo/tiger/GENZ2022/shp/cb_2022_us_zcta520_500k.zip (attempt 1/5)
   failed: HTTP 404
   cb_2022_us_zcta520_500k.zip: not published for 2022, trying older
-Error: no vintage <= 2025 publishes cb_2025_us_zcta520_500k.zip
-    at getZip (file:///home/runner/work/ios-motion-kit/ios-motion-kit/scripts/map_bake_regions.mjs:103:9)
-    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
-    at async bakeNamedLayer (file:///home/runner/work/ios-motion-kit/ios-motion-kit/scripts/map_bake_regions.mjs:153:32)
-    at async main (file:///home/runner/work/ios-motion-kit/ios-motion-kit/scripts/map_bake_regions.mjs:228:21)
+downloading https://www2.census.gov/geo/tiger/GENZ2021/shp/cb_2021_us_zcta520_500k.zip (attempt 1/5)
+  failed: HTTP 404
+  cb_2021_us_zcta520_500k.zip: not published for 2021, trying older
+downloading https://www2.census.gov/geo/tiger/GENZ2020/shp/cb_2020_us_zcta520_500k.zip (attempt 1/5)
+[simplify] Repaired 1,180 intersections
+[clean] Removed 6 of 722 slivers using 3.2+ sqkm variable threshold
+[clean] Retained 33,781 of 33,791 features
+[o] Wrote /home/runner/work/ios-motion-kit/ios-motion-kit/public/kit/map/regions/zcta.json
+baked zcta: 7821.1 KB, 33781 features
+cache hit  /home/runner/work/ios-motion-kit/ios-motion-kit/.cache/census/2025/cb_2025_us_state_500k.zip
+[simplify] Repaired 36 intersections
+[clean] Retained 56 of 56 features
+[filter] Retained 49 of 56 features
+[dissolve] Dissolved 49 features into 1 feature
+[filter] Retained 1 of 56 features
+[filter] Retained 1 of 56 features
+[merge-layers] Warning: Field [STATEFP] is missing from one or more layers
+[o] Wrote /home/runner/work/ios-motion-kit/ios-motion-kit/public/kit/map/regions/outline.json
+baked outline (+AK/HI inset composite): 175.8 KB
+downloading https://www2.census.gov/geo/tiger/GENZ2025/shp/cb_2025_08_tract_500k.zip (attempt 1/5)
+[simplify] Repaired 5 intersections
+[clean] Retained 1,447 of 1,447 features
+[o] Wrote /home/runner/work/ios-motion-kit/ios-motion-kit/public/kit/map/regions/tracts/08.json
+baked tracts/08: 369.5 KB, 1447 features
+
+wrote /home/runner/work/ios-motion-kit/ios-motion-kit/public/kit/map/regions/manifest.json
+wrote /home/runner/work/ios-motion-kit/ios-motion-kit/public/kit/map/regions/credits.json

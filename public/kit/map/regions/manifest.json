@@ -1,0 +1,66 @@
+{
+  "vintage": "2025",
+  "vintageNote": "newest vintage probed; each layer records the vintage actually used (a layer can lag, e.g. ZCTAs)",
+  "generatedAt": "2026-11-27T10:47:04.948Z",
+  "source": "US Census Bureau cartographic boundary files (500k generalised)",
+  "layers": {
+    "states": {
+      "name": "states",
+      "file": "states.json",
+      "vintage": "2025",
+      "simplifyPct": "10%",
+      "quantization": 100000,
+      "bytes": 226960,
+      "features": 56,
+      "source": "https://www2.census.gov/geo/tiger/GENZ2025/shp/cb_2025_us_state_500k.zip"
+    },
+    "counties": {
+      "name": "counties",
+      "file": "counties.json",
+      "vintage": "2025",
+      "simplifyPct": "6%",
+      "quantization": 100000,
+      "bytes": 1048033,
+      "features": 3235,
+      "source": "https://www2.census.gov/geo/tiger/GENZ2025/shp/cb_2025_us_county_500k.zip"
+    },
+    "cbsa": {
+      "name": "cbsa",
+      "file": "cbsa.json",
+      "vintage": "2025",
+      "simplifyPct": "8%",
+      "quantization": 100000,
+      "bytes": 434215,
+      "features": 935,
+      "source": "https://www2.census.gov/geo/tiger/GENZ2025/shp/cb_2025_us_cbsa_500k.zip"
+    },
+    "zcta": {
+      "name": "zcta",
+      "file": "zcta.json",
+      "vintage": "2020",
+      "simplifyPct": "4%",
+      "quantization": 100000,
+      "bytes": 8008779,
+      "features": 33781,
+      "source": "https://www2.census.gov/geo/tiger/GENZ2020/shp/cb_2020_us_zcta520_500k.zip"
+    },
+    "outline": {
+      "name": "outline",
+      "file": "outline.json",
+      "vintage": "2025",
+      "bytes": 180000,
+      "features": 3,
+      "source": "https://www2.census.gov/geo/tiger/GENZ2025/shp/cb_2025_us_state_500k.zip",
+      "note": "objects.combined holds 3 pieces keyed by id: outline (contiguous US, dissolved), alaska, hawaii — the last two are the optional inset"
+    },
+    "tracts/08": {
+      "name": "tracts/08",
+      "file": "tracts/08.json",
+      "vintage": "2025",
+      "bytes": 378373,
+      "features": 1447,
+      "source": "https://www2.census.gov/geo/tiger/GENZ2025/shp/cb_2025_08_tract_500k.zip"
+    }
+  },
+  "tractsNote": "Tracts are baked per state on demand: node scripts/map_bake_regions.mjs --tracts=<STATEFP,...>. Not all states are necessarily present."
+}
