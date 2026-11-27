@@ -12,17 +12,18 @@ const WEST = {lat: 34.05, lng: -118.24};
 const EAST = {lat: 40.71, lng: -74.0};
 const METRO_ID = 'chicago';
 const METRO = {lat: 41.8781, lng: -87.6298};
-const SPOTS = {core: {lat: 41.8819, lng: -87.6278}, north: {lat: 41.9742, lng: -87.9073}, south: {lat: 41.7868, lng: -87.7522}};
+/** Inside the 14 km baked city box (the street layer only exists there), a few km from the centre. */
+const SPOTS = {core: {lat: 41.8819, lng: -87.6278}, north: {lat: 41.9217, lng: -87.654}, south: {lat: 41.85, lng: -87.617}};
 
 /** Seconds. Leg 1 crosses the country, leg 2 flies into the metro. */
 export const FLY_PLAN = {
   start: {lat: 47.6, lng: -122.3, zoom: 3},
   legs: [
     {lat: 39.5, lng: -98, zoom: 0.45, duration: 2.6, hold: 3.4},
-    {lat: METRO.lat, lng: METRO.lng, zoom: 6.3, duration: 3.4, hold: 3.2},
+    {lat: METRO.lat, lng: METRO.lng, zoom: 8.3, duration: 3.6, hold: 3.2},
   ],
 } as const;
-export const FLY_SECONDS = 13;
+export const FLY_SECONDS = 13.4;
 
 const smooth = (a: number, b: number, x: number) => {
   const t = Math.min(1, Math.max(0, (x - a) / (b - a)));
@@ -51,7 +52,7 @@ const Scene: React.FC = () => {
 
   return (
     <AbsoluteFill>
-      <FlyMap frame={frame} keyframes={plan.keyframes} projection={projection} metro={{city, alignment}} outlineId={CBSA_OF[METRO_ID]}>
+      <FlyMap frame={frame} keyframes={plan.keyframes} projection={projection} metro={{city, alignment}} blend={[6.2, 7.6]} outlineId={CBSA_OF[METRO_ID]}>
         {/* country scale: two pins, an arc between them, numbers */}
         {countryOpacity > 0.002 ? (
           <div style={{position: 'absolute', inset: 0, opacity: countryOpacity}}>
@@ -61,7 +62,7 @@ const Scene: React.FC = () => {
             <MapCallouts
               layoutPose={countryPose}
               items={[
-                {id: 'west', ...WEST, at: leg1.lands + 1.2, title: 'Sample A', value: 1280, decimals: 0, suffix: ' units'},
+                {id: 'west', ...WEST, at: leg1.lands + 1.2, title: 'Sample A, units', value: 1280, decimals: 0},
                 {id: 'east', ...EAST, at: leg1.lands + 1.5, title: 'Sample B', value: 94.6, decimals: 1, suffix: '%'},
               ]}
             />
@@ -77,8 +78,8 @@ const Scene: React.FC = () => {
           pinScale={1}
           items={[
             {id: 'core', ...SPOTS.core, at: leg2.lands + 1.5, title: 'Core', value: 4210, decimals: 0, prefix: '$'},
-            {id: 'north', ...SPOTS.north, at: leg2.lands + 1.8, title: 'North', value: 37.2, decimals: 1, suffix: ' min'},
-            {id: 'south', ...SPOTS.south, at: leg2.lands + 2.1, title: 'South', value: 18, decimals: 0, suffix: ' stops'},
+            {id: 'north', ...SPOTS.north, at: leg2.lands + 1.8, title: 'North, minutes', value: 37.2, decimals: 1},
+            {id: 'south', ...SPOTS.south, at: leg2.lands + 2.1, title: 'South, stops', value: 18, decimals: 0},
           ]}
         />
       </FlyMap>
@@ -92,7 +93,7 @@ const Scene: React.FC = () => {
 
 const SHAPES: {key: string; canvas: Canvas}[] = [{key: 'Landscape', canvas: CANVAS.landscape60}, {key: 'Portrait', canvas: CANVAS.vertical60}];
 
-/** Kit-Fly-<Landscape|Portrait> (prop: theme): fly across the US to a metro, pins, arc, route, callouts with numbers. 13 s. */
+/** Kit-Fly-<Landscape|Portrait> (prop: theme): fly across the US to a metro, pins, arc, route, callouts with numbers. 13.4 s. */
 export const KitFlyCompositions: React.FC = () => (
   <>
     {SHAPES.map(({key, canvas}) => (

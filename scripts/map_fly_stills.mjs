@@ -20,7 +20,7 @@ const arg = (k, d) => (process.argv.find((a) => a.startsWith(`--${k}=`)) ?? `--$
 const OUT = join(ROOT, arg('out', 'docs/previews/kit-map/fly'));
 const STEP = Number(arg('step', 0.5));
 const REPEAT = Number(arg('repeat', 2));
-const SECONDS = 13;
+const SECONDS = 13.4;
 const FPS = 60;
 mkdirSync(OUT, {recursive: true});
 
@@ -36,11 +36,11 @@ const still = async (id, t, output, {scale = 1, inputProps = {theme: 'midnight'}
 const slug = (t) => String(t).replace('.', 'p');
 
 // review moments: start, mid-flight, landed on the country, arc/callouts, metro dissolve, landed on the metro, callouts
-const MOMENTS = [0.4, 1.6, 2.6, 4.0, 5.2, 6.8, 7.6, 8.2, 9.4, 11.0, 12.5];
+const MOMENTS = [0.4, 1.6, 2.6, 4.0, 5.2, 6.8, 7.8, 8.6, 9.4, 10.2, 11.0, 12.8];
 for (const t of MOMENTS) await still('Kit-Fly-Landscape', t, join(OUT, `landscape-t${slug(t)}.png`));
-for (const t of [2.6, 5.2, 8.2, 12.5]) await still('Kit-Fly-Portrait', t, join(OUT, `portrait-t${slug(t)}.png`));
+for (const t of [2.6, 5.2, 9.4, 12.8]) await still('Kit-Fly-Portrait', t, join(OUT, `portrait-t${slug(t)}.png`));
 // true 4K (scale 2), centre crop to check hairlines and edges at pixel size
-for (const t of [5.2, 12.5]) {
+for (const t of [5.2, 12.8]) {
   const full = join(OUT, `_4k-t${slug(t)}.png`);
   await still('Kit-Fly-Landscape', t, full, {scale: 2});
   execFileSync('convert', [full, '-gravity', 'center', '-crop', '1280x720+0+0', '+repage', join(OUT, `crop4k-t${slug(t)}.png`)]);
