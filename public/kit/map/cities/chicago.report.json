@@ -1,0 +1,62 @@
+{
+ "rows": [
+  {
+   "city": "chicago",
+   "detail": "light",
+   "kb": 32.9,
+   "budget": {
+    "scale": 1,
+    "dropped": []
+   },
+   "primary": 57,
+   "secondary": 36,
+   "water": 21,
+   "waterPolys": 0,
+   "parks": 0
+  },
+  {
+   "city": "chicago",
+   "detail": "rich",
+   "kb": 312.3,
+   "budget": {
+    "scale": 1,
+    "dropped": []
+   },
+   "primary": 57,
+   "secondary": 37,
+   "local": 2489,
+   "ramp": 300,
+   "service": 119,
+   "other": 3449,
+   "water": 22,
+   "waterPolys": 15,
+   "parks": 0
+  }
+ ],
+ "unmapped": {},
+ "counties": [
+  "17031"
+ ],
+ "sources": [
+  {
+   "layer": "roads",
+   "vintage": "2025",
+   "files": 1
+  },
+  {
+   "layer": "areawater",
+   "vintage": "2025",
+   "files": 1
+  },
+  {
+   "layer": "linearwater",
+   "vintage": "2025",
+   "files": 1
+  },
+  {
+   "layer": "arealm",
+   "vintage": null,
+   "files": 0
+  }
+ ]
+}
