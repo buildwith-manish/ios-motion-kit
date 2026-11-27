@@ -1,0 +1,14 @@
+bundling src/kit/demo/entry.tsx ...
+browser: KIT_CHROME
+Kit-Atmosphere-Demo: 12 frames, 0 finding(s)
+Kit-Atmosphere-Demo-Vertical: 12 frames, 0 finding(s)
+Kit-Atmosphere-Demo-30fps: 12 frames, 0 finding(s)
+
+Outside the title-safe area
+composition                   type  what        overshoot  seen  samples
+----------------------------  ----  ----------  ---------  ----  -------
+Kit-Atmosphere-Demo           -     all inside  -          -     -
+Kit-Atmosphere-Demo-Vertical  -     all inside  -          -     -
+Kit-Atmosphere-Demo-30fps     -     all inside  -          -     -
+
+JSON: ../../../../tmp/t2-atmosphere-final/safe-area.json

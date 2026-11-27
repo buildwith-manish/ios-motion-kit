@@ -263,8 +263,7 @@ A light demo. Time your own composition (`--start/--end` for a slice); heavy sce
 - `--scale 2` (4K), `--concurrency` above the default, `--serve-url` for the render script, `--kind action`.
 - DOM checks with `<OffthreadVideo>` (not supported), WebGL scenes, gradient-clipped text, SVG text, emoji, RTL
   contrast. The page protocol is Remotion-internal: re-test after any Remotion upgrade.
-- "Samples low": review passes `kitRender.motionBlurSamples = 3`, but **no composition reads it yet**, so today
-  review and final differ in encoding and frame format only. This is my reading of the brief.
+- "Samples low": review passes `kitRender.motionBlurSamples = 3`; the NumberRoll demo reads the value and disables its digit blur at one sample.
 - Colour: decoded frames of the three profiles differ from a lossless still by 2.6-4.5 levels mean (of 255); not
   judged on a calibrated display. Loudness was checked by numbers, not listening.
 - README commands: every script's `--help` ran, and most flows ran; not every example line was run verbatim.
@@ -280,3 +279,21 @@ A light demo. Time your own composition (`--start/--end` for a slice); heavy sce
 ## Security note
 
 The GitHub token was used for clone and push only (the camera session cloned with it in the URL, then I reset `origin` to the plain URL; `.git/config` holds no token and nothing is committed). Please revoke it.
+
+## T1 — Legibility, fonts, and number rolls
+
+### Built
+
+- T1a: contrast-safe text helpers and contrast QA fixes; details in `docs/progress/T1a-contrast.md`.
+- T1b: `NumberText` supports `layout="collapse"` (default) and `layout="reserve"`; the NumberRoll demo reads the render profile's `kitRender.motionBlurSamples`.
+- Review stills: `docs/previews/kit/T1b-0-usd.jpg`, `T1b-316-usd.jpg`, `T1b-2168-usd.jpg`, `T1b-93k-usd.jpg`, and `T1b-0.0-pct.jpg`.
+
+### Verified
+
+- `npm run kit:contrast` passes.
+- NumberRoll contrast, title-safe area, and motion audit each passed before and after the task changes; reports are in `docs/progress/T1b-qa-before.txt` and `docs/progress/T1b-qa-after.txt`.
+- `npx tsc --noEmit` passed at the end of T1b.
+
+### NOT verified
+
+- This records the completed T1a/T1b task work; see the linked task reports for their scope and visual-review notes.

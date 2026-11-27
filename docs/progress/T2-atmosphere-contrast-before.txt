@@ -1,0 +1,14 @@
+bundling src/kit/demo/atmosphereEntry.tsx ...
+browser: KIT_CHROME
+Kit-Atmosphere-Demo: 12 frames, 1 finding(s)
+Kit-Atmosphere-Demo-Vertical: 12 frames, 1 finding(s)
+Kit-Atmosphere-Demo-30fps: 12 frames, 1 finding(s)
+
+Text below 4.5:1 (10th-percentile pixel)
+composition                   status  text  ratio   text on background  size         seen             samples
+----------------------------  ------  ----  ------  ------------------  -----------  ---------------  -------
+Kit-Atmosphere-Demo           fail    2     3.70:1  #727b77 on #dff3e8  104px large  0:01.00-0:15.00  8
+Kit-Atmosphere-Demo-Vertical  fail    2     3.69:1  #787d81 on #ebf5f9  104px large  0:01.00-0:15.00  8
+Kit-Atmosphere-Demo-30fps     fail    2     3.70:1  #727b77 on #dff3e8  104px large  0:01.00-0:15.00  8
+
+JSON: ../../../../tmp/t2-atmosphere-qa/contrast.json

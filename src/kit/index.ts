@@ -9,3 +9,4 @@ export * from './text';
 export * from './qa';
 export * from './dataviz';
 export {NumberText} from './text/NumberText';
+export * from './background';
