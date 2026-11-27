@@ -29,7 +29,10 @@ jobs:
           node-version: 20
           cache: npm
       - run: npm ci
+      # the stills script crops its 4K review images with ImageMagick, which the runner image may not ship
+      - run: sudo apt-get update && sudo apt-get install -y imagemagick
       - name: Render
+        id: render
         continue-on-error: true
         run: |
           set -o pipefail
@@ -50,3 +53,6 @@ jobs:
             sleep $((RANDOM % 15 + 5))
           done
           exit 1
+      - name: Fail if the render failed
+        if: steps.render.outcome == 'failure'
+        run: exit 1
