@@ -2,6 +2,7 @@ import React from 'react';
 import type {CSSProperties} from 'react';
 import {useTheme} from '../tokens/ThemeProvider';
 import {safeRect, unit} from '../tokens/helpers';
+import {karaokeInactiveOpacity} from '../tokens/contrast';
 import {textStyle} from '../tokens/text';
 import type {Theme, TypeRole} from '../tokens/types';
 import {fitText, layoutText, layoutWords} from './layout';
@@ -97,7 +98,9 @@ const MASK_PAD_X = 0.5;
 export const RevealText: React.FC<RevealTextProps> = (props) => {
   const ctx = useTheme();
   const theme = props.theme ?? ctx;
-  const {timings, highlightActive = false, inactiveOpacity = 0.4, keepSpoken = false, activeFade = 0.12, renderWord, frame, start = 0, mask = false, align = 'start', role = 'display', maxWidth, maxLines, style, className} = props;
+  const {timings, highlightActive = false, inactiveOpacity: inactiveProp, keepSpoken = false, activeFade = 0.12, renderWord, frame, start = 0, mask = false, align = 'start', role = 'display', maxWidth, maxLines, style, className} = props;
+  /** Dimmed-word opacity: explicit prop, else the lowest value that keeps the dimmed word >= 3:1 on every surface. */
+  const inactiveOpacity = inactiveProp ?? karaokeInactiveOpacity(theme);
   const fps = props.fps ?? theme.canvas.fps;
   const time = frame / fps;
   const u = unit(theme);

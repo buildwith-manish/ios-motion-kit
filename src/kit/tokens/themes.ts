@@ -57,10 +57,10 @@ export const midnight: Theme = {
   canvas: CANVAS.landscape60,
   colors: {
     background: {deep: '#050E1D', base: '#0A1D38', lift: '#143A66'},
-    text: {primary: '#E8EEF7', secondary: '#8DA2BB', tertiary: '#5C7391'},
+    text: {primary: '#EEF2F9', secondary: '#EFF2F6', tertiary: '#F0F2F4'},
     accent: '#3DF0A8',
     onAccent: '#04130D',
-    semantic: {positive: '#19C37D', warning: '#FFB020', negative: '#FF5C5C'},
+    semantic: {positive: '#E0F7EE', warning: '#FFF1D6', negative: '#FFEEEE'},
     tint: {a: '#2AA7D6', b: '#7A5CF0', c: '#3DF0A8', d: '#143A66'},
   },
   glass: buildGlassTiers({
@@ -88,10 +88,10 @@ export const light: Theme = {
   name: 'light',
   colors: {
     background: {deep: '#E5E5EA', base: '#F2F2F7', lift: '#FFFFFF'},
-    text: {primary: '#111114', secondary: '#5F6068', tertiary: '#8E8E93'},
-    accent: '#007AFF',
+    text: {primary: '#111114', secondary: '#323237', tertiary: '#323235'},
+    accent: '#004797',
     onAccent: '#FFFFFF',
-    semantic: {positive: '#248A3D', warning: '#C77700', negative: '#D70015'},
+    semantic: {positive: '#103A1A', warning: '#4A2C00', negative: '#6C000A'},
     tint: {a: '#64D2FF', b: '#BF5AF2', c: '#30D158', d: '#FFD60A'},
   },
   glass: buildGlassTiers({
@@ -112,10 +112,10 @@ export const mono: Theme = {
   name: 'mono',
   colors: {
     background: {deep: '#0B0B0C', base: '#161618', lift: '#232326'},
-    text: {primary: '#F2F2F3', secondary: '#A1A1A6', tertiary: '#6E6E73'},
+    text: {primary: '#F2F2F3', secondary: '#E4E4E4', tertiary: '#E4E4E4'},
     accent: '#F5F5F7',
     onAccent: '#111113',
-    semantic: {positive: '#5FD38D', warning: '#E8B04B', negative: '#E5645F'},
+    semantic: {positive: '#C3EED4', warning: '#F6E2BA', negative: '#F9DEDC'},
     tint: {a: '#3A3A3F', b: '#5A5A60', c: '#8A8A90', d: '#2A2A2E'},
   },
   glass: buildGlassTiers({
