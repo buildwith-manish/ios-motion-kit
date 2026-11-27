@@ -1,2 +1,4 @@
-// Standalone demo entry: registers every kit demo composition (once each).
-import './kit/demo/entry';
+import {registerRoot} from 'remotion';
+import {Root} from './Root';
+
+registerRoot(Root);
