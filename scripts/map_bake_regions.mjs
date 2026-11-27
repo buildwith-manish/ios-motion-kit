@@ -30,7 +30,7 @@ const OUT_DIR = join(ROOT, 'public', 'kit', 'map', 'regions');
 const CACHE_DIR = join(ROOT, '.cache', 'census');
 
 // ---- CLI args ---------------------------------------------------------------------------------------------
-const usage = `usage: node scripts/map_bake_regions.mjs [--layers=states,counties,cbsa,zcta,outline] [--tracts=FIPS,FIPS] [--vintage=2023] [--force]`;
+const usage = `usage: node scripts/map_bake_regions.mjs [--layers=states,counties,cbsa,zcta,outline] [--tracts=FIPS,FIPS] [--zcta-cbsa=CBSA,CBSA] [--vintage=2023] [--force]`;
 const args = Object.fromEntries(
   process.argv.slice(2).map((a) => {
     const m = /^--([^=]+)(?:=(.*))?$/.exec(a);
@@ -53,6 +53,7 @@ const VINTAGE = await pickVintage();
 const FORCE = Boolean(args.force);
 const LAYER_NAMES = args.layers ? String(args.layers).split(',') : ['states', 'counties', 'cbsa', 'zcta', 'outline'];
 const TRACT_FIPS = args.tracts ? String(args.tracts).split(',') : [];
+const ZCTA_METROS = args['zcta-cbsa'] ? String(args['zcta-cbsa']).split(',') : [];
 
 // ---- download with cache + retry/backoff -------------------------------------------------------------------
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
@@ -219,6 +220,37 @@ async function bakeTracts(stateFips) {
   return {name: `tracts/${stateFips}`, file: `tracts/${stateFips}.json`, vintage: year, ...stats, source: url};
 }
 
+/**
+ * ZIP areas (ZCTAs) around one metro at far higher detail than the national layer, which is too coarse to fill a
+ * frame. Keeps every ZCTA whose box meets the metro's box (plus a margin); the kit selects members at render time.
+ */
+async function bakeZctaMetro(cbsa) {
+  const metro = await getZip(LAYERS.cbsa.file);
+  const {zipPath, year, url} = await getZip(LAYERS.zcta.file);
+  const tmp = join(CACHE_DIR, `cbsa-${cbsa}.json`);
+  mapshaper(['-i', metro.zipPath, '-filter', `CBSAFP == '${cbsa}'`, '-o', 'format=geojson', tmp]);
+  const shape = JSON.parse(readFileSync(tmp, 'utf8'));
+  let w = 180, s = 90, e = -180, n = -90;
+  const walk = (c) => { if (typeof c[0] === 'number') { w = Math.min(w, c[0]); e = Math.max(e, c[0]); s = Math.min(s, c[1]); n = Math.max(n, c[1]); } else c.forEach(walk); };
+  for (const f of shape.features ?? []) walk(f.geometry.coordinates);
+  if (w > e) throw new Error(`no CBSA ${cbsa} in the cartographic file`);
+  const m = 0.15;
+  const outDir = join(OUT_DIR, 'zcta-metro');
+  mkdirSync(outDir, {recursive: true});
+  const outFile = join(outDir, `${cbsa}.json`);
+  mapshaper([
+    '-i', zipPath, `name=zcta_${cbsa}`,
+    '-filter', `this.bounds !== null && this.bounds[2] >= ${w - m} && this.bounds[0] <= ${e + m} && this.bounds[3] >= ${s - m} && this.bounds[1] <= ${n + m}`,
+    '-filter-fields', 'ZCTA5CE20,GEOID20',
+    '-simplify', 'dp', '35%', 'keep-shapes',
+    '-clean',
+    '-o', 'format=topojson', 'quantization=1e5', 'id-field=GEOID20', outFile,
+  ]);
+  const stats = statsFor(outFile);
+  console.log(`baked zcta-metro/${cbsa}: ${(stats.bytes / 1024).toFixed(1)} KB, ${stats.features} features`);
+  return {name: `zcta-metro/${cbsa}`, file: `zcta-metro/${cbsa}.json`, vintage: year, simplifyPct: '35%', ...stats, source: url};
+}
+
 // ---- main ----------------------------------------------------------------------------------------------------
 async function main() {
   mkdirSync(OUT_DIR, {recursive: true});
@@ -228,6 +260,7 @@ async function main() {
     else baked.push(await bakeNamedLayer(name));
   }
   for (const fips of TRACT_FIPS) baked.push(await bakeTracts(fips));
+  for (const cbsa of ZCTA_METROS) baked.push(await bakeZctaMetro(cbsa));
 
   // manifest.json: what's baked, which vintage, so RegionLayer / docs can report it without opening every file.
   const manifestPath = join(OUT_DIR, 'manifest.json');

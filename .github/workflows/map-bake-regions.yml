@@ -10,6 +10,9 @@ on:
       tracts:
         description: 'state FIPS list for tracts (on demand), e.g. 08,17'
         default: '08'
+      zcta_cbsa:
+        description: 'CBSA codes to bake detailed ZIP areas for (on demand), e.g. 19740'
+        default: '19740'
       vintage:
         description: 'cartographic boundary vintage (blank = baker default)'
         default: ''
@@ -44,11 +47,12 @@ jobs:
         env:
           LAYERS: ${{ inputs.layers || 'states,counties,cbsa,zcta,outline' }}
           TRACTS: ${{ inputs.tracts || '08' }}
+          ZCTA_CBSA: ${{ inputs.zcta_cbsa || '19740' }}
           VINTAGE: ${{ inputs.vintage }}
         run: |
           set -o pipefail
           mkdir -p docs/map-bake-logs
-          ARGS="--layers=$LAYERS --tracts=$TRACTS"
+          ARGS="--layers=$LAYERS --tracts=$TRACTS --zcta-cbsa=$ZCTA_CBSA"
           if [ -n "$VINTAGE" ]; then ARGS="$ARGS --vintage=$VINTAGE"; fi
           node scripts/map_bake_regions.mjs $ARGS 2>&1 | tee docs/map-bake-logs/regions.log
       - name: Commit result (data + log, even on failure)
