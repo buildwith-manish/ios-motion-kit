@@ -5,7 +5,7 @@ import {useTheme} from '../tokens/ThemeProvider';
 import {textStyle, tabularNums} from '../tokens/text';
 import type {Theme, TypeRole} from '../tokens/types';
 import {metricsForWeight, type FontMetrics} from './metrics';
-import {buildRollSegments, rollValueAt} from './numberRoll';
+import {buildRollSegments, digitPresence, rollValueAt} from './numberRoll';
 
 /** Props for {@link NumberText}. */
 export interface NumberTextProps {
@@ -31,6 +31,11 @@ export interface NumberTextProps {
   groupSep?: string;
   /** Decimal separator. Default '.'. */
   decimalSep?: string;
+  /**
+   * 'collapse' (default): leading digits that are not there yet take no width, and the total width springs as digits
+   * appear or leave. 'reserve': the width is fixed at the widest value of the roll (for centred layouts).
+   */
+  layout?: 'collapse' | 'reserve';
   /** Directional blur on rolling digits (only above 1 px/frame, capped at blurCap). Default true. */
   motionBlur?: boolean;
   /** Max digit blur in px (kit cap is 20). Default 14. */
@@ -68,27 +73,32 @@ interface ColumnProps {
   cont: number;
   prevCont: number;
   width: number;
+  /** Full digit width; `width` is smaller while a collapsing column opens. */
+  cellWidth?: number;
   lineBoxPx: number;
   blur: boolean;
   cap: number;
-  /** 0..1: leading columns fade in as the value reaches them (keeps layout width, hides leading zeros). */
+  /** 0..1 opacity: leading columns fade in as the value reaches them. */
   visible: number;
+  /** Leading column: its zero is drawn blank, so it carries from nothing to '1'. */
+  leading?: boolean;
 }
 
-const DigitColumn: React.FC<ColumnProps> = ({cont, prevCont, width, lineBoxPx, blur, cap, visible}) => {
+const DigitColumn: React.FC<ColumnProps> = ({cont, prevCont, width, cellWidth = width, lineBoxPx, blur, cap, visible, leading}) => {
   const base = Math.floor(cont);
   const frac = cont - base;
   const d0 = ((base % 10) + 10) % 10;
   const d1 = (d0 + 1) % 10;
   const land = clamp01(1 - Math.min(frac, 1 - frac) * 2);
-  const cell: CSSProperties = {position: 'absolute', left: 0, width: '100%', height: lineBoxPx, lineHeight: `${lineBoxPx}px`, textAlign: 'center'};
+  // Right-anchored at full digit width, so a column that is still opening reveals its digit instead of squeezing it.
+  const cell: CSSProperties = {position: 'absolute', right: 0, width: cellWidth, height: lineBoxPx, lineHeight: `${lineBoxPx}px`, textAlign: 'center'};
   return (
     <MotionBlur
       dy={blur ? (cont - prevCont) * lineBoxPx : 0}
       cap={cap}
       style={{display: 'inline-block', position: 'relative', width, height: lineBoxPx, overflow: 'hidden', opacity: visible, transform: `scale(${1 + land * 0.015}, ${1 - land * 0.025})`}}
     >
-      <span style={{...cell, top: 0, transform: `translateY(${-frac * lineBoxPx}px)`}}>{d0}</span>
+      <span style={{...cell, top: 0, transform: `translateY(${-frac * lineBoxPx}px)`}}>{leading && base === 0 ? '' : d0}</span>
       <span style={{...cell, top: lineBoxPx, transform: `translateY(${-frac * lineBoxPx}px)`}}>{d1}</span>
     </MotionBlur>
   );
@@ -106,7 +116,7 @@ const DigitColumn: React.FC<ColumnProps> = ({cont, prevCont, width, lineBoxPx, b
 export const NumberText: React.FC<NumberTextProps> = (props) => {
   const ctx = useTheme();
   const theme = props.theme ?? ctx;
-  const {frame, start = 0, duration = 0.9, from = 0, to, then, decimals = 0, prefix = '', suffix = '', groupSep = ',', decimalSep = '.', motionBlur = true, blurCap = 14, role = 'number'} = props;
+  const {frame, start = 0, duration = 0.9, from = 0, to, then, decimals = 0, prefix = '', suffix = '', groupSep = ',', decimalSep = '.', layout = 'collapse', motionBlur = true, blurCap = 14, role = 'number'} = props;
   const fps = props.fps ?? theme.canvas.fps;
   const base = textStyle(theme, role, {color: props.color, weight: props.weight, tabular: true});
   const fontPx = props.fontSize ?? (base.fontSize as number);
@@ -137,10 +147,13 @@ export const NumberText: React.FC<NumberTextProps> = (props) => {
   for (let i = 0; i < intDigits; i++) {
     const e = intDigits - 1 - i;
     const cont = columnPosition(absCur, e, e === lowestE);
-    // The ones column is always shown; higher columns appear as the value grows into them.
-    const visible = e === 0 ? 1 : clamp01((absCur / 10 ** e) * 4);
-    nodes.push(<DigitColumn key={`i${i}`} cont={cont} prevCont={columnPosition(absPrev, e, e === lowestE)} width={colW} lineBoxPx={lineBoxPx} blur={motionBlur} cap={Math.min(20, blurCap)} visible={visible} />);
-    if (groupSep && e > 0 && e % 3 === 0) nodes.push(staticCell(`g${i}`, groupSep, {opacity: visible}));
+    // The ones column is always shown; a higher column appears as it starts to carry from blank to '1'.
+    const visible = e === 0 ? 1 : clamp01((absCur / 10 ** e - 0.9) / 0.03);
+    const share = e === 0 || layout === 'reserve' ? 1 : digitPresence(frame, fps, segs, e);
+    nodes.push(<DigitColumn key={`i${i}`} cont={cont} prevCont={columnPosition(absPrev, e, e === lowestE)} width={colW * share} cellWidth={colW} lineBoxPx={lineBoxPx} blur={motionBlur} cap={Math.min(20, blurCap)} visible={visible} leading={e > 0} />);
+    if (groupSep && e > 0 && e % 3 === 0) {
+      nodes.push(staticCell(`g${i}`, groupSep, layout === 'reserve' || share > 0.995 ? {opacity: visible} : {opacity: visible, maxWidth: `${share * 0.5}em`, overflow: 'hidden'}));
+    }
   }
   if (decimals > 0) {
     nodes.push(staticCell('dot', decimalSep));
