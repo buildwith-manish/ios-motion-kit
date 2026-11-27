@@ -9,7 +9,7 @@ import {idsWithin, topoFeatures} from '../src/kit/map/regions';
 
 const CBSA = '19740'; // Denver-Aurora-Centennial, the kit's generic sample metro
 const topo = (f: string) => JSON.parse(readFileSync(`public/kit/map/regions/${f}.json`, 'utf8'));
-const zcta = topo('zcta');
+const zcta = topo(`zcta-metro/${CBSA}`); // detailed per-metro file (workflow "Bake map regions")
 const metro = topoFeatures(topo('cbsa')).get(CBSA);
 const ids = idsWithin(zcta, metro);
 const centre: [number, number] = [-104.99, 39.74];

@@ -73,7 +73,7 @@ export const MapChoroplethDemo: React.FC<{scale: ColorScaleSpec['type']}> = ({sc
     <AbsoluteFill>
       <MapCanvas projection={projection} style={style}>
         <RegionLayer kind="cbsa" />
-        <Choropleth kind="zcta" within={metro} data={data} scale={scale} frame={frame} start={0.4} spread={1.6} order={type === 'sequential' ? 'center-out' : 'value'} />
+        <Choropleth kind="zcta" file={`zcta-metro/${sample.cbsa}.json`} within={metro} data={data} scale={scale} frame={frame} start={0.4} spread={1.6} order={type === 'sequential' ? 'center-out' : 'value'} />
         <RegionLayer kind="cbsa" idPrefix={sample.cbsa} fill="none" weight={2.4} />
       </MapCanvas>
       <div style={{position: 'absolute', left, top, ...textStyle(theme, 'title', {scale: 0.8})}}>ZIP areas</div>
