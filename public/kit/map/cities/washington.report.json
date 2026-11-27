@@ -1,0 +1,67 @@
+{
+ "rows": [
+  {
+   "city": "washington",
+   "detail": "light",
+   "kb": 90.2,
+   "budget": {
+    "scale": 1,
+    "dropped": []
+   },
+   "primary": 90,
+   "secondary": 271,
+   "water": 111,
+   "waterPolys": 0,
+   "parks": 0
+  },
+  {
+   "city": "washington",
+   "detail": "rich",
+   "kb": 372.9,
+   "budget": {
+    "scale": 2,
+    "dropped": []
+   },
+   "primary": 87,
+   "secondary": 269,
+   "local": 4345,
+   "ramp": 593,
+   "service": 156,
+   "other": 64,
+   "water": 99,
+   "waterPolys": 25,
+   "parks": 0
+  }
+ ],
+ "unmapped": {},
+ "counties": [
+  "11001",
+  "24031",
+  "24033",
+  "51013",
+  "51059",
+  "51510"
+ ],
+ "sources": [
+  {
+   "layer": "roads",
+   "vintage": "2025",
+   "files": 6
+  },
+  {
+   "layer": "areawater",
+   "vintage": "2025",
+   "files": 6
+  },
+  {
+   "layer": "linearwater",
+   "vintage": "2025",
+   "files": 6
+  },
+  {
+   "layer": "arealm",
+   "vintage": null,
+   "files": 0
+  }
+ ]
+}

@@ -1,0 +1,21 @@
+washington: box 14 km at 38.9072,-77.0369; counties 11001, 24031, 24033, 51013, 51059, 51510
+[o] Wrote /home/runner/work/ios-motion-kit/ios-motion-kit/.cache/city-tmp/washington/roads.json
+  roads: 6004 features in box (TIGER2025)
+[dissolve2] Dissolved 4,025 features into 5 features
+[o] Wrote /home/runner/work/ios-motion-kit/ios-motion-kit/.cache/city-tmp/washington/areawater.json
+  areawater: 4 features in box (TIGER2025)
+[o] Wrote /home/runner/work/ios-motion-kit/ios-motion-kit/.cache/city-tmp/washington/linearwater.json
+  linearwater: 120 features in box (TIGER2025)
+  arealm 11001: not published, skipped
+  arealm 24031: not published, skipped
+  arealm 24033: not published, skipped
+  arealm 51013: not published, skipped
+  arealm 51059: not published, skipped
+  arealm 51510: not published, skipped
+  arealm: 0 features in box (TIGER-)
+┌─────────┬──────────────┬─────────┬───────┬───────────────────────────┬─────────┬───────────┬───────┬────────────┬───────┬───────┬──────┬─────────┬───────┐
+│ (index) │ city         │ detail  │ kb    │ budget                    │ primary │ secondary │ water │ waterPolys │ parks │ local │ ramp │ service │ other │
+├─────────┼──────────────┼─────────┼───────┼───────────────────────────┼─────────┼───────────┼───────┼────────────┼───────┼───────┼──────┼─────────┼───────┤
+│ 0       │ 'washington' │ 'light' │ 90.2  │ { scale: 1, dropped: [] } │ 90      │ 271       │ 111   │ 0          │ 0     │       │      │         │       │
+│ 1       │ 'washington' │ 'rich'  │ 372.9 │ { scale: 2, dropped: [] } │ 87      │ 269       │ 99    │ 25         │ 0     │ 4345  │ 593  │ 156     │ 64    │
+└─────────┴──────────────┴─────────┴───────┴───────────────────────────┴─────────┴───────────┴───────┴────────────┴───────┴───────┴──────┴─────────┴───────┘
