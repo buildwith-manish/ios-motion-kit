@@ -65,3 +65,20 @@ Not verified (M3):
 - Only the midnight theme has been reviewed closely; light and mono stills render but were only glanced at.
 - No video of the zoom demo (`Kit-Metro-Landscape`) has been rendered yet, only stills of its reveal moments.
 - Side-by-side with PayRanked's current Chicago and New York stills was made locally for review and is not committed: PayRanked's stills are OpenStreetMap-based, and the kit repo must stay free of that data.
+
+## M4: camera, flyTo, pins, callouts, arc, route, fly demo
+
+Built and pushed: map camera (`flyTo` van Wijk path + spring ease, `flightPlan`), metro anchoring maths, `FlyMap` (country layers under the kit camera, `blurDissolve` into `MetroMap`, CBSA outline anchored with the alignment data), `MapPin`, `MapCallout` + `MapCallouts` (no-overlap layout solver), `Arc`, `RouteDraw`, demo `src/kit/demo/FlyDemo.tsx` (fly across the US to a generic metro, three pins, arc between two cities, route, callouts with numbers), `scripts/map_fly_stills.mjs`, workflow `map-fly`.
+
+Verified in GitHub Actions (run on commit 4c30020, success): typecheck, install, stills, timing, landscape video (13.5 s, 1080p).
+
+- Landing frame after retune (`docs/previews/kit-map/fly/landscape-t12p8.png`): the three pins sit inside the baked street box, callouts show "North 37.2%", "Core $4,210", "South 18x", the route draws between pins, no callout overlaps another.
+- Seconds per still, software GL, GitHub runner, 1080p landscape: median 0.727 s, max 1.534 s (at t = 3.0 s, mid-flight). Portrait 1080x1920: median 0.712 s, max 1.051 s. Budget 1.5 s.
+
+Not verified (M4):
+- Landscape max is 1.534 s at one time sample (t = 3.0 s), 0.034 s over the 1.5 s budget. It is one sample on a shared runner (neighbouring samples are 0.64 to 0.84 s), so it may be noise, but I have not re-measured or profiled it.
+- Portrait video was not rendered; portrait stills render. In the portrait landing frame the view reaches past the baked 14 km box, so the street layer fades out at the edges and the metro outline runs through the frame.
+- Callouts at the landing frame touch the CBSA outline line; that overlap is cosmetic and not solved.
+- 4K was only checked by eye on crops (`crop4k-t5p2.png`, `crop4k-t12p5.png`, `crop4k-t12p8.png`), not by an automated test.
+- The demo's lat/lng, city box and values are generic samples; no real data is claimed.
+- `tsc --noEmit` last ran at exit 0 on commit 4c30020; it has not been re-run on the commit that adds this note (docs only).
