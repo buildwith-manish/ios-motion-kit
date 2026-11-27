@@ -229,7 +229,7 @@ export const Region3D: React.FC<Region3DProps> = ({file = 'states.json', id, t, 
     const proj = geoAlbers().fitSize([SIZE, SIZE], target);
     const main = buildShapes(target, proj, {eps: SIZE * 0.01, minArea: SIZE * SIZE * 0.0005, minHole: SIZE * SIZE * 0.004, smooth: true});
     const maxDim = Math.max(main.w, main.h);
-    const depth = 0.085 * maxDim;
+    const depth = 0.07 * maxDim;
     // pin point: visual centre of the largest part
     const big = main.outers.reduce((a, b) => (ringArea(b) > ringArea(a) ? b : a), main.outers[0]);
     const pole = poleOf(big);
@@ -262,7 +262,7 @@ export const Region3D: React.FC<Region3DProps> = ({file = 'states.json', id, t, 
       top0: mix(mix(theme.colors.background.base, mix(theme.colors.tint.a, theme.colors.accent, 0.35), 0.45), theme.colors.text.primary, 0.02),
       topMid: mix(theme.colors.background.base, mix(theme.colors.tint.a, theme.colors.accent, 0.15), 0.2),
       top1: mix(theme.colors.background.base, theme.colors.background.lift, 0.53),
-      wallHi: mix(theme.colors.background.deep, teal, 0.3),
+      wallHi: mix(theme.colors.background.deep, teal, 0.24),
       wallLo: mix(theme.colors.background.deep, teal, 0.12),
       glint: mix(theme.colors.background.deep, teal, 0.4),
       rim: mix(teal, theme.colors.text.primary, 0.42),
@@ -271,7 +271,7 @@ export const Region3D: React.FC<Region3DProps> = ({file = 'states.json', id, t, 
   }, [topo, id, neighbors, portrait, aspect, theme, skipIds]);
 
   const shadowTex = useMemo(() => radialTexture([0, 0, 0], 0.7), []);
-  const glowTex = useMemo(() => { const c = scene ? scene.teal : new THREE.Color(theme.colors.accent); return radialTexture([c.r, c.g, c.b].map((v) => Math.pow(v, 1 / 2.2)) as [number, number, number], 0.5); }, [theme, scene]);
+  const glowTex = useMemo(() => { const c = scene ? mix(scene.teal, theme.colors.tint.a, 0.4) : new THREE.Color(theme.colors.accent); return radialTexture([c.r, c.g, c.b].map((v) => Math.pow(v, 1 / 2.2)) as [number, number, number], 0.5); }, [theme, scene]);
 
   // camera pose for this frame (pure function of t)
   const p = clamp01(t / Math.max(0.001, duration));
@@ -311,14 +311,14 @@ export const Region3D: React.FC<Region3DProps> = ({file = 'states.json', id, t, 
         </mesh>
       ))}
       {/* soft teal ground glow and a tighter contact shadow lie just above the neighbour tops */}
-      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[main.cx - maxDim * 0.05, tileH + 0.002, -main.cy + maxDim * 0.05]} scale={[main.w * 1.8 + maxDim * 0.4, main.h * 1.8 + maxDim * 0.4, 1]} renderOrder={1}>
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[main.cx - maxDim * 0.05, tileH + 0.002, -main.cy + maxDim * 0.05]} scale={[main.w * 1.5 + maxDim * 0.3, main.h * 1.5 + maxDim * 0.3, 1]} renderOrder={1}>
         <planeGeometry args={[1, 1]} />
-        <meshBasicMaterial map={glowTex} transparent depthWrite={false} opacity={shadowA * 0.95} toneMapped={false} />
+        <meshBasicMaterial map={glowTex} transparent depthWrite={false} opacity={shadowA * 0.7} toneMapped={false} />
       </mesh>
       {/* faint accent-teal glow hugging the west and south walls */}
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[main.cx - maxDim * 0.035, tileH + 0.003, -main.cy + maxDim * 0.04]} scale={[main.w * 1.2, main.h * 1.2, 1]} renderOrder={1}>
         <planeGeometry args={[1, 1]} />
-        <meshBasicMaterial map={glowTex} transparent depthWrite={false} blending={THREE.AdditiveBlending} opacity={shadowA * 0.4} toneMapped={false} />
+        <meshBasicMaterial map={glowTex} transparent depthWrite={false} blending={THREE.AdditiveBlending} opacity={shadowA * 0.28} toneMapped={false} />
       </mesh>
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[main.cx + maxDim * 0.012, tileH + 0.004, -main.cy - maxDim * 0.02]} scale={[main.w * 1.1, main.h * 1.1, 1]} renderOrder={2}>
         <planeGeometry args={[1, 1]} />
