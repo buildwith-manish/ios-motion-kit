@@ -1,5 +1,5 @@
 import React, {createContext, useContext} from 'react';
-import type {GeoProjection} from 'd3-geo';
+import {geoIdentity, type GeoProjection} from 'd3-geo';
 import {useTheme} from '../tokens';
 import {mapStyle, mapStyleFromTheme} from './styles';
 import type {MapContextValue, MapStyle, MapStyleName, PlaneBox} from './types';
@@ -14,7 +14,8 @@ export const useMap = (): MapContextValue => {
 };
 
 export interface MapCanvasProps {
-  projection: GeoProjection;
+  /** Default: identity (plane units are used as is, e.g. a city's metre plane). */
+  projection?: GeoProjection;
   /** 'night' | 'light' | 'mono' (kit styles) or a ready MapStyle. Omit to follow the current theme. */
   style?: MapStyleName | MapStyle;
   /** Plane units shown. Default: the theme canvas (0,0,width,height). */
@@ -31,7 +32,7 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({projection, style, view, ba
   const v: PlaneBox = view ?? {x0: 0, y0: 0, x1: width, y1: height};
   const s = typeof style === 'string' ? mapStyle(style) : style ?? mapStyleFromTheme(theme);
   return (
-    <MapContext.Provider value={{projection, style: s, view: v}}>
+    <MapContext.Provider value={{projection: projection ?? (geoIdentity() as unknown as GeoProjection), style: s, view: v}}>
       <svg width={width} height={height} viewBox={`${v.x0} ${v.y0} ${v.x1 - v.x0} ${v.y1 - v.y0}`} style={{display: 'block'}}>
         {background ? <rect x={v.x0} y={v.y0} width={v.x1 - v.x0} height={v.y1 - v.y0} fill={s.water} /> : null}
         {children}

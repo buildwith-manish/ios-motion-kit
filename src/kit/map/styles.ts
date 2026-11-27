@@ -15,6 +15,10 @@ export const mapStyleFromTheme = (theme: Theme, name: MapStyleName = theme.name 
     strokeSoft: rgba(c.text.tertiary, lightTheme ? 0.35 : 0.28),
     highlight: c.accent,
     highlightFill: rgba(c.accent, lightTheme ? 0.22 : 0.28),
+    road: rgba(c.text.secondary, lightTheme ? 0.55 : 0.4),
+    roadMajor: rgba(c.text.primary, lightTheme ? 0.7 : 0.65),
+    waterFill: c.background.deep,
+    park: rgba(c.semantic.positive, lightTheme ? 0.22 : 0.16),
     hairline: 0.75,
   };
 };

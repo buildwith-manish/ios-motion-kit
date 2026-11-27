@@ -22,6 +22,26 @@ const loadTopo = (rel: string) => {
   return p;
 };
 
+/** Loads a baked region topology (delays the render until it is in). `rel` is relative to kit/map/regions/. */
+export const useBakedTopo = (rel: string): any | null => {
+  const [topo, setTopo] = useState<any>(null);
+  useEffect(() => {
+    const h = delayRender(`region ${rel}`);
+    let live = true;
+    loadTopo(rel).then((t) => { if (live) setTopo(t); continueRender(h); }, (e) => { console.error(e); continueRender(h); });
+    return () => { live = false; };
+  }, [rel]);
+  return topo;
+};
+
+/** One feature (GeoJSON) of a baked topology by id, e.g. featureById(statesTopo, '08'). */
+export const featureById = (topo: any, id: string): any => {
+  const fc = feature(topo, topo.objects[Object.keys(topo.objects)[0]]) as any;
+  return fc.features.find((f: any) => String(f.id) === id);
+};
+/** All features of a baked topology as a FeatureCollection (for fitExtent). */
+export const allFeatures = (topo: any): any => feature(topo, topo.objects[Object.keys(topo.objects)[0]]);
+
 export interface RegionLayerProps {
   kind: RegionKind;
   /** Tracts only: two-digit state FIPS of the baked tracts/<FIPS>.json. */
@@ -41,15 +61,9 @@ const countPoints = (d: string) => (d.match(/[ML]/g)?.length ?? 0);
 /** Loads a baked layer and renders only the regions that intersect the view. Pure function of its props. */
 export const RegionLayer: React.FC<RegionLayerProps> = ({kind, state, idPrefix, highlight, maxPoints = 15000, fill = 'land', weight = 1}) => {
   const {projection, style, view} = useMap();
-  const [topo, setTopo] = useState<any>(null);
+  if (kind === 'tract' && !state) throw new Error('RegionLayer kind="tract" needs state (FIPS)');
   const rel = kind === 'tract' ? `tracts/${state}.json` : `${FILE[kind]}.json`;
-  useEffect(() => {
-    if (kind === 'tract' && !state) throw new Error('RegionLayer kind="tract" needs state (FIPS)');
-    const h = delayRender(`region ${rel}`);
-    let live = true;
-    loadTopo(rel).then((t) => { if (live) setTopo(t); continueRender(h); }, (e) => { console.error(e); continueRender(h); });
-    return () => { live = false; };
-  }, [rel, kind, state]);
+  const topo = useBakedTopo(rel);
 
   const {normal, hi, points} = useMemo(() => {
     if (!topo) return {normal: [] as string[], hi: [] as string[], points: 0};

@@ -14,6 +14,11 @@ export interface MapStyle {
   strokeSoft: string;
   highlight: string;
   highlightFill: string;
+  /** City detail: road tiers, water fill, park fill. */
+  road: string;
+  roadMajor: string;
+  waterFill: string;
+  park: string;
   /** Hairline stroke width in CSS px (non-scaling, so 4K via --scale=2 keeps it crisp). */
   hairline: number;
 }
