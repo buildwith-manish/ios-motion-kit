@@ -43,3 +43,6 @@ export interface MapContextValue {
   /** viewBox of the SVG in plane units. */
   view: PlaneBox;
 }
+
+/** A place by latitude and longitude (degrees). */
+export interface LatLng {lat: number; lng: number}

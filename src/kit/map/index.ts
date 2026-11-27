@@ -24,3 +24,8 @@ export {useCityAlignment} from './metroData';
 export * from './mapCamera';
 export * from './mapView';
 export {FlyMap, type FlyMapProps} from './FlyMap';
+export * from './overlayGeometry';
+export {MapPin, pinHeadLift, PIN, type MapPinProps} from './MapPin';
+export {MapCallout, MapCallouts, calloutSize, type MapCalloutProps, type MapCalloutsProps, type CalloutSpec} from './MapCallout';
+export {Arc, type ArcProps} from './Arc';
+export {RouteDraw, type RouteDrawProps} from './RouteDraw';
