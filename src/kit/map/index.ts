@@ -22,3 +22,5 @@ export * from './metroLod';
 export {metroGeometry, metroView, metroIndex, visibleChunks, boundaryPath, lonLatToCity, simplifyMetres, CHUNK_POINTS, type MetroBudget, type MetroGeometry, type MetroView, type MetroViewInput, type Chunk} from './metroIndex';
 export {useCityAlignment} from './metroData';
 export * from './mapCamera';
+export * from './mapView';
+export {FlyMap, type FlyMapProps} from './FlyMap';
