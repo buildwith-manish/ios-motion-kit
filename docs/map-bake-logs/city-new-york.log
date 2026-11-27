@@ -6,15 +6,31 @@ new-york: box 14 km at 40.7128,-74.006; counties 34003, 34017, 36047, 36061, 360
   areawater: 5 features in box (TIGER2025)
 [o] Wrote /home/runner/work/ios-motion-kit/ios-motion-kit/.cache/city-tmp/new-york/linearwater.json
   linearwater: 29 features in box (TIGER2025)
-  arealm 34003: not published, skipped
-  arealm 34017: not published, skipped
-  arealm 36047: not published, skipped
-  arealm 36061: not published, skipped
-  arealm 36081: not published, skipped
-  arealm: 0 features in box (TIGER-)
-┌─────────┬────────────┬─────────┬───────┬───────────────────────────┬─────────┬───────────┬───────┬────────────┬───────┬───────┬──────┬─────────┬───────┐
-│ (index) │ city       │ detail  │ kb    │ budget                    │ primary │ secondary │ water │ waterPolys │ parks │ local │ ramp │ service │ other │
-├─────────┼────────────┼─────────┼───────┼───────────────────────────┼─────────┼───────────┼───────┼────────────┼───────┼───────┼──────┼─────────┼───────┤
-│ 0       │ 'new-york' │ 'light' │ 70.7  │ { scale: 1, dropped: [] } │ 154     │ 84        │ 76    │ 0          │ 0     │       │      │         │       │
-│ 1       │ 'new-york' │ 'rich'  │ 323.1 │ { scale: 1, dropped: [] } │ 157     │ 85        │ 90    │ 44         │ 0     │ 3403  │ 430  │ 19      │ 64    │
-└─────────┴────────────┴─────────┴───────┴───────────────────────────┴─────────┴───────────┴───────┴────────────┴───────┴───────┴──────┴─────────┴───────┘
+[dissolve2] Dissolved 6,356 features into 43 features
+[o] Wrote /home/runner/work/ios-motion-kit/ios-motion-kit/.cache/city-tmp/new-york/arealm.json
+  arealm: 23 features in box (TIGER2025)
+┌─────────┬────────────┬─────────┬──────┬───────────────────────────┬─────────┬───────────┬───────┬────────────┬───────┬───────┬──────┬─────────┬───────┐
+│ (index) │ city       │ detail  │ kb   │ budget                    │ primary │ secondary │ water │ waterPolys │ parks │ local │ ramp │ service │ other │
+├─────────┼────────────┼─────────┼──────┼───────────────────────────┼─────────┼───────────┼───────┼────────────┼───────┼───────┼──────┼─────────┼───────┤
+│ 0       │ 'new-york' │ 'light' │ 70.7 │ { scale: 1, dropped: [] } │ 154     │ 84        │ 76    │ 0          │ 0     │       │      │         │       │
+│ 1       │ 'new-york' │ 'rich'  │ 332  │ { scale: 1, dropped: [] } │ 157     │ 85        │ 90    │ 44         │ 49    │ 3403  │ 430  │ 19      │ 64    │
+└─────────┴────────────┴─────────┴──────┴───────────────────────────┴─────────┴───────────┴───────┴────────────┴───────┴───────┴──────┴─────────┴───────┘
+MTFCC codes in the data but not in the table (audit against the official list): {
+  K2540: 1,
+  K2582: 1,
+  K1236: 1,
+  K2543: 1,
+  K1227: 1,
+  K1231: 1,
+  K2361: 1,
+  K2165: 1,
+  K2561: 1,
+  K1237: 1,
+  K2564: 1,
+  K1121: 1,
+  K2452: 1,
+  K2545: 1,
+  K2366: 1,
+  K2453: 1,
+  K2362: 1
+}
