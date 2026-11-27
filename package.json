@@ -10,18 +10,22 @@
     "lint": "tsc --noEmit"
   },
   "dependencies": {
+    "@react-three/fiber": "8.17.10",
     "@remotion/bundler": "4.0.250",
     "@remotion/cli": "4.0.250",
     "@remotion/renderer": "4.0.250",
+    "@remotion/three": "4.0.250",
     "d3-geo": "3.1.1",
     "react": "18.3.1",
     "react-dom": "18.3.1",
     "remotion": "4.0.250",
+    "three": "0.169.0",
     "topojson-client": "3.1.0"
   },
   "devDependencies": {
     "@types/d3-geo": "^3.1.0",
     "@types/react": "^18.3.3",
+    "@types/three": "0.169.0",
     "@types/topojson-client": "^3.1.5",
     "esbuild": "0.24.0",
     "mapshaper": "^0.6.117",
