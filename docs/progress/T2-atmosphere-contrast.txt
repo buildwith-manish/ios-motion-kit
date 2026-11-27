@@ -1,0 +1,15 @@
+bundling src/kit/demo/entry.tsx ...
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: ENOENT: no such file or directory, rename '/workspaces/ios-motion-kit/buildwith-manish/ios-motion-kit/node_modules/.cache/webpack/remotion-production-4.0.250/4e673e1242467a9e7b41dd5daf6bf25e/1.pack_' -> '/workspaces/ios-motion-kit/buildwith-manish/ios-motion-kit/node_modules/.cache/webpack/remotion-production-4.0.250/4e673e1242467a9e7b41dd5daf6bf25e/1.pack'
+browser: KIT_CHROME
+Kit-Atmosphere-Demo: 12 frames, 0 finding(s)
+Kit-Atmosphere-Demo-Vertical: 12 frames, 0 finding(s)
+Kit-Atmosphere-Demo-30fps: 12 frames, 0 finding(s)
+
+Text below 4.5:1 (10th-percentile pixel)
+composition                   status  text                    ratio  text on background  size  seen  samples
+----------------------------  ------  ----------------------  -----  ------------------  ----  ----  -------
+Kit-Atmosphere-Demo           pass    10 text run(s) checked  -      -                   -     -     -
+Kit-Atmosphere-Demo-Vertical  pass    10 text run(s) checked  -      -                   -     -     -
+Kit-Atmosphere-Demo-30fps     pass    10 text run(s) checked  -      -                   -     -     -
+
+JSON: ../../../../tmp/t2-atmosphere-final/contrast.json

@@ -12,6 +12,7 @@ import {KitCameraCompositions} from './CameraDemo';
 import {KitTextCompositions} from './TextDemo';
 import {KitQaCompositions} from './QaDemo';
 import {KitDatavizCompositions} from './DatavizDemo';
+import {KitAtmosphereCompositions} from './AtmosphereDemo';
 
 registerRoot(() => (
   <>
@@ -21,7 +22,7 @@ registerRoot(() => (
     <KitCameraCompositions />
     <KitTextCompositions />
     <KitQaCompositions />
-    <KitDatavizCompositions />
+    <><KitDatavizCompositions /><KitAtmosphereCompositions /></>
   </>
 ));
 export {KitNumberRollCompositions} from './NumberRollDemo';
