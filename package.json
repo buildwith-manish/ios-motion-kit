@@ -1,0 +1,26 @@
+{
+  "name": "ios-motion-kit",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Reusable iOS-style motion kit for Remotion: tokens, glass, text, dataviz, transitions, camera, audio, qa.",
+  "scripts": {
+    "dev": "remotion studio src/index.ts --port=3000 --ipv4 --no-open",
+    "typecheck": "tsc --noEmit",
+    "build": "tsc --noEmit",
+    "lint": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@remotion/bundler": "4.0.250",
+    "@remotion/cli": "4.0.250",
+    "@remotion/renderer": "4.0.250",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "remotion": "4.0.250"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.3",
+    "esbuild": "0.24.0",
+    "playwright-core": "1.63.0",
+    "typescript": "^5.5.4"
+  }
+}

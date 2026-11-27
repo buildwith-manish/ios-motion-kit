@@ -1,0 +1,595 @@
+{
+  "version": 1,
+  "sampleRate": 48000,
+  "bitDepth": 24,
+  "peakDbTarget": -3.0,
+  "lufsNote": "K-weighted ungated mean-square over the whole (sub-400ms) file; relative estimate, not BS.1770 integrated.",
+  "panNote": "@L/@R files are stereo, equal-power pan at -/+0.75.",
+  "sounds": [
+    {
+      "name": "tap-1",
+      "family": "tap",
+      "variant": 1,
+      "file": "kit/sfx/tap-1.wav",
+      "pan": [
+        "L",
+        "R"
+      ],
+      "duration": 0.055,
+      "peakDb": -3.0,
+      "peakTime": 0.0043,
+      "rmsDb": -15.5,
+      "lufs": -14.58
+    },
+    {
+      "name": "tap-2",
+      "family": "tap",
+      "variant": 2,
+      "file": "kit/sfx/tap-2.wav",
+      "pan": [
+        "L",
+        "R"
+      ],
+      "duration": 0.055,
+      "peakDb": -3.0,
+      "peakTime": 0.0049,
+      "rmsDb": -15.61,
+      "lufs": -14.44
+    },
+    {
+      "name": "tap-3",
+      "family": "tap",
+      "variant": 3,
+      "file": "kit/sfx/tap-3.wav",
+      "pan": [
+        "L",
+        "R"
+      ],
+      "duration": 0.055,
+      "peakDb": -3.0,
+      "peakTime": 0.0049,
+      "rmsDb": -15.8,
+      "lufs": -15.24
+    },
+    {
+      "name": "tick-1",
+      "family": "tick",
+      "variant": 1,
+      "file": "kit/sfx/tick-1.wav",
+      "pan": [
+        "L",
+        "R"
+      ],
+      "duration": 0.028,
+      "peakDb": -3.0,
+      "peakTime": 0.0042,
+      "rmsDb": -13.53,
+      "lufs": -11.66
+    },
+    {
+      "name": "tick-2",
+      "family": "tick",
+      "variant": 2,
+      "file": "kit/sfx/tick-2.wav",
+      "pan": [
+        "L",
+        "R"
+      ],
+      "duration": 0.028,
+      "peakDb": -3.0,
+      "peakTime": 0.0044,
+      "rmsDb": -13.67,
+      "lufs": -11.87
+    },
+    {
+      "name": "tick-3",
+      "family": "tick",
+      "variant": 3,
+      "file": "kit/sfx/tick-3.wav",
+      "pan": [
+        "L",
+        "R"
+      ],
+      "duration": 0.028,
+      "peakDb": -3.0,
+      "peakTime": 0.0045,
+      "rmsDb": -13.16,
+      "lufs": -11.45
+    },
+    {
+      "name": "pop-1",
+      "family": "pop",
+      "variant": 1,
+      "file": "kit/sfx/pop-1.wav",
+      "pan": [
+        "L",
+        "R"
+      ],
+      "duration": 0.14,
+      "peakDb": -3.0,
+      "peakTime": 0.0053,
+      "rmsDb": -13.8,
+      "lufs": -14.73
+    },
+    {
+      "name": "pop-2",
+      "family": "pop",
+      "variant": 2,
+      "file": "kit/sfx/pop-2.wav",
+      "pan": [
+        "L",
+        "R"
+      ],
+      "duration": 0.14,
+      "peakDb": -3.0,
+      "peakTime": 0.0065,
+      "rmsDb": -13.81,
+      "lufs": -14.62
+    },
+    {
+      "name": "pop-3",
+      "family": "pop",
+      "variant": 3,
+      "file": "kit/sfx/pop-3.wav",
+      "pan": [
+        "L",
+        "R"
+      ],
+      "duration": 0.14,
+      "peakDb": -3.0,
+      "peakTime": 0.006,
+      "rmsDb": -13.93,
+      "lufs": -14.94
+    },
+    {
+      "name": "whoosh-soft-1",
+      "family": "whoosh-soft",
+      "variant": 1,
+      "file": "kit/sfx/whoosh-soft-1.wav",
+      "pan": [
+        "L",
+        "R"
+      ],
+      "duration": 0.48,
+      "peakDb": -3.0,
+      "peakTime": 0.2697,
+      "rmsDb": -16.32,
+      "lufs": -16.3
+    },
+    {
+      "name": "whoosh-soft-2",
+      "family": "whoosh-soft",
+      "variant": 2,
+      "file": "kit/sfx/whoosh-soft-2.wav",
+      "pan": [
+        "L",
+        "R"
+      ],
+      "duration": 0.52,
+      "peakDb": -3.0,
+      "peakTime": 0.2705,
+      "rmsDb": -17.52,
+      "lufs": -17.86
+    },
+    {
+      "name": "whoosh-soft-3",
+      "family": "whoosh-soft",
+      "variant": 3,
+      "file": "kit/sfx/whoosh-soft-3.wav",
+      "pan": [
+        "L",
+        "R"
+      ],
+      "duration": 0.44,
+      "peakDb": -3.0,
+      "peakTime": 0.2469,
+      "rmsDb": -17.03,
+      "lufs": -16.93
+    },
+    {
+      "name": "whoosh-fast-1",
+      "family": "whoosh-fast",
+      "variant": 1,
+      "file": "kit/sfx/whoosh-fast-1.wav",
+      "pan": [
+        "L",
+        "R"
+      ],
+      "duration": 0.23,
+      "peakDb": -3.0,
+      "peakTime": 0.0704,
+      "rmsDb": -15.97,
+      "lufs": -14.79
+    },
+    {
+      "name": "whoosh-fast-2",
+      "family": "whoosh-fast",
+      "variant": 2,
+      "file": "kit/sfx/whoosh-fast-2.wav",
+      "pan": [
+        "L",
+        "R"
+      ],
+      "duration": 0.26,
+      "peakDb": -3.0,
+      "peakTime": 0.0741,
+      "rmsDb": -16.13,
+      "lufs": -15.47
+    },
+    {
+      "name": "whoosh-fast-3",
+      "family": "whoosh-fast",
+      "variant": 3,
+      "file": "kit/sfx/whoosh-fast-3.wav",
+      "pan": [
+        "L",
+        "R"
+      ],
+      "duration": 0.21,
+      "peakDb": -3.0,
+      "peakTime": 0.0976,
+      "rmsDb": -15.29,
+      "lufs": -13.79
+    },
+    {
+      "name": "swipe-1",
+      "family": "swipe",
+      "variant": 1,
+      "file": "kit/sfx/swipe-1.wav",
+      "pan": [
+        "L",
+        "R"
+      ],
+      "duration": 0.19,
+      "peakDb": -3.0,
+      "peakTime": 0.0161,
+      "rmsDb": -17.69,
+      "lufs": -16.94
+    },
+    {
+      "name": "swipe-2",
+      "family": "swipe",
+      "variant": 2,
+      "file": "kit/sfx/swipe-2.wav",
+      "pan": [
+        "L",
+        "R"
+      ],
+      "duration": 0.19,
+      "peakDb": -3.0,
+      "peakTime": 0.0114,
+      "rmsDb": -18.75,
+      "lufs": -18.36
+    },
+    {
+      "name": "swipe-3",
+      "family": "swipe",
+      "variant": 3,
+      "file": "kit/sfx/swipe-3.wav",
+      "pan": [
+        "L",
+        "R"
+      ],
+      "duration": 0.19,
+      "peakDb": -3.0,
+      "peakTime": 0.0208,
+      "rmsDb": -17.45,
+      "lufs": -16.33
+    },
+    {
+      "name": "slide-1",
+      "family": "slide",
+      "variant": 1,
+      "file": "kit/sfx/slide-1.wav",
+      "pan": [
+        "L",
+        "R"
+      ],
+      "duration": 0.38,
+      "peakDb": -3.0,
+      "peakTime": 0.2208,
+      "rmsDb": -15.16,
+      "lufs": -15.75
+    },
+    {
+      "name": "slide-2",
+      "family": "slide",
+      "variant": 2,
+      "file": "kit/sfx/slide-2.wav",
+      "pan": [
+        "L",
+        "R"
+      ],
+      "duration": 0.42,
+      "peakDb": -3.0,
+      "peakTime": 0.2646,
+      "rmsDb": -16.43,
+      "lufs": -17.31
+    },
+    {
+      "name": "slide-3",
+      "family": "slide",
+      "variant": 3,
+      "file": "kit/sfx/slide-3.wav",
+      "pan": [
+        "L",
+        "R"
+      ],
+      "duration": 0.34,
+      "peakDb": -3.0,
+      "peakTime": 0.2136,
+      "rmsDb": -15.98,
+      "lufs": -16.53
+    },
+    {
+      "name": "rise-1",
+      "family": "rise",
+      "variant": 1,
+      "file": "kit/sfx/rise-1.wav",
+      "pan": [
+        "L",
+        "R"
+      ],
+      "duration": 0.32,
+      "peakDb": -3.0,
+      "peakTime": 0.0268,
+      "rmsDb": -9.32,
+      "lufs": -10.0
+    },
+    {
+      "name": "rise-2",
+      "family": "rise",
+      "variant": 2,
+      "file": "kit/sfx/rise-2.wav",
+      "pan": [
+        "L",
+        "R"
+      ],
+      "duration": 0.32,
+      "peakDb": -3.0,
+      "peakTime": 0.021,
+      "rmsDb": -9.31,
+      "lufs": -9.86
+    },
+    {
+      "name": "rise-3",
+      "family": "rise",
+      "variant": 3,
+      "file": "kit/sfx/rise-3.wav",
+      "pan": [
+        "L",
+        "R"
+      ],
+      "duration": 0.32,
+      "peakDb": -3.0,
+      "peakTime": 0.0206,
+      "rmsDb": -9.33,
+      "lufs": -10.1
+    },
+    {
+      "name": "fall-1",
+      "family": "fall",
+      "variant": 1,
+      "file": "kit/sfx/fall-1.wav",
+      "pan": [
+        "L",
+        "R"
+      ],
+      "duration": 0.34,
+      "peakDb": -3.0,
+      "peakTime": 0.0949,
+      "rmsDb": -9.69,
+      "lufs": -10.31
+    },
+    {
+      "name": "fall-2",
+      "family": "fall",
+      "variant": 2,
+      "file": "kit/sfx/fall-2.wav",
+      "pan": [
+        "L",
+        "R"
+      ],
+      "duration": 0.34,
+      "peakDb": -3.0,
+      "peakTime": 0.0838,
+      "rmsDb": -9.69,
+      "lufs": -10.16
+    },
+    {
+      "name": "fall-3",
+      "family": "fall",
+      "variant": 3,
+      "file": "kit/sfx/fall-3.wav",
+      "pan": [
+        "L",
+        "R"
+      ],
+      "duration": 0.34,
+      "peakDb": -3.0,
+      "peakTime": 0.1,
+      "rmsDb": -9.7,
+      "lufs": -10.41
+    },
+    {
+      "name": "chime-success-1",
+      "family": "chime-success",
+      "variant": 1,
+      "file": "kit/sfx/chime-success-1.wav",
+      "pan": [
+        "L",
+        "R"
+      ],
+      "duration": 1.05,
+      "peakDb": -3.0,
+      "peakTime": 0.1802,
+      "rmsDb": -17.17,
+      "lufs": -15.87
+    },
+    {
+      "name": "chime-success-2",
+      "family": "chime-success",
+      "variant": 2,
+      "file": "kit/sfx/chime-success-2.wav",
+      "pan": [
+        "L",
+        "R"
+      ],
+      "duration": 1.05,
+      "peakDb": -3.0,
+      "peakTime": 0.1756,
+      "rmsDb": -16.93,
+      "lufs": -15.79
+    },
+    {
+      "name": "chime-success-3",
+      "family": "chime-success",
+      "variant": 3,
+      "file": "kit/sfx/chime-success-3.wav",
+      "pan": [
+        "L",
+        "R"
+      ],
+      "duration": 1.05,
+      "peakDb": -3.0,
+      "peakTime": 0.1805,
+      "rmsDb": -17.21,
+      "lufs": -15.73
+    },
+    {
+      "name": "soft-warn-1",
+      "family": "soft-warn",
+      "variant": 1,
+      "file": "kit/sfx/soft-warn-1.wav",
+      "pan": [
+        "L",
+        "R"
+      ],
+      "duration": 0.55,
+      "peakDb": -3.0,
+      "peakTime": 0.1383,
+      "rmsDb": -13.84,
+      "lufs": -14.66
+    },
+    {
+      "name": "soft-warn-2",
+      "family": "soft-warn",
+      "variant": 2,
+      "file": "kit/sfx/soft-warn-2.wav",
+      "pan": [
+        "L",
+        "R"
+      ],
+      "duration": 0.55,
+      "peakDb": -3.0,
+      "peakTime": 0.1416,
+      "rmsDb": -13.58,
+      "lufs": -14.46
+    },
+    {
+      "name": "soft-warn-3",
+      "family": "soft-warn",
+      "variant": 3,
+      "file": "kit/sfx/soft-warn-3.wav",
+      "pan": [
+        "L",
+        "R"
+      ],
+      "duration": 0.55,
+      "peakDb": -3.0,
+      "peakTime": 0.1379,
+      "rmsDb": -13.79,
+      "lufs": -14.58
+    },
+    {
+      "name": "number-tick-1",
+      "family": "number-tick",
+      "variant": 1,
+      "file": "kit/sfx/number-tick-1.wav",
+      "pan": [
+        "L",
+        "R"
+      ],
+      "duration": 0.03,
+      "peakDb": -3.0,
+      "peakTime": 0.0049,
+      "rmsDb": -11.96,
+      "lufs": -10.22
+    },
+    {
+      "name": "number-tick-2",
+      "family": "number-tick",
+      "variant": 2,
+      "file": "kit/sfx/number-tick-2.wav",
+      "pan": [
+        "L",
+        "R"
+      ],
+      "duration": 0.03,
+      "peakDb": -3.0,
+      "peakTime": 0.0046,
+      "rmsDb": -12.22,
+      "lufs": -10.02
+    },
+    {
+      "name": "number-tick-3",
+      "family": "number-tick",
+      "variant": 3,
+      "file": "kit/sfx/number-tick-3.wav",
+      "pan": [
+        "L",
+        "R"
+      ],
+      "duration": 0.03,
+      "peakDb": -3.0,
+      "peakTime": 0.0045,
+      "rmsDb": -12.26,
+      "lufs": -10.26
+    },
+    {
+      "name": "impact-soft-1",
+      "family": "impact-soft",
+      "variant": 1,
+      "file": "kit/sfx/impact-soft-1.wav",
+      "pan": [
+        "L",
+        "R"
+      ],
+      "duration": 0.48,
+      "peakDb": -3.0,
+      "peakTime": 0.0141,
+      "rmsDb": -14.98,
+      "lufs": -19.12
+    },
+    {
+      "name": "impact-soft-2",
+      "family": "impact-soft",
+      "variant": 2,
+      "file": "kit/sfx/impact-soft-2.wav",
+      "pan": [
+        "L",
+        "R"
+      ],
+      "duration": 0.48,
+      "peakDb": -3.0,
+      "peakTime": 0.0125,
+      "rmsDb": -15.11,
+      "lufs": -18.74
+    },
+    {
+      "name": "impact-soft-3",
+      "family": "impact-soft",
+      "variant": 3,
+      "file": "kit/sfx/impact-soft-3.wav",
+      "pan": [
+        "L",
+        "R"
+      ],
+      "duration": 0.48,
+      "peakDb": -3.0,
+      "peakTime": 0.0165,
+      "rmsDb": -14.73,
+      "lufs": -19.49
+    }
+  ]
+}
