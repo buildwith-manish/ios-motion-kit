@@ -155,7 +155,7 @@ roll), 13 stills in `docs/previews/kit/camera-*.jpg`, `scripts/kit-camera-stills
 
 ## Left to do
 
-- Kits not started: ambient background, morph pill, icon set (number roll now exists as `kit/text` NumberText, not yet adopted by video4); these still live in `src/video4/components` and `src/components`.
+- Kits not started: morph pill and icon set (number roll now exists as `kit/text` NumberText, not yet adopted by video4); these still live in `src/video4/components` and `src/components`.
 - Migrate video4 (`GlassCard`, `MorphPill`, `tokens4`) onto `<Glass>` + a `video4` theme, and confirm pixel parity.
 - Unit tests for the pure functions (`createTheme`, `safeRect`, `shimmerState`, motion).
 - A top-level `src/kit/README.md` index.
@@ -297,3 +297,28 @@ The GitHub token was used for clone and push only (the camera session cloned wit
 ### NOT verified
 
 - This records the completed T1a/T1b task work; see the linked task reports for their scope and visual-review notes.
+
+## T2 — Background kit
+
+### Built
+
+- `src/kit/background/`: `<Atmosphere>` presets (`midnight-aurora`, `graphite`, `soft-light`, `deep-ocean`), `focusPoints`, and spring-sampled `lightAt`.
+- Token-derived gradients and tints; 2–3 radial-gradient orbs per preset, each capped at `theme.colors.orbMaxAlpha`; distinct 10–14% horizontal drift amplitudes on 14–20 second periods; quiet and reduced-motion modes; vignette and seeded grain tile scaled with `unit(theme)`.
+- Landscape, vertical and 30 fps demo compositions; README/API; 1080p still and viewed 4K detail crop in `docs/previews/kit/`.
+
+### Deviations
+
+- Recreated the useful ambient-background design ideas (radial-falloff orbs, staggered drift, key light, vignette and grain) with theme tokens; no parent-repository code was imported.
+- Grain is a static seeded tile, not time-animated, to keep identical-frame output deterministic.
+- The demo number is held at its final value so QA measures readable text over the brightest preset/theme backdrops rather than transient rolling digits.
+
+### Verified
+
+- Contrast and title-safe checks pass on all 3 compositions at 12 sampled preset/theme states each; logs: `docs/progress/T2-atmosphere-contrast.txt` and `T2-atmosphere-safe-area.txt`. The first contrast run caught a transient digit during the demo roll; the static demo value removed that finding (`T2-atmosphere-contrast-before.txt` records it).
+- `focusPoints` / `lightAt` targeted assertions pass.
+- 30 rendered 1920x1080 frames measured **0.596 seconds/frame** on this runner (includes the Remotion render-frame pipeline; Chrome with `swangle`).
+- 1080p still and 4K crop were rendered and visually inspected. `npx tsc --noEmit` passes.
+
+### NOT verified
+
+- GitHub Actions run `46059189770` completed successfully for contrast, safe-area, and motion checks on all 3 Atmosphere compositions. Contrast and safe-area reported 0 findings each. Motion audit reported static stretches longer than 1 second in all 3 compositions (6 landscape, 10 vertical, 6 30 fps); the workflow uses `--no-fail`, so these findings remain unverified rather than passing motion QA.
