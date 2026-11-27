@@ -1,0 +1,11 @@
+{
+  "file": "kit/music/pad-loop.wav",
+  "sampleRate": 48000,
+  "bitDepth": 16,
+  "channels": 2,
+  "loopSeconds": 64.0,
+  "lufs": -28.0,
+  "peakDb": -17.91,
+  "seamStep": 0.0004434470583989268,
+  "maxSampleStep": 0.003863212167043776
+}
