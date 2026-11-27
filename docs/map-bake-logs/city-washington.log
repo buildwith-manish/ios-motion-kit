@@ -6,16 +6,32 @@ washington: box 14 km at 38.9072,-77.0369; counties 11001, 24031, 24033, 51013, 
   areawater: 4 features in box (TIGER2025)
 [o] Wrote /home/runner/work/ios-motion-kit/ios-motion-kit/.cache/city-tmp/washington/linearwater.json
   linearwater: 120 features in box (TIGER2025)
-  arealm 11001: not published, skipped
-  arealm 24031: not published, skipped
-  arealm 24033: not published, skipped
-  arealm 51013: not published, skipped
-  arealm 51059: not published, skipped
-  arealm 51510: not published, skipped
-  arealm: 0 features in box (TIGER-)
+[dissolve2] Dissolved 3,620 features into 37 features
+[o] Wrote /home/runner/work/ios-motion-kit/ios-motion-kit/.cache/city-tmp/washington/arealm.json
+  arealm: 24 features in box (TIGER2025)
 ┌─────────┬──────────────┬─────────┬───────┬───────────────────────────┬─────────┬───────────┬───────┬────────────┬───────┬───────┬──────┬─────────┬───────┐
 │ (index) │ city         │ detail  │ kb    │ budget                    │ primary │ secondary │ water │ waterPolys │ parks │ local │ ramp │ service │ other │
 ├─────────┼──────────────┼─────────┼───────┼───────────────────────────┼─────────┼───────────┼───────┼────────────┼───────┼───────┼──────┼─────────┼───────┤
 │ 0       │ 'washington' │ 'light' │ 90.2  │ { scale: 1, dropped: [] } │ 90      │ 271       │ 111   │ 0          │ 0     │       │      │         │       │
-│ 1       │ 'washington' │ 'rich'  │ 372.9 │ { scale: 2, dropped: [] } │ 87      │ 269       │ 99    │ 25         │ 0     │ 4345  │ 593  │ 156     │ 64    │
+│ 1       │ 'washington' │ 'rich'  │ 384.7 │ { scale: 2, dropped: [] } │ 87      │ 269       │ 99    │ 25         │ 34    │ 4345  │ 593  │ 156     │ 64    │
 └─────────┴──────────────┴─────────┴───────┴───────────────────────────┴─────────┴───────────┴───────┴────────────┴───────┴───────┴──────┴─────────┴───────┘
+MTFCC codes in the data but not in the table (audit against the official list): {
+  K2543: 1,
+  K2540: 1,
+  K2432: 1,
+  K1235: 1,
+  K1229: 1,
+  K2582: 1,
+  K1231: 1,
+  K2452: 1,
+  K2424: 1,
+  K1226: 1,
+  K2564: 1,
+  K1233: 1,
+  K1236: 1,
+  K1238: 1,
+  K2561: 1,
+  K2457: 1,
+  K2165: 1,
+  K1121: 1
+}
