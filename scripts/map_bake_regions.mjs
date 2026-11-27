@@ -69,6 +69,7 @@ async function download(url, cachePath, {retries = 4, baseDelayMs = 1000} = {}) 
     try {
       console.log(`downloading ${url} (attempt ${attempt + 1}/${retries + 1})`);
       const res = await fetch(url);
+      if (res.status === 404) { const e = new Error('HTTP 404'); e.notFound = true; throw e; }
       if (!res.ok) throw new Error(`HTTP ${res.status} ${res.statusText}`);
       const buf = Buffer.from(await res.arrayBuffer());
       if (buf.length < 100) throw new Error(`suspiciously small response (${buf.length} bytes)`);
@@ -77,10 +78,11 @@ async function download(url, cachePath, {retries = 4, baseDelayMs = 1000} = {}) 
     } catch (err) {
       lastErr = err;
       console.warn(`  failed: ${err.message}`);
+      if (err.notFound) break; // a missing file will not appear on retry
       if (attempt < retries) await sleep(baseDelayMs * 2 ** attempt);
     }
   }
-  throw new Error(`giving up on ${url}: ${lastErr?.message}`);
+  throw Object.assign(new Error(`giving up on ${url}: ${lastErr?.message}`), {notFound: lastErr?.notFound});
 }
 
 /** Runs the mapshaper CLI (via its local bin) with an argv array — never a shell string, so no quoting issues. */
@@ -89,7 +91,17 @@ function mapshaper(argv) {
   execFileSync(bin, argv, {stdio: 'inherit'});
 }
 
-const censusUrl = (path) => `https://www2.census.gov/geo/tiger/GENZ${VINTAGE}/shp/${path}`;
+const censusUrl = (path, y = VINTAGE) => `https://www2.census.gov/geo/tiger/GENZ${y}/shp/${path}`;
+const YEAR_LIST = ['2026', '2025', '2024', '2023', '2022'].filter((y) => y <= VINTAGE);
+/** Downloads a cartographic file for the newest vintage that publishes it (<= the picked vintage; e.g. ZCTAs lag one year). */
+async function getZip(fileFor) {
+  for (const y of YEAR_LIST) {
+    const file = fileFor(y);
+    try { const zipPath = await download(censusUrl(file, y), join(CACHE_DIR, y, file)); return {zipPath, year: y, url: censusUrl(file, y)}; }
+    catch (e) { if (!e.notFound) throw e; console.log(`  ${file}: not published for ${y}, trying older`); }
+  }
+  throw new Error(`no vintage <= ${VINTAGE} publishes ${fileFor(VINTAGE)}`);
+}
 
 // ---- layer definitions --------------------------------------------------------------------------------------
 // Census state FIPS to exclude from the contiguous-US outline: AK, HI, territories (AS, GU, MP, PR, VI).
@@ -97,21 +109,21 @@ const NON_CONTIGUOUS = ['02', '15', '60', '66', '69', '72', '78'];
 
 const LAYERS = {
   states: {
-    file: `cb_${VINTAGE}_us_state_500k.zip`,
+    file: (y) => `cb_${y}_us_state_500k.zip`,
     fields: 'STATEFP,NAME,STUSPS',
     idField: 'STATEFP',
     simplifyPct: '10%',
     quantization: 1e5,
   },
   counties: {
-    file: `cb_${VINTAGE}_us_county_500k.zip`,
+    file: (y) => `cb_${y}_us_county_500k.zip`,
     fields: 'STATEFP,COUNTYFP,GEOID,NAME',
     idField: 'GEOID',
     simplifyPct: '6%',
     quantization: 1e5,
   },
   cbsa: {
-    file: `cb_${VINTAGE}_us_cbsa_500k.zip`,
+    file: (y) => `cb_${y}_us_cbsa_500k.zip`,
     fields: 'CBSAFP,GEOID,NAME,LSAD',
     idField: 'CBSAFP',
     simplifyPct: '8%',
@@ -119,7 +131,7 @@ const LAYERS = {
   },
   zcta: {
     // National ZCTA file is large even generalised; simplified harder and documented as an approximation (see README).
-    file: `cb_${VINTAGE}_us_zcta520_500k.zip`,
+    file: (y) => `cb_${y}_us_zcta520_500k.zip`,
     fields: 'ZCTA5CE20,GEOID20',
     idField: 'GEOID20',
     simplifyPct: '4%',
@@ -138,8 +150,7 @@ function statsFor(outFile) {
 async function bakeNamedLayer(name) {
   const def = LAYERS[name];
   if (!def) throw new Error(`unknown layer: ${name}`);
-  const zipPath = join(CACHE_DIR, VINTAGE, def.file);
-  await download(censusUrl(def.file), zipPath);
+  const {zipPath, year, url} = await getZip(def.file);
   const outFile = join(OUT_DIR, `${name}.json`);
   mkdirSync(OUT_DIR, {recursive: true});
   mapshaper([
@@ -153,15 +164,14 @@ async function bakeNamedLayer(name) {
   ]);
   const stats = statsFor(outFile);
   console.log(`baked ${name}: ${(stats.bytes / 1024).toFixed(1)} KB, ${stats.features} features`);
-  return {name, file: `${name}.json`, vintage: VINTAGE, simplifyPct: def.simplifyPct, quantization: def.quantization, ...stats, source: censusUrl(def.file)};
+  return {name, file: `${name}.json`, vintage: year, simplifyPct: def.simplifyPct, quantization: def.quantization, ...stats, source: url};
 }
 
 /** Contiguous-US land outline (states dissolved into one shape, AK/HI/territories excluded) plus AK and HI as
  * separate small topologies for an optional inset composite — kept in lon/lat, same source geometry as `states`,
  * never pre-projected: the kit projects to the theme's canvas at render time (see src/kit/map/projection.ts). */
 async function bakeOutline() {
-  const zipPath = join(CACHE_DIR, VINTAGE, LAYERS.states.file);
-  await download(censusUrl(LAYERS.states.file), zipPath);
+  const {zipPath, year, url} = await getZip(LAYERS.states.file);
   const outFile = join(OUT_DIR, 'outline.json');
   mkdirSync(OUT_DIR, {recursive: true});
   const excludeFilter = NON_CONTIGUOUS.map((fp) => `STATEFP != '${fp}'`).join(' && ');
@@ -185,14 +195,12 @@ async function bakeOutline() {
   ]);
   const stats = statsFor(outFile);
   console.log(`baked outline (+AK/HI inset composite): ${(stats.bytes / 1024).toFixed(1)} KB`);
-  return {name: 'outline', file: 'outline.json', vintage: VINTAGE, ...stats, source: censusUrl(LAYERS.states.file), note: 'objects.combined holds 3 pieces keyed by id: outline (contiguous US, dissolved), alaska, hawaii — the last two are the optional inset'};
+  return {name: 'outline', file: 'outline.json', vintage: year, ...stats, source: url, note: 'objects.combined holds 3 pieces keyed by id: outline (contiguous US, dissolved), alaska, hawaii — the last two are the optional inset'};
 }
 
 /** One state's census tracts, baked on demand (not part of the default run — this is a per-state file). */
 async function bakeTracts(stateFips) {
-  const file = `cb_${VINTAGE}_${stateFips}_tract_500k.zip`;
-  const zipPath = join(CACHE_DIR, VINTAGE, file);
-  await download(censusUrl(file), zipPath);
+  const {zipPath, year, url} = await getZip((y) => `cb_${y}_${stateFips}_tract_500k.zip`);
   const outDir = join(OUT_DIR, 'tracts');
   mkdirSync(outDir, {recursive: true});
   const outFile = join(outDir, `${stateFips}.json`);
@@ -208,7 +216,7 @@ async function bakeTracts(stateFips) {
   ]);
   const stats = statsFor(outFile);
   console.log(`baked tracts/${stateFips}: ${(stats.bytes / 1024).toFixed(1)} KB, ${stats.features} features`);
-  return {name: `tracts/${stateFips}`, file: `tracts/${stateFips}.json`, vintage: VINTAGE, ...stats, source: censusUrl(file)};
+  return {name: `tracts/${stateFips}`, file: `tracts/${stateFips}.json`, vintage: year, ...stats, source: url};
 }
 
 // ---- main ----------------------------------------------------------------------------------------------------
@@ -228,6 +236,7 @@ async function main() {
   for (const b of baked) layers[b.name] = b;
   const manifest = {
     vintage: VINTAGE,
+    vintageNote: 'newest vintage probed; each layer records the vintage actually used (a layer can lag, e.g. ZCTAs)',
     generatedAt: new Date().toISOString(),
     source: 'US Census Bureau cartographic boundary files (500k generalised)',
     layers,

@@ -179,7 +179,7 @@ async function fetchLayer(layer, geoids) {
       try { got = {p: await download(`https://www2.census.gov/geo/tiger/TIGER${y}/${LAYERS[layer][0]}/${name}`, join(CACHE, y, name)), y}; break; }
       catch (e) { if (!e.notFound) throw e; }
     }
-    if (!got) { if (layer === 'arealm' || layer === 'linearwater') { console.warn(`  ${layer} ${g}: not published, skipped`); continue; } throw new Error(`${layer} ${g}: no TIGER file found for ${YEARS.join('/')}`); }
+    if (!got) { if (opt.local || layer === 'arealm' || layer === 'linearwater') { console.warn(`  ${layer} ${g}: not published, skipped`); continue; } throw new Error(`${layer} ${g}: no TIGER file found for ${YEARS.join('/')}`); }
     vintage = got.y; zips.push(got.p);
   }
   return {zips, vintage};
