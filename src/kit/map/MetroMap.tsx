@@ -45,6 +45,8 @@ export interface MetroMapProps {
   style?: MapStyle;
   /** Multiplies every stroke width (default 1). */
   weight?: number;
+  /** North-south scale relative to east-west, about the view centre, before the rotation (default 1). Pass `metroOverlay(...).northScale` to sit exactly on the Albers country layer. */
+  northScale?: number;
 }
 
 const GRAIN_TILE = 256;
@@ -67,7 +69,7 @@ const Paths: React.FC<{chunks: Chunk[] | undefined; stroke?: string; width?: num
  */
 export const MetroMap: React.FC<MetroMapProps> = ({
   city, alignment, frame, zoom = 1, center, mode = 'hero', dimOpacity = METRO_DIM_OPACITY, orientation = 'north',
-  revealSeconds = 2.4, revealDelaySeconds = 0, reveal, boundary, vignette = 0.7, grain = 0.06, background = true, style: styleProp, weight = 1,
+  revealSeconds = 2.4, revealDelaySeconds = 0, reveal, boundary, vignette = 0.7, grain = 0.06, background = true, style: styleProp, weight = 1, northScale = 1,
 }) => {
   const theme = useTheme();
   const {width, height, fps} = theme.canvas;
@@ -79,10 +81,10 @@ export const MetroMap: React.FC<MetroMapProps> = ({
   const rot = orientation === 'map' && alignment ? alignment.rotationDeg : 0;
   const lod = metroLod(zoom);
   const geo = useMemo(
-    () => metroGeometry(city, {width, height, zoom, center, rotationDeg: rot}, lod, hero),
+    () => metroGeometry(city, {width, height, zoom, center, rotationDeg: rot, northScale}, lod, hero),
     // lod is a pure function of zoom
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [city, width, height, zoom, center?.x, center?.y, rot, hero],
+    [city, width, height, zoom, center?.x, center?.y, rot, hero, northScale],
   );
   const {view} = geo;
   const cx = center?.x ?? 0, cy = center?.y ?? 0;
@@ -188,7 +190,7 @@ export const MetroMap: React.FC<MetroMapProps> = ({
             );
           }) : null}
         </defs>
-        <g transform={rot ? `rotate(${rot} ${cx} ${cy})` : undefined}>
+        <g transform={[rot ? `rotate(${rot} ${cx} ${cy})` : '', northScale !== 1 ? `translate(${cx} ${cy}) scale(1 ${northScale}) translate(${-cx} ${-cy})` : ''].join(' ').trim() || undefined}>
           {background ? <rect x={c.x0 - 10} y={c.y0 - 10} width={c.x1 - c.x0 + 20} height={c.y1 - c.y0 + 20} fill={`url(#mm-${uid}-land)`} /> : null}
           <g mask={needsFeather ? `url(#mm-${uid}-feather)` : undefined}>{content}</g>
         </g>

@@ -148,6 +148,8 @@ export interface MetroViewInput {
   center?: {x: number; y: number};
   /** Rotation applied to the city plane (alignment.rotationDeg to match the US map; 0 = north up). */
   rotationDeg?: number;
+  /** North-south scale relative to east-west (alignment.unitsPerMetreNorth / unitsPerMetre; default 1). Applied about the centre, before the rotation. */
+  northScale?: number;
 }
 export interface MetroView {
   /** Pixels per metre. */
@@ -165,7 +167,7 @@ export const metroView = (city: Pick<CityData, 'bbox'>, i: MetroViewInput): Metr
   const hw = i.width / 2 / ppm, hh = i.height / 2 / ppm;
   const box: PlaneBox = {x0: cx - hw, y0: cy - hh, x1: cx + hw, y1: cy + hh};
   const a = ((i.rotationDeg ?? 0) * Math.PI) / 180, c = Math.abs(Math.cos(a)), s = Math.abs(Math.sin(a));
-  const rw = c * hw + s * hh, rh = s * hw + c * hh;
+  const rw = c * hw + s * hh, rh = (s * hw + c * hh) / (i.northScale ?? 1); // metres: undo the north-south scale applied after the cull box
   return {ppm, box, cull: {x0: cx - rw, y0: cy - rh, x1: cx + rw, y1: cy + rh}};
 };
 
