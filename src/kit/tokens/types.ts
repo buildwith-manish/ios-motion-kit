@@ -43,7 +43,12 @@ export interface TintColors {
 export interface ThemeColors {
   background: BackgroundColors;
   text: TextColors;
+  /** Fills, icons and graphics only. Text in the accent hue must use `accentText`. */
   accent: string;
+  /** Accent-hued TEXT colour, derived with ensureContrast against the glass-over-worst-backdrop composites. */
+  accentText: string;
+  /** Highest alpha an ambient orb/tint reaches behind text (0-1). The worst-case backdrop list uses it; the Atmosphere background must not exceed it. */
+  orbMaxAlpha: number;
   /** Text/icon colour that sits on top of `accent`. */
   onAccent: string;
   semantic: SemanticColors;

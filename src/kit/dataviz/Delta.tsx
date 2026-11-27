@@ -85,7 +85,7 @@ export const Delta: React.FC<DeltaProps> = (props) => {
   const gap = fontPx * 0.3;
   const w = padX * 2 + icon + gap + textW;
   const color = toneColor(theme, r.tone);
-  const ink = props.solid ? onToneColor(theme, r.tone) : color;
+  const ink = props.solid ? onToneColor(theme, r.tone) : r.tone === 'accent' ? theme.colors.accentText : color;
   const dir = r.direction === 'up' ? -1 : 1;
   const slide = r.direction === 'flat' ? 0 : dir * -1 * (1 - p) * fontPx * 0.5;
   const sw = Math.max(2, fontPx * 0.12);

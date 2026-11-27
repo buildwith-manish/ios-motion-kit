@@ -11,6 +11,8 @@ export interface GlassRecipe {
   /** Underlay colour and base alpha (alpha is further scaled per tier). */
   underlay: string;
   underlayAlpha: number;
+  /** Absolute underlay alpha per tier; overrides `underlayAlpha * tier multiplier` for the tiers listed. Tuned so text passes over the worst-case backdrops. */
+  tierUnderlayAlpha?: Partial<Record<GlassTierName, number>>;
   /** Rim and inset-highlight colour; gains scale their alphas. */
   highlight: string;
   rimGain: number;
@@ -53,7 +55,7 @@ export const buildGlassTiers = (r: GlassRecipe): Record<GlassTierName, GlassTier
     const s = SHAPES[name];
     const shadow = (v: [number, number, number]): ShadowSpec => ({x: 0, y: v[0], blur: v[1], spread: 0, color: rgba(r.ink, v[2] * r.inkGain)});
     out[name] = {
-      underlay: rgba(r.underlay, r.underlayAlpha * s.underlayMul),
+      underlay: rgba(r.underlay, r.tierUnderlayAlpha?.[name] ?? r.underlayAlpha * s.underlayMul),
       fillFrom: rgba(r.fill, s.fill[0] * r.fillFromGain),
       fillTo: rgba(r.fill, s.fill[1] * r.fillToGain),
       blurPx: s.blurPx,

@@ -20,11 +20,12 @@ const {themes, contrastTable} = await import(pathToFileURL(resolve(out, 'bundle.
 
 const pad = (v, n) => String(v).padEnd(n);
 let fails = 0;
-console.log([pad('theme', 9), pad('role', 13), pad('surface', 7), pad('backdrop', 10), pad('fg', 8), pad('bg', 8), pad('ratio', 6), pad('req', 4), 'result'].join(' '));
+console.log(`orbMaxAlpha: ${Object.keys(themes).map((n) => `${n} ${themes[n].colors.orbMaxAlpha}`).join(', ')}`);
+console.log([pad('theme', 9), pad('role', 14), pad('surface', 7), pad('backdrop', 10), pad('fg', 8), pad('bg', 8), pad('ratio', 6), pad('req', 4), 'result'].join(' '));
 for (const name of Object.keys(themes)) {
   for (const r of contrastTable(themes[name])) {
     if (!r.pass) fails++;
-    console.log([pad(r.theme, 9), pad(r.role, 13), pad(r.surface, 7), pad(r.backdrop, 10), pad(r.fg, 8), pad(r.bg, 8), pad(r.ratio.toFixed(2), 6), pad(r.required, 4), r.pass ? 'PASS' : 'FAIL'].join(' '));
+    console.log([pad(r.theme, 9), pad(r.role, 14), pad(r.surface, 7), pad(r.backdrop, 10), pad(r.fg, 8), pad(r.bg, 8), pad(r.ratio.toFixed(2), 6), pad(r.required, 4), r.pass ? 'PASS' : 'FAIL'].join(' '));
   }
 }
 console.log(`\n${fails === 0 ? 'ALL PASS' : fails + ' FAIL'}`);

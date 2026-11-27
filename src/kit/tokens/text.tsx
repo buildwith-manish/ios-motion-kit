@@ -33,7 +33,7 @@ export const textStyle = (theme: Theme, role: TypeRole, opts: TextStyleOptions =
   const c = color === 'primary' ? theme.colors.text.primary
     : color === 'secondary' ? theme.colors.text.secondary
     : color === 'tertiary' ? theme.colors.text.tertiary
-    : color === 'accent' ? theme.colors.accent
+    : color === 'accent' ? theme.colors.accentText
     : color;
   return {
     fontFamily: theme.fonts[t.family],
