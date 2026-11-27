@@ -31,6 +31,8 @@ export interface CameraKeyframe {
   ease?: SegmentEase;
   /** Spring response in seconds for `ease: 'spring'`. Default 0.95 x the segment length. */
   response?: number;
+  /** Underdamped spring bounce (0..0.4) for `ease: 'spring'`; default 0 keeps existing critically-damped motion. */
+  bounce?: number;
 }
 
 /** A resolved camera pose. */
@@ -59,6 +61,10 @@ export interface CameraSample {
   delta: CameraDelta;
   /** `hypot(delta.dx, delta.dy)`, px/frame. */
   speed: number;
+  /** Apparent picture motion at the right-of-centre anchor, including translation, zoom, and roll. */
+  motion: CameraDelta;
+  /** `hypot(motion.dx, motion.dy)`, px/frame. */
+  motionSpeed: number;
   /** Time in seconds. */
   time: number;
   canvas: Canvas;

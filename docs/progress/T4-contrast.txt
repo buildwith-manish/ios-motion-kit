@@ -1,0 +1,18 @@
+bundling src/kit/demo/entry.tsx ...
+browser: KIT_CHROME
+Kit-Camera-Demo: 20 frames, 0 finding(s)
+Kit-Camera-Demo-Vertical: 20 frames, 2 finding(s)
+Kit-Camera-Demo-30fps: 20 frames, 1 finding(s)
+Kit-Camera-Depth-Compare: 6 frames, 2 finding(s)
+
+Text below 4.5:1 (10th-percentile pixel)
+composition               status     text                   ratio   text on background  size        seen             samples
+------------------------  ---------  ---------------------  ------  ------------------  ----------  ---------------  -------
+Kit-Camera-Demo           pass       5 text run(s) checked  -       -                   -           -                -
+Kit-Camera-Demo-Vertical  fail       Card A                 4.32:1  #ffffff on #2471a0  83px large  0:00.00-0:00.50  2
+Kit-Camera-Demo-Vertical  fail       depth 0.35 · far       3.71:1  #e5eaef on #226e9c  33px large  0:00.00-0:06.50  14
+Kit-Camera-Demo-30fps     transient  depth 0.35 · far       4.00:1  #b0c1d0 on #1f5078  33px large  0:01.00-0:01.00  1
+Kit-Camera-Depth-Compare  fail       One flat push          4.24:1  #ffffff on #1f709e  49px large  0:00.00-0:02.50  6
+Kit-Camera-Depth-Compare  fail       Layers move apart      3.89:1  #ffffff on #1f6f9d  49px large  0:00.00-0:02.50  6
+
+JSON: ../../../../tmp/t4-contrast/contrast.json

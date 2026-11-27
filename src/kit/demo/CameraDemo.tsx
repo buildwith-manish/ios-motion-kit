@@ -1,8 +1,9 @@
 import React from 'react';
 import {Composition, useCurrentFrame} from 'remotion';
-import {CameraRig, DepthLayer, DepthLayers, RackFocus, RackLayer, Tilt3D, type CameraKeyframe, type FocusKeyframe} from '../camera';
+import {CameraRig, DepthLayer, DepthLayers, lookAt, RackFocus, RackLayer, Tilt3D, type CameraKeyframe, type CameraMotionBlurOptions, type FocusKeyframe} from '../camera';
 import {Glass} from '../glass';
-import {CANVAS, createTheme, safeRect, safeText, type Canvas, type Theme} from '../tokens';
+import {SPRING_PRESETS} from '../motion';
+import {CANVAS, createTheme, safeRect, safeText, textStyle, type Canvas, type Theme} from '../tokens';
 
 /** Demo length in seconds. */
 export const CAMERA_DEMO_SECONDS = 10;
@@ -13,8 +14,8 @@ export const RACK_AT = 6.6;
 const layout = (theme: Theme) => {
   const {width: w, height: h} = theme.canvas;
   const vertical = h > w;
-  const d = vertical ? h * 0.19 : w * 0.17;
-  const card = vertical ? {w: w * 0.72, h: h * 0.17} : {w: w * 0.26, h: h * 0.42};
+  const d = vertical ? h * 0.09 : w * 0.11;
+  const card = vertical ? {w: w * 0.72, h: h * 0.12} : {w: w * 0.21, h: h * 0.42};
   return {w, h, vertical, d, card};
 };
 
@@ -24,16 +25,20 @@ const layout = (theme: Theme) => {
  * @example const kf = cameraDemoKeyframes(createTheme());
  */
 export const cameraDemoKeyframes = (theme: Theme): CameraKeyframe[] => {
-  const {vertical, d} = layout(theme);
+  const {vertical, d, card, w, h} = layout(theme);
+  const m = Math.min(w, h);
   const at = (v: number, extra: Partial<CameraKeyframe> = {}): CameraKeyframe => ({t: 0, x: vertical ? 0 : v, y: vertical ? v : 0, ...extra});
+  const cardB = vertical ? {x: w / 2 - card.w / 2, y: h / 2 + d - card.h / 2} : {x: w / 2 + d - card.w / 2, y: h / 2 - card.h / 2};
+  const target = lookAt({...cardB, width: card.w, height: card.h}, {canvas: theme.canvas, zoom: 1.3, padding: m * 0.06});
+  const hero = SPRING_PRESETS.hero;
   return [
     at(-1.15 * d, {t: 0, scale: 1, rotate: 0}),
     at(-1.15 * d, {t: 0.6}),
     at(0, {t: 3.0}),
-    at(0, {t: 3.4, ease: 'spring'}),
+    at(0, {t: 3.4, ease: 'spring', response: hero.response, bounce: hero.bounce}),
     at(0, {t: 6.0, scale: 1.3}),
     at(0, {t: 7.4}),
-    at(0.3 * d, {t: 9.2, rotate: 1.6, ease: 'spring'}),
+    at(vertical ? 0 : target.x, {t: 9.2, ...target, rotate: 1.6, ease: 'spring', response: hero.response, bounce: hero.bounce}),
   ];
 };
 
@@ -71,13 +76,19 @@ const Backdrop: React.FC<{theme: Theme}> = ({theme}) => {
 const CardBox: React.FC<{theme: Theme; label: string; sub: string; at: {x: number; y: number}; size: {w: number; h: number}; frame: number; tilt: number}> = ({theme, label, sub, at, size, frame, tilt}) => {
   const {width: w, height: h} = theme.canvas;
   const m = Math.min(w, h);
+  const textBacking: React.CSSProperties = {
+    alignSelf: 'flex-start',
+    padding: `${m * 0.006}px ${m * 0.012}px`,
+    borderRadius: m * 0.008,
+    background: 'rgba(0,0,0,0.55)',
+  };
   return (
     <div style={{position: 'absolute', left: w / 2 + at.x - size.w / 2, top: h / 2 + at.y - size.h / 2, width: size.w, height: size.h}}>
       <Tilt3D rotateY={tilt} rotateX={1.5} sway={{periodSeconds: 9}} frame={frame} theme={theme} width="100%" height="100%">
         <Glass tier="card" width="100%" height="100%" theme={theme} frame={frame} shimmerAt={0.8}>
           <div style={{position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: m * 0.04, fontFamily: theme.fonts.body, color: safeText(theme, 'primary', 'card')}}>
-            <div style={{fontSize: m * 0.075, fontWeight: 700, letterSpacing: -1}}>{label}</div>
-            <div style={{fontSize: m * 0.03, color: safeText(theme, 'secondary', 'card'), marginTop: m * 0.01}}>{sub}</div>
+            <div style={{...textBacking, fontSize: m * 0.07, fontWeight: 700, letterSpacing: -1}}>{label}</div>
+            <div style={{...textBacking, fontSize: m * 0.03, color: safeText(theme, 'secondary', 'card'), marginTop: m * 0.01}}>{sub}</div>
           </div>
         </Glass>
       </Tilt3D>
@@ -88,8 +99,8 @@ const CardBox: React.FC<{theme: Theme; label: string; sub: string; at: {x: numbe
 /** Props for the camera demo. */
 export type CameraDemoProps = {
   theme: Theme;
-  /** Camera motion blur (default off). */
-  motionBlur?: boolean;
+  /** Camera motion blur (default on with a 1px/frame gate). */
+  motionBlur?: boolean | CameraMotionBlurOptions;
   /** Handheld shake (default off). */
   handheld?: boolean;
 };
@@ -99,7 +110,7 @@ export type CameraDemoProps = {
  * DepthLayers, RackFocus and Tilt3D together.
  * @example <CameraDemoFrame frame={300} theme={createTheme()} />
  */
-export const CameraDemoFrame: React.FC<CameraDemoProps & {frame: number}> = ({frame, theme, motionBlur = false, handheld = false}) => {
+export const CameraDemoFrame: React.FC<CameraDemoProps & {frame: number}> = ({frame, theme, motionBlur = {threshold: 1, shutter: 0.35, cap: 12}, handheld = false}) => {
   const {w, h, vertical, d, card} = layout(theme);
   const m = Math.min(w, h);
   const t = frame / theme.canvas.fps;
@@ -146,6 +157,60 @@ export const CameraDemoFrame: React.FC<CameraDemoProps & {frame: number}> = ({fr
  */
 export const CameraDemo: React.FC<CameraDemoProps> = (props) => <CameraDemoFrame frame={useCurrentFrame()} {...props} />;
 
+const CameraDepthCompareFrame: React.FC<{frame: number; theme: Theme}> = ({frame, theme}) => {
+  const {width, height, fps} = theme.canvas;
+  const safe = safeRect(theme, 'title');
+  const u = Math.min(width / 1920, height / 1080);
+  const gap = 32 * u;
+  const paneWidth = (safe.width - gap) / 2;
+  const paneHeight = safe.height * 0.58;
+  const time = frame / fps;
+  const cardStyle: React.CSSProperties = {
+    position: 'absolute',
+    left: '22%',
+    top: '34%',
+    width: '56%',
+    height: '32%',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: theme.radius.xl * u,
+    background: 'rgba(0,0,0,0.62)',
+    color: safeText(theme, 'primary', 'card'),
+    fontFamily: theme.fonts.body,
+    fontSize: Math.min(width, height) * 0.045,
+    fontWeight: 700,
+  };
+  const heading = (text: string) => <div style={{position: 'absolute', zIndex: 5, left: 18 * u, top: 16 * u, fontFamily: theme.fonts.body, fontSize: 20 * u, fontWeight: 700, color: safeText(theme, 'primary', 'canvas')}}>{text}</div>;
+  return (
+    <div style={{position: 'absolute', inset: 0, background: theme.colors.background.deep}}>
+      <div style={{position: 'absolute', left: safe.left, top: safe.top, width: safe.width, height: safe.height, display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', gap: 28 * u}}>
+        <div style={{...textStyle(theme, 'caption', {weight: 'bold'}), color: safeText(theme, 'primary', 'canvas'), letterSpacing: '0.12em'}}>ONE SLOW PUSH · DEPTH-LAYERED DRIFT</div>
+        <div style={{display: 'flex', gap, width: '100%', height: paneHeight}}>
+          <div style={{position: 'relative', width: paneWidth, height: '100%', overflow: 'hidden', borderRadius: theme.radius.xl * u}}>
+            {heading('BEFORE · WHOLE SCENE')}
+            <div style={{position: 'absolute', inset: 0, transform: `scale(${1 + time * 0.018})`, transformOrigin: '50% 50%'}}>
+              <div style={{position: 'absolute', inset: 0, background: `linear-gradient(150deg, ${theme.colors.background.lift}, ${theme.colors.background.deep})`}} />
+              <div style={{position: 'absolute', left: '14%', top: '15%', width: '62%', height: '72%', borderRadius: '50%', background: `radial-gradient(circle, ${theme.colors.tint.b}, transparent 70%)`}} />
+              <div style={cardStyle}>One flat push</div>
+            </div>
+          </div>
+          <div style={{position: 'relative', width: paneWidth, height: '100%', overflow: 'hidden', borderRadius: theme.radius.xl * u}}>
+            {heading('AFTER · PARALLAX')}
+            <DepthLayers camera={{x: 0, y: 0, scale: 1, rotate: 0}} frame={frame} theme={theme} idle={{amplitude: 22 * u, periodSeconds: 5, scale: 0.025}}>
+              <DepthLayer depth={0}><div style={{position: 'absolute', inset: 0, background: `linear-gradient(150deg, ${theme.colors.background.lift}, ${theme.colors.background.deep})`}} /></DepthLayer>
+              <DepthLayer depth={0.45}><div style={{position: 'absolute', left: '14%', top: '15%', width: '62%', height: '72%', borderRadius: '50%', background: `radial-gradient(circle, ${theme.colors.tint.b}, transparent 70%)`}} /></DepthLayer>
+              <DepthLayer depth={1}><div style={cardStyle}>Layers move apart</div></DepthLayer>
+            </DepthLayers>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const CameraDepthCompare: React.FC<{theme: Theme}> = (props) => <CameraDepthCompareFrame frame={useCurrentFrame()} {...props} />;
+
 const CANVASES: {id: string; canvas: Canvas}[] = [
   {id: 'Kit-Camera-Demo', canvas: CANVAS.landscape60},
   {id: 'Kit-Camera-Demo-Vertical', canvas: CANVAS.vertical60},
@@ -161,5 +226,6 @@ export const KitCameraCompositions: React.FC = () => (
     {CANVASES.map(({id, canvas}) => (
       <Composition key={id} id={id} component={CameraDemo} durationInFrames={CAMERA_DEMO_SECONDS * canvas.fps} width={canvas.width} height={canvas.height} fps={canvas.fps} defaultProps={{theme: createTheme({canvas})}} />
     ))}
+    <Composition id="Kit-Camera-Depth-Compare" component={CameraDepthCompare} durationInFrames={180} width={CANVAS.landscape60.width} height={CANVAS.landscape60.height} fps={CANVAS.landscape60.fps} defaultProps={{theme: createTheme({canvas: CANVAS.landscape60})}} />
   </>
 );
