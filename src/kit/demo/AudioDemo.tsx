@@ -15,6 +15,7 @@ import {
   type SfxFamily,
   type Theme,
 } from '..';
+import {safeRect} from '../tokens';
 import {AUDIO_DEMO_SECONDS, FAKE_VO, FAKE_VO_SEGMENTS, audioDemoCues} from './AudioDemoCues';
 
 const CUES = audioDemoCues();
@@ -44,11 +45,15 @@ export const AudioDemo: React.FC<AudioDemoProps> = ({theme = createTheme(), fram
   const duck = getDuck(FAKE_VO, {depthDb: DUCK_DB});
   const sfxMix = {voice: FAKE_VO};
 
-  const px = w * 0.06;
-  const pw = w - 2 * px;
-  const top = h * (w > h ? 0.2 : 0.14);
+  // Everything sits inside the title-safe rect (header at its top, legend at its bottom).
+  const safe = safeRect(theme, 'title');
+  const px = safe.left;
+  const pw = safe.width;
+  const headerH = m * 0.065 + m * 0.022 * (w > h ? 1.6 : 3.4) + m * 0.02;
+  const footerH = m * 0.024 * 1.4 * (w > h ? 1 : 2) + m * 0.018 * 1.4 * (w > h ? 1 : 2) + m * 0.03;
+  const top = safe.top + headerH;
   const lanes = SFX_FAMILIES.length + 2; // + voice + duck
-  const bottom = h * (w > h ? 0.9 : 0.86);
+  const bottom = safe.top + safe.height - footerH;
   const laneH = (bottom - top) / lanes;
   const X = (s: number) => px + (s / AUDIO_DEMO_SECONDS) * pw;
   const labelW = m * 0.2;
@@ -86,8 +91,8 @@ export const AudioDemo: React.FC<AudioDemoProps> = ({theme = createTheme(), fram
           <CueTrack cues={CUES} fps={fps} seed={1} mix={sfxMix} />
         </>
       )}
-      <div style={{position: 'absolute', left: px, top: h * 0.05, fontSize: m * 0.05, fontWeight: 700, letterSpacing: -1}}>Kit audio — cue timeline</div>
-      <div style={{position: 'absolute', left: px, top: h * 0.05 + m * 0.065, fontSize: m * 0.022, color: theme.colors.text.secondary}}>
+      <div style={{position: 'absolute', left: px, top: safe.top, fontSize: m * 0.05, fontWeight: 700, letterSpacing: -1}}>Kit audio — cue timeline</div>
+      <div style={{position: 'absolute', left: px, top: safe.top + m * 0.065, width: pw, fontSize: m * 0.022, color: theme.colors.text.secondary}}>
         {w}×{h} @ {fps} fps · {cues.length} cues kept, {dropped.length} dropped by limits · music duck {DUCK_DB} dB, 80 ms / 400 ms
       </div>
       <svg width={w} height={h} style={{position: 'absolute', inset: 0}}>
@@ -104,7 +109,7 @@ export const AudioDemo: React.FC<AudioDemoProps> = ({theme = createTheme(), fram
         <text x={px} y={top + voLane * laneH + laneH * 0.68} fontSize={fs} fill={theme.colors.accentText}>voice-over (fake)</text>
         <text x={px} y={top + duckLane * laneH + laneH * 0.68} fontSize={fs} fill={theme.colors.accentText}>music duck 0…−9 dB</text>
         {[...Array(AUDIO_DEMO_SECONDS + 1).keys()].map((s) => (
-          <text key={s} x={trackX(s)} y={top - 8} fontSize={fs * 0.9} textAnchor="middle" fill={theme.colors.text.tertiary}>{s}s</text>
+          <text key={s} x={trackX(s)} y={top - 8} fontSize={fs * 0.9} textAnchor={s === AUDIO_DEMO_SECONDS ? 'end' : 'middle'} fill={theme.colors.text.tertiary}>{s}s</text>
         ))}
         {cues.map((c) => {
           const lane = SFX_FAMILIES.indexOf(c.name);
@@ -132,7 +137,7 @@ export const AudioDemo: React.FC<AudioDemoProps> = ({theme = createTheme(), fram
           playing: {playing.length ? playing.map((c) => `${c.name} (${gainToDb(sfxGainAt(c, t, sfxMix)).toFixed(0)} dB)`).join(', ') : '—'}
         </span>
       </div>
-      <div style={{position: 'absolute', left: px, bottom: h * 0.02, fontSize: m * 0.018, color: theme.colors.text.tertiary}}>
+      <div style={{position: 'absolute', left: px, bottom: h - (safe.top + safe.height), width: pw, fontSize: m * 0.018, color: theme.colors.text.tertiary}}>
         solid = played · dashed red = dropped by limits (max 3 at once, no identical file within 120 ms)
       </div>
     </AbsoluteFill>

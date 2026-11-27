@@ -7,9 +7,13 @@ import {
   ThemeProvider,
   createTheme,
   idleDrift,
+  orbMaxAlpha,
   radius,
   rgba,
+  safeRect,
   space,
+  textPositive,
+  textNegative,
   textStyle,
   themes,
   unit,
@@ -45,7 +49,7 @@ const Backdrop: React.FC<{theme: Theme; time: number}> = ({theme, time}) => {
               // Oversized so the drift never exposes the panel edge.
               inset: -64 * u,
               transform: `translate(${dx}px, ${dy}px)`,
-              background: `radial-gradient(circle at ${o.x}% ${o.y}%, ${rgba(o.c, o.a)} 0, ${rgba(o.c, 0)} ${o.r}%)`,
+              background: `radial-gradient(circle at ${o.x}% ${o.y}%, ${rgba(o.c, Math.min(o.a, orbMaxAlpha(theme)))} 0, ${rgba(o.c, 0)} ${o.r}%)`,
             }}
           />
         );
@@ -55,17 +59,20 @@ const Backdrop: React.FC<{theme: Theme; time: number}> = ({theme, time}) => {
 };
 
 /** One themed panel showing every glass tier. Pure: `frame` is a prop. */
-const Panel: React.FC<{name: ThemeName; canvas: Canvas; frame: number; width: number; height: number}> = ({name, canvas, frame, width, height}) => {
+type Inset = {top: number; right: number; bottom: number; left: number};
+
+const Panel: React.FC<{name: ThemeName; canvas: Canvas; frame: number; width: number; height: number; inset: Inset}> = ({name, canvas, frame, width, height, inset}) => {
   const theme = createTheme({canvas}, name);
   const u = unit(theme);
   const time = frame / canvas.fps;
   const portrait = canvas.height > canvas.width;
-  const gap = space(theme, 6);
-  const pad = space(theme, portrait ? 8 : 10);
+  const gap = space(theme, portrait ? 4 : 6);
+  const pad = space(theme, portrait ? 4 : 10);
+  const cardPad = space(theme, portrait ? 4 : 6);
   const at = (i: number) => 0.6 + i * 0.45;
 
   const card = (
-    <Glass tier="card" frame={frame} shimmerAt={at(0)} height={220 * u} style={{padding: space(theme, 6), display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: space(theme, 2)}}>
+    <Glass tier="card" frame={frame} shimmerAt={at(0)} height={(portrait ? 150 : 220) * u} style={{padding: cardPad, display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: space(theme, 2)}}>
       <Text role="number" scale={0.8}>$12,400</Text>
       <Text role="caption" color="secondary">CARD</Text>
     </Glass>
@@ -80,8 +87,8 @@ const Panel: React.FC<{name: ThemeName; canvas: Canvas; frame: number; width: nu
     <div style={{display: 'flex', gap: space(theme, 3), flexWrap: 'wrap'}}>
       {[
         {t: 'Chip', c: theme.colors.text.primary},
-        {t: '+2.4%', c: theme.colors.semantic.positive},
-        {t: '−1.1%', c: theme.colors.semantic.negative},
+        {t: '+2.4%', c: textPositive(theme, 'chip')},
+        {t: '−1.1%', c: textNegative(theme, 'chip')},
       ].map((c, i) => (
         <Glass key={i} tier="chip" frame={frame} shimmerAt={at(2) + i * 0.1} height={48 * u} style={{display: 'flex', alignItems: 'center', padding: `0 ${space(theme, 4)}px`}}>
           <span style={textStyle(theme, 'caption', {color: c.c, weight: 'bold', scale: 0.9})}>{c.t}</span>
@@ -90,7 +97,7 @@ const Panel: React.FC<{name: ThemeName; canvas: Canvas; frame: number; width: nu
     </div>
   );
   const sheet = (
-    <Glass tier="sheet" frame={frame} shimmerAt={at(3)} height={(portrait ? 210 : 260) * u} style={{padding: space(theme, 6)}}>
+    <Glass tier="sheet" frame={frame} shimmerAt={at(3)} height={(portrait ? 150 : 260) * u} style={{padding: cardPad}}>
       <Text role="title" scale={0.7}>Sheet</Text>
       <Text role="caption" color="secondary" style={{marginTop: space(theme, 2)}}>SHEET · large radius, deepest shadow</Text>
     </Glass>
@@ -104,7 +111,7 @@ const Panel: React.FC<{name: ThemeName; canvas: Canvas; frame: number; width: nu
           style={{
             position: 'absolute',
             inset: 0,
-            padding: pad,
+            padding: `${inset.top + pad}px ${inset.right + pad}px ${inset.bottom + pad}px ${inset.left + pad}px`,
             display: 'flex',
             flexDirection: portrait ? 'row' : 'column',
             flexWrap: 'wrap',
@@ -140,13 +147,24 @@ export interface TokensDemoViewProps {
  */
 export const TokensDemoView: React.FC<TokensDemoViewProps> = ({frame, canvas}) => {
   const portrait = canvas.height > canvas.width;
-  const w = portrait ? canvas.width : canvas.width / NAMES.length;
-  const h = portrait ? canvas.height / NAMES.length : canvas.height;
+  // Panels tile the whole canvas (backdrops run edge to edge) but their content stays inside the title-safe rect:
+  // the first/last panel get the safe-area margin as extra inset.
+  const safe = safeRect(createTheme({canvas}), 'title');
+  const n = NAMES.length;
+  const bleed = (i: number): Inset => ({
+    top: portrait ? (i === 0 ? safe.top : 0) : safe.top,
+    bottom: portrait ? (i === n - 1 ? safe.bottom : 0) : safe.bottom,
+    left: portrait ? safe.left : i === 0 ? safe.left : 0,
+    right: portrait ? safe.right : i === n - 1 ? safe.right : 0,
+  });
   return (
     <div style={{width: canvas.width, height: canvas.height, display: 'flex', flexDirection: portrait ? 'column' : 'row', background: themes.midnight.colors.background.deep}}>
-      {NAMES.map((n) => (
-        <Panel key={n} name={n} canvas={canvas} frame={frame} width={w} height={h} />
-      ))}
+      {NAMES.map((name, i) => {
+        const inset = bleed(i);
+        const w = portrait ? canvas.width : safe.width / n + inset.left + inset.right;
+        const h = portrait ? safe.height / n + inset.top + inset.bottom : canvas.height;
+        return <Panel key={name} name={name} canvas={canvas} frame={frame} width={w} height={h} inset={inset} />;
+      })}
     </div>
   );
 };

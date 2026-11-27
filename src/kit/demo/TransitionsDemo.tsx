@@ -1,7 +1,7 @@
 import React from 'react';
 import {useCurrentFrame} from 'remotion';
 import {Composition} from 'remotion';
-import {CANVAS, createTheme, type Canvas, type Theme} from '../tokens';
+import {CANVAS, createTheme, safeRect, type Canvas, type Theme} from '../tokens';
 import {MatchedElement, TransitionScene, type Rect, type TransitionKind} from '../transitions';
 
 /** The six transitions in demo order. */
@@ -103,7 +103,7 @@ export const TransitionsDemoFrame: React.FC<TransitionsDemoProps & {frame: numbe
       ) : (
         <DemoScene index={k + 1} theme={theme} />
       )}
-      <div style={{position: 'absolute', left: m * 0.04, top: m * 0.04, padding: `${m * 0.01}px ${m * 0.02}px`, borderRadius: m * 0.03, background: 'rgba(0,0,0,0.55)', color: '#fff', fontFamily: theme.fonts.body, fontSize: m * 0.03, zIndex: 100}}>
+      <div style={{position: 'absolute', left: safeRect(theme, 'title').left, top: safeRect(theme, 'title').top, padding: `${m * 0.01}px ${m * 0.02}px`, borderRadius: m * 0.03, background: 'rgba(0,0,0,0.55)', color: '#fff', fontFamily: theme.fonts.body, fontSize: m * 0.03, zIndex: 100}}>
         {label}
       </div>
     </div>

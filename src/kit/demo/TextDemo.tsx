@@ -68,6 +68,7 @@ export const TextDemoFrame: React.FC<TextDemoProps & {frame: number}> = ({frame,
             role="title"
             color="secondary"
             highlightActive
+            inactiveOpacity={0.72}
             maxWidth={safe.width * (portrait ? 1 : 0.8)}
             direction={dir}
             renderWord={(w, node) => (w.index === emIdx ? <Emphasis frame={frame} start={(w.start ?? 0) + 0.1} variant="underline">{node}</Emphasis> : node)}
