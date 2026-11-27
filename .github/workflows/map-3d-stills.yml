@@ -1,6 +1,13 @@
 # Premium 3D region insert: 4K stills, one parallel job per state x shape, then one commit with all the PNGs.
 name: Map 3D stills
 on:
+  push:
+    branches: [kit-map]
+    paths:
+      - .github/workflows/map-3d-stills.yml
+      - scripts/map_3d_still.mjs
+      - src/kit/map/three/**
+      - src/kit/demo/Region3DDemo.tsx
   workflow_dispatch:
     inputs:
       scale:
