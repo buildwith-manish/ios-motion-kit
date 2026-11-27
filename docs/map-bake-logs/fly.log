@@ -12,20 +12,20 @@ Downloading Chrome Headless Shell - 85.9 Mb/88.2 Mb
 Downloading Chrome Headless Shell - 88.2 Mb/88.2 Mb
 {
   "landscape": {
-    "median": 0.896,
-    "max": 1.509,
-    "maxAt": "1.5",
+    "median": 0.727,
+    "max": 1.534,
+    "maxAt": "3.0",
     "budget": 1.5
   },
   "portrait": {
-    "median": 0.811,
-    "max": 1.325,
-    "maxAt": "10.0",
+    "median": 0.712,
+    "max": 1.051,
+    "maxAt": "7.5",
     "budget": 1.5
   }
 }
-Stitched 615/804
-Stitched 634/804
+Stitched 612/804
+Stitched 637/804
 Stitched 643/804
 Stitched 804/804
 [34m○                    docs/previews/kit-map/fly/video/fly-landscape.mp4[39m [90m4 MB[39m
