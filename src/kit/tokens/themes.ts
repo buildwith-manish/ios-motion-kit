@@ -57,15 +57,19 @@ export const midnight: Theme = {
   canvas: CANVAS.landscape60,
   colors: {
     background: {deep: '#050E1D', base: '#0A1D38', lift: '#143A66'},
-    text: {primary: '#EEF2F9', secondary: '#EFF2F6', tertiary: '#F0F2F4'},
+    text: {primary: '#FFFFFF', secondary: '#E5EAEF', tertiary: '#CFD6DE'},
     accent: '#3DF0A8',
+    accentText: '#40F0AA',
+    orbMaxAlpha: 0.35,
     onAccent: '#04130D',
-    semantic: {positive: '#E0F7EE', warning: '#FFF1D6', negative: '#FFEEEE'},
+    semantic: {positive: '#67ECB5', warning: '#FFCD73', negative: '#FFC7C7'},
     tint: {a: '#2AA7D6', b: '#7A5CF0', c: '#3DF0A8', d: '#143A66'},
   },
   glass: buildGlassTiers({
     fill: '#FFFFFF', fillFromGain: 1, fillToGain: 1,
     underlay: '#050E1D', underlayAlpha: 0.34,
+    // Per-tier alphas tuned so white text on glass over the lightest orb backdrop is no harder than on bare canvas.
+    tierUnderlayAlpha: {card: 0.38, pill: 0.44, chip: 0.33, sheet: 0.51},
     highlight: '#FFFFFF', rimGain: 1, insetGain: 1,
     ink: '#000000', inkGain: 1,
     shimmer: '#FFFFFF', shimmerAlpha: 0.4,
@@ -88,10 +92,12 @@ export const light: Theme = {
   name: 'light',
   colors: {
     background: {deep: '#E5E5EA', base: '#F2F2F7', lift: '#FFFFFF'},
-    text: {primary: '#111114', secondary: '#323237', tertiary: '#323235'},
+    text: {primary: '#111114', secondary: '#333338', tertiary: '#464649'},
     accent: '#004797',
+    accentText: '#004490',
+    orbMaxAlpha: 0.35,
     onAccent: '#FFFFFF',
-    semantic: {positive: '#103A1A', warning: '#4A2C00', negative: '#6C000A'},
+    semantic: {positive: '#155124', warning: '#663D00', negative: '#92000E'},
     tint: {a: '#64D2FF', b: '#BF5AF2', c: '#30D158', d: '#FFD60A'},
   },
   glass: buildGlassTiers({
@@ -112,10 +118,12 @@ export const mono: Theme = {
   name: 'mono',
   colors: {
     background: {deep: '#0B0B0C', base: '#161618', lift: '#232326'},
-    text: {primary: '#F2F2F3', secondary: '#E4E4E4', tertiary: '#E4E4E4'},
+    text: {primary: '#FFFFFF', secondary: '#DBDBDC', tertiary: '#BFBFC1'},
     accent: '#F5F5F7',
+    accentText: '#F5F5F7',
+    orbMaxAlpha: 0.25,
     onAccent: '#111113',
-    semantic: {positive: '#C3EED4', warning: '#F6E2BA', negative: '#F9DEDC'},
+    semantic: {positive: '#64D591', warning: '#EAB75A', negative: '#F1AFAC'},
     tint: {a: '#3A3A3F', b: '#5A5A60', c: '#8A8A90', d: '#2A2A2E'},
   },
   glass: buildGlassTiers({

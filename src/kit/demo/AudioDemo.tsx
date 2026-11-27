@@ -101,8 +101,8 @@ export const AudioDemo: React.FC<AudioDemoProps> = ({theme = createTheme(), fram
         {SFX_FAMILIES.map((f, i) => (
           <text key={f} x={px} y={top + i * laneH + laneH * 0.68} fontSize={fs} fill={theme.colors.text.secondary}>{f}</text>
         ))}
-        <text x={px} y={top + voLane * laneH + laneH * 0.68} fontSize={fs} fill={theme.colors.accent}>voice-over (fake)</text>
-        <text x={px} y={top + duckLane * laneH + laneH * 0.68} fontSize={fs} fill={theme.colors.accent}>music duck 0…−9 dB</text>
+        <text x={px} y={top + voLane * laneH + laneH * 0.68} fontSize={fs} fill={theme.colors.accentText}>voice-over (fake)</text>
+        <text x={px} y={top + duckLane * laneH + laneH * 0.68} fontSize={fs} fill={theme.colors.accentText}>music duck 0…−9 dB</text>
         {[...Array(AUDIO_DEMO_SECONDS + 1).keys()].map((s) => (
           <text key={s} x={trackX(s)} y={top - 8} fontSize={fs * 0.9} textAnchor="middle" fill={theme.colors.text.tertiary}>{s}s</text>
         ))}
@@ -127,7 +127,7 @@ export const AudioDemo: React.FC<AudioDemoProps> = ({theme = createTheme(), fram
       <div style={{position: 'absolute', left: px, top: bottom + h * 0.015, width: pw, display: 'flex', gap: m * 0.03, fontSize: m * 0.024, flexWrap: 'wrap'}}>
         <span style={{fontVariantNumeric: 'tabular-nums'}}>t = {t.toFixed(2)} s</span>
         <span style={{fontVariantNumeric: 'tabular-nums'}}>music {duckDbNow.toFixed(1)} dB</span>
-        <span style={{color: speaking ? theme.colors.accent : theme.colors.text.tertiary}}>{speaking ? 'voice: speaking' : 'voice: silent'}</span>
+        <span style={{color: speaking ? theme.colors.accentText : theme.colors.text.tertiary}}>{speaking ? 'voice: speaking' : 'voice: silent'}</span>
         <span style={{color: theme.colors.text.secondary}}>
           playing: {playing.length ? playing.map((c) => `${c.name} (${gainToDb(sfxGainAt(c, t, sfxMix)).toFixed(0)} dB)`).join(', ') : '—'}
         </span>

@@ -65,7 +65,7 @@ export const parseColor = (input: string): ParsedColor => {
 export const rgbToHex = (c: RGB): string => '#' + c.map((v) => Math.max(0, Math.min(255, v)).toString(16).padStart(2, '0')).join('').toUpperCase();
 
 /** Theme colours that are used as text. */
-export type ColorRole = 'primary' | 'secondary' | 'tertiary' | 'accent' | 'positive' | 'warning' | 'negative';
+export type ColorRole = 'primary' | 'secondary' | 'tertiary' | 'accent' | 'accentText' | 'positive' | 'warning' | 'negative';
 /** Roles the table checks (colour roles + karaoke states). */
 export type TextRole = ColorRole | 'onAccent' | 'karaokeDim' | 'karaokeActive';
 /** Where text sits: straight on the canvas gradient, or on a glass tier. */
@@ -77,7 +77,7 @@ export const THRESHOLDS = {body: 4.5, caption: 4.5, large: 3, karaokeDim: 3, kar
 export const requiredRatio = (sizePx: number, bold = false): number => (sizePx >= 24 || (bold && sizePx >= 19) ? THRESHOLDS.large : THRESHOLDS.body);
 
 const REQUIRED: Record<TextRole, number> = {
-  primary: THRESHOLDS.body, secondary: THRESHOLDS.body, tertiary: THRESHOLDS.caption, accent: THRESHOLDS.body,
+  primary: THRESHOLDS.body, secondary: THRESHOLDS.body, tertiary: THRESHOLDS.caption, accent: THRESHOLDS.body, accentText: THRESHOLDS.body,
   positive: THRESHOLDS.body, warning: THRESHOLDS.body, negative: THRESHOLDS.body, onAccent: THRESHOLDS.body,
   karaokeDim: THRESHOLDS.karaokeDim, karaokeActive: THRESHOLDS.karaokeActive,
 };
@@ -90,7 +90,10 @@ export interface Backdrop {
 
 const hexRgb = (hex: string): RGB => parseColor(hex).rgb;
 
-/** Worst-case canvas backdrops: each base-gradient stop, plus each orb/accent colour at alpha 0.45 over the base. */
+/** The highest alpha an ambient orb reaches behind text, from the theme token. The Atmosphere background reads this instead of hard-coding an alpha. */
+export const orbMaxAlpha = (theme: Theme): number => theme.colors.orbMaxAlpha;
+
+/** Worst-case canvas backdrops: each base-gradient stop, plus each orb/accent colour at `theme.colors.orbMaxAlpha` over the base. */
 export const backdropsOf = (theme: Theme): Backdrop[] => {
   const c = theme.colors;
   const base = hexRgb(c.background.base);
@@ -100,7 +103,7 @@ export const backdropsOf = (theme: Theme): Backdrop[] => {
     {label: 'bg.lift', rgb: hexRgb(c.background.lift)},
   ];
   const orbs: [string, string][] = [['tint.a', c.tint.a], ['tint.b', c.tint.b], ['tint.c', c.tint.c], ['tint.d', c.tint.d], ['accent', c.accent]];
-  orbs.forEach(([label, col]) => out.push({label: `${label}@.45`, rgb: over(hexRgb(col), 0.45, base)}));
+  orbs.forEach(([label, col]) => out.push({label: `${label}@${String(orbMaxAlpha(theme)).replace(/^0/, '')}`, rgb: over(hexRgb(col), orbMaxAlpha(theme), base)}));
   return out;
 };
 
@@ -124,7 +127,7 @@ const allSurfaceBackdrops = (theme: Theme) => (['canvas', ...TIERS] as Surface[]
 
 const colorOf = (theme: Theme, role: ColorRole | 'onAccent'): string => {
   const c = theme.colors;
-  return role === 'primary' || role === 'secondary' || role === 'tertiary' ? c.text[role] : role === 'accent' ? c.accent : role === 'onAccent' ? c.onAccent : c.semantic[role];
+  return role === 'primary' || role === 'secondary' || role === 'tertiary' ? c.text[role] : role === 'accent' ? c.accent : role === 'accentText' ? c.accentText : role === 'onAccent' ? c.onAccent : c.semantic[role];
 };
 
 /**
@@ -178,11 +181,18 @@ export const karaokeInactiveOpacity = (theme: Theme): number => {
   return a;
 };
 
+/** Adjacent-role steps of the text hierarchy, checked on the worst backdrop. */
+export type HierarchyRole = 'hier:pri>sec' | 'hier:sec>ter';
+/** Smallest ratio step between adjacent hierarchy roles (the higher role's contrast / the lower role's). */
+export const HIERARCHY_STEP = 1.2;
+/** Target contrast on the worst backdrop per hierarchy role; the highest achievable value is used when a target is impossible. */
+export const HIERARCHY_TARGETS = {primary: 9, secondary: 6, tertiary: 4.5} as const;
+
 /** One row of the contrast table. */
 export interface ContrastRow {
   theme: string;
-  role: TextRole;
-  surface: Surface | 'accent';
+  role: TextRole | HierarchyRole;
+  surface: Surface | 'accent' | 'all';
   backdrop: string;
   fg: string;
   bg: string;
@@ -201,7 +211,7 @@ export function contrastTable(theme: Theme): ContrastRow[] {
     const r = ratio(fg, bg);
     rows.push({theme: theme.name, role, surface, backdrop, fg: rgbToHex(fg), bg: rgbToHex(bg), ratio: Math.round(r * 100) / 100, required: REQUIRED[role], pass: r >= REQUIRED[role]});
   };
-  const roles: ColorRole[] = ['primary', 'secondary', 'tertiary', 'accent', 'positive', 'warning', 'negative'];
+  const roles: ColorRole[] = ['primary', 'secondary', 'tertiary', 'accentText', 'positive', 'warning', 'negative'];
   const dim = karaokeInactiveOpacity(theme);
   const primary = hexRgb(theme.colors.text.primary);
   (['canvas', ...TIERS] as Surface[]).forEach((surface) => {
@@ -212,5 +222,13 @@ export function contrastTable(theme: Theme): ContrastRow[] {
     });
   });
   push('onAccent', 'accent', 'accent', hexRgb(theme.colors.onAccent), hexRgb(theme.colors.accent));
+  // Hierarchy: each role's worst contrast over every surface/backdrop; adjacent roles must be a clear step apart.
+  const worst = (role: ColorRole) => rows.filter((r) => r.role === role).reduce((m, r) => Math.min(m, r.ratio), Infinity);
+  const step = (role: HierarchyRole, hi: ColorRole, lo: ColorRole) => {
+    const v = worst(hi) / worst(lo);
+    rows.push({theme: theme.name, role, surface: 'all', backdrop: 'worst', fg: colorOf(theme, hi), bg: colorOf(theme, lo), ratio: Math.round(v * 100) / 100, required: HIERARCHY_STEP, pass: v >= HIERARCHY_STEP});
+  };
+  step('hier:pri>sec', 'primary', 'secondary');
+  step('hier:sec>ter', 'secondary', 'tertiary');
   return rows;
 }
