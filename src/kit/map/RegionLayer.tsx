@@ -1,8 +1,8 @@
 import React, {useEffect, useMemo, useState} from 'react';
 import {continueRender, delayRender, staticFile} from 'remotion';
-import {geoBounds, geoPath} from 'd3-geo';
 import {feature} from 'topojson-client';
 import {useMap} from './MapCanvas';
+import {selectShapes, MAX_POINTS} from './regions';
 import type {RegionKind} from './types';
 
 const FILE: Record<Exclude<RegionKind, 'tract'>, string> = {
@@ -50,53 +50,31 @@ export interface RegionLayerProps {
   idPrefix?: string | string[];
   /** Highlighted ids (accent fill). */
   highlight?: string[];
-  /** Max points drawn (default 15000, the kit budget). Layers over budget keep the largest regions first. */
+  /** Point budget (default 15000). Geometry is simplified to the zoom to fit it; regions are never dropped. */
   maxPoints?: number;
   fill?: 'land' | 'landAlt' | 'none';
   weight?: number;
 }
 
-const countPoints = (d: string) => (d.match(/[ML]/g)?.length ?? 0);
-
 /** Loads a baked layer and renders only the regions that intersect the view. Pure function of its props. */
-export const RegionLayer: React.FC<RegionLayerProps> = ({kind, state, idPrefix, highlight, maxPoints = 15000, fill = 'land', weight = 1}) => {
+export const RegionLayer: React.FC<RegionLayerProps> = ({kind, state, idPrefix, highlight, maxPoints = MAX_POINTS, fill = 'land', weight = 1}) => {
   const {projection, style, view} = useMap();
   if (kind === 'tract' && !state) throw new Error('RegionLayer kind="tract" needs state (FIPS)');
   const rel = kind === 'tract' ? `tracts/${state}.json` : `${FILE[kind]}.json`;
   const topo = useBakedTopo(rel);
+  const shapes = topo ? selectShapes(topo, projection, view, {idPrefix}, maxPoints) : [];
+  const hs = new Set(highlight ?? []);
+  const normal = shapes.filter((s) => !hs.has(s.id));
+  const hi = shapes.filter((s) => hs.has(s.id));
 
-  const {normal, hi, points} = useMemo(() => {
-    if (!topo) return {normal: [] as string[], hi: [] as string[], points: 0};
-    const obj = topo.objects[Object.keys(topo.objects)[0]];
-    const fc = feature(topo, obj) as any;
-    const prefixes = idPrefix === undefined ? null : Array.isArray(idPrefix) ? idPrefix : [idPrefix];
-    const hs = new Set(highlight ?? []);
-    const gp = geoPath(projection).digits(1);
-    const items: {d: string; area: number; hi: boolean; pts: number}[] = [];
-    for (const f of fc.features) {
-      const id = String(f.id ?? f.properties?.GEOID ?? '');
-      if (prefixes && !prefixes.some((p) => id.startsWith(p))) continue;
-      const [[bx0, by0], [bx1, by1]] = gp.bounds(f);
-      if (!(bx1 >= view.x0 && bx0 <= view.x1 && by1 >= view.y0 && by0 <= view.y1)) continue; // out of view
-      const d = gp(f);
-      if (!d) continue;
-      items.push({d, area: (bx1 - bx0) * (by1 - by0), hi: hs.has(id), pts: countPoints(d)});
-    }
-    items.sort((a, b) => b.area - a.area);
-    let pts = 0;
-    const kept = items.filter((i) => (pts + i.pts <= maxPoints ? ((pts += i.pts), true) : false));
-    return {normal: kept.filter((i) => !i.hi).map((i) => i.d), hi: kept.filter((i) => i.hi).map((i) => i.d), points: pts};
-  }, [topo, projection, view, idPrefix, highlight, maxPoints]);
-
-  void geoBounds; void points;
   return (
     <g>
       <g fill={fill === 'none' ? 'none' : style[fill]} stroke={style.stroke} strokeWidth={style.hairline * weight} strokeLinejoin="round">
-        {normal.map((d, i) => <path key={i} d={d} vectorEffect="non-scaling-stroke" />)}
+        {normal.map((s) => <path key={s.id} d={s.d} vectorEffect="non-scaling-stroke" />)}
       </g>
       {hi.length ? (
         <g fill={style.highlightFill} stroke={style.highlight} strokeWidth={style.hairline * weight * 1.6} strokeLinejoin="round">
-          {hi.map((d, i) => <path key={i} d={d} vectorEffect="non-scaling-stroke" />)}
+          {hi.map((s) => <path key={s.id} d={s.d} vectorEffect="non-scaling-stroke" />)}
         </g>
       ) : null}
     </g>

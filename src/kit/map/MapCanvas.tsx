@@ -22,18 +22,25 @@ export interface MapCanvasProps {
   view?: PlaneBox;
   /** Paint the water/background rectangle (default true). */
   background?: boolean;
+  /**
+   * Extra drawing area on every side as a fraction of the canvas (default 0). The default view grows with it, so
+   * canvas px stay plane px; used under a 3D tilt so land never ends at the frame edge.
+   */
+  overscan?: number;
   children?: React.ReactNode;
 }
 
 /** SVG sized to the theme canvas; projection output is in `view` plane units. */
-export const MapCanvas: React.FC<MapCanvasProps> = ({projection, style, view, background = true, children}) => {
+export const MapCanvas: React.FC<MapCanvasProps> = ({projection, style, view, background = true, overscan = 0, children}) => {
   const theme = useTheme();
   const {width, height} = theme.canvas;
-  const v: PlaneBox = view ?? {x0: 0, y0: 0, x1: width, y1: height};
+  const ox = Math.round(width * overscan);
+  const oy = Math.round(height * overscan);
+  const v: PlaneBox = view ?? {x0: -ox, y0: -oy, x1: width + ox, y1: height + oy};
   const s = typeof style === 'string' ? mapStyle(style) : style ?? mapStyleFromTheme(theme);
   return (
     <MapContext.Provider value={{projection: projection ?? (geoIdentity() as unknown as GeoProjection), style: s, view: v}}>
-      <svg width={width} height={height} viewBox={`${v.x0} ${v.y0} ${v.x1 - v.x0} ${v.y1 - v.y0}`} style={{display: 'block'}}>
+      <svg width={width + 2 * ox} height={height + 2 * oy} viewBox={`${v.x0} ${v.y0} ${v.x1 - v.x0} ${v.y1 - v.y0}`} style={{display: 'block', marginLeft: -ox, marginTop: -oy}}>
         {background ? <rect x={v.x0} y={v.y0} width={v.x1 - v.x0} height={v.y1 - v.y0} fill={s.water} /> : null}
         {children}
       </svg>
