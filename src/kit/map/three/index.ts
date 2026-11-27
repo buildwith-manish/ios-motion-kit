@@ -1,1 +1,1 @@
-export {Region3D, regionShapes, type Region3DProps} from './Region3D';
+export {Region3D, riseSpring, type Region3DProps} from './Region3D';

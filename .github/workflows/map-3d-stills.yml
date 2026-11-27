@@ -1,0 +1,90 @@
+# Premium 3D region insert: 4K stills, one parallel job per state x shape, then one commit with all the PNGs.
+name: Map 3D stills
+on:
+  workflow_dispatch:
+    inputs:
+      scale:
+        description: 'Render scale (2 = 4K)'
+        default: '2'
+      times:
+        description: 'Comma-separated seconds'
+        default: '0.6,1.2,2.8'
+permissions:
+  contents: write
+concurrency:
+  group: map-3d-stills
+  cancel-in-progress: true
+jobs:
+  typecheck:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: kit-map
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npx tsc --noEmit
+  render:
+    needs: typecheck
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      max-parallel: 6
+      matrix:
+        state:
+          - {id: '08', name: Colorado}
+          - {id: '12', name: Florida}
+          - {id: '26', name: Michigan}
+        shape: [landscape, portrait]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: kit-map
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - name: Render
+        run: |
+          mkdir -p logs
+          node scripts/map_3d_still.mjs --id=${{ matrix.state.id }} --name=${{ matrix.state.name }} --shape=${{ matrix.shape }} --scale=${{ inputs.scale || '2' }} --times=${{ inputs.times || '0.6,1.2,2.8' }} --out=out 2>&1 | grep -v "^Bundling\|^Copying" | tee logs/${{ matrix.state.name }}-${{ matrix.shape }}.log
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: still-${{ matrix.state.name }}-${{ matrix.shape }}
+          path: |
+            out/*.png
+            logs/*.log
+  commit:
+    needs: render
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: kit-map
+      - uses: actions/download-artifact@v4
+        with:
+          path: collected
+          pattern: still-*
+          merge-multiple: true
+      - name: Commit
+        run: |
+          mkdir -p docs/previews/kit-map/three-premium docs/map-bake-logs
+          cp collected/*.png docs/previews/kit-map/three-premium/ 2>/dev/null || true
+          cat collected/*.log > docs/map-bake-logs/three-premium.log 2>/dev/null || true
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/previews/kit-map/three-premium docs/map-bake-logs
+          if git diff --cached --quiet; then echo "no change"; exit 0; fi
+          git commit -m "kit-map: premium 3D region stills (4K) + timings [skip ci]"
+          for i in 1 2 3 4 5 6; do
+            git pull --rebase origin kit-map && git push origin HEAD:kit-map && exit 0
+            sleep $((RANDOM % 15 + 5))
+          done
+          exit 1
