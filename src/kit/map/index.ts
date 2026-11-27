@@ -13,3 +13,7 @@ export * from './highlight';
 export {FocusDim, type FocusDimProps} from './FocusDim';
 export {RegionHighlight, HIGHLIGHT_BLUR_PX, type RegionHighlightProps} from './RegionHighlight';
 export {HighlightStage, type HighlightStageProps} from './HighlightStage';
+export {makeColorScale, scaleStops, mixColor, oklab, dataValues, hatchCss, type ChoroplethData, type ColorScaleSpec, type ColorScale} from './colorScale';
+export {staggerDelays, fillProgress, type ChoroplethOrder} from './choroplethTiming';
+export {Choropleth, type ChoroplethProps} from './Choropleth';
+export {MapLegend, type MapLegendProps} from './MapLegend';
