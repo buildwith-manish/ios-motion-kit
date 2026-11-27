@@ -8,3 +8,8 @@ export {RegionLayer, useBakedTopo, featureById, allFeatures, type RegionLayerPro
 export {CityLayer, useCity, cityAlignmentTransform, CITY_STROKE_PX, type CityData, type CityAlignment, type CityLayerProps} from './CityLayer';
 export {MapSourceLine} from './MapSourceLine';
 export * from './regions';
+export {useRegionShapes, regionFile} from './useRegionShapes';
+export * from './highlight';
+export {FocusDim, type FocusDimProps} from './FocusDim';
+export {RegionHighlight, HIGHLIGHT_BLUR_PX, type RegionHighlightProps} from './RegionHighlight';
+export {HighlightStage, type HighlightStageProps} from './HighlightStage';

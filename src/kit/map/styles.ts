@@ -19,6 +19,15 @@ export const mapStyleFromTheme = (theme: Theme, name: MapStyleName = theme.name 
     roadMajor: rgba(c.text.primary, lightTheme ? 0.7 : 0.65),
     waterFill: c.background.deep,
     park: rgba(c.semantic.positive, lightTheme ? 0.22 : 0.16),
+    dim: c.background.deep,
+    dimOpacity: lightTheme ? 0.55 : 0.4,
+    highlightSolid: rgba(c.accent, lightTheme ? 0.86 : 0.8),
+    innerLight: lightTheme ? c.background.lift : c.text.primary,
+    glow: c.accent,
+    // light themes have a pale `deep`, so their shadow ink is the dark text colour
+    shadow: rgba(lightTheme ? c.text.primary : c.background.deep, lightTheme ? 0.42 : 0.85),
+    missing: rgba(c.text.tertiary, lightTheme ? 0.14 : 0.16),
+    missingHatch: rgba(c.text.tertiary, lightTheme ? 0.75 : 0.7),
     hairline: 0.75,
   };
 };

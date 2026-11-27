@@ -19,6 +19,17 @@ export interface MapStyle {
   roadMajor: string;
   waterFill: string;
   park: string;
+  /** Veil colour of <FocusDim> and its strength at full dim (0..1). */
+  dim: string;
+  dimOpacity: number;
+  /** <RegionHighlight>: solid accent fill, soft inner light, faint outer glow, contact shadow (all theme-derived). */
+  highlightSolid: string;
+  innerLight: string;
+  glow: string;
+  shadow: string;
+  /** <Choropleth> missing values: muted fill and hatch line colour. */
+  missing: string;
+  missingHatch: string;
   /** Hairline stroke width in CSS px (non-scaling, so 4K via --scale=2 keeps it crisp). */
   hairline: number;
 }
