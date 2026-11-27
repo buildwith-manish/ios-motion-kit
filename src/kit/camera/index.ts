@@ -1,6 +1,7 @@
 export * from './types';
 export * from './noise';
 export * from './keyframes';
+export * from './lookAt';
 export * from './handheld';
 export * from './sample';
 export * from './canvas';

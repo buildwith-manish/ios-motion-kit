@@ -35,7 +35,8 @@ Other exports: `transitionProgress`, `getTransition` + the six effect factories 
 ## Rules this kit enforces
 - Outgoing opacity is exactly 0 and the outgoing scene is unmounted by the end; `auditTransition` checks it at 30/60 fps, landscape and vertical.
 - No frame has both layers at ~half opacity while both are static (incoming draws over a still-opaque outgoing, or one layer is masked).
-- Full-layer Gaussian blur is capped at 20px. Directional motion blur wraps only the moving layer and only above 1 px/frame.
+- Full-layer blur is capped at 20px. Directional motion blur wraps only the moving layer and only above 1 px/frame; it samples along the
+  supplied `(vx, vy)` path vector rather than applying separate x/y Gaussian sigmas.
 - Scenes should paint their own background. `theme.colors.background.deep` shows only where a scene is transparent or has scaled away from the edges (sheet, zoomThrough).
 
 ## matchedGeometry notes
