@@ -1,6 +1,8 @@
 // Numeric checks for src/kit/camera pure functions: npx tsx scripts/kit-camera-audit.ts
-import {sampleCamera, cameraScreenDelta, cameraAt, resolveEase, handheld, HANDHELD_MAX_PX, HANDHELD_MAX_DEG, rackSharpness, rackBlur, RACK_BLUR_CAP, cameraBlurLength, CAMERA_BLUR_CAP, depthTransform, tiltAngles, valueNoise1D} from '../src/kit/camera/index';
+import {sampleCamera, cameraScreenDelta, cameraAt, cameraMotionDelta, lookAt, resolveEase, handheld, HANDHELD_MAX_PX, HANDHELD_MAX_DEG, rackSharpness, rackBlur, RACK_BLUR_CAP, cameraBlurLength, CAMERA_BLUR_CAP, depthTransform, tiltAngles, valueNoise1D} from '../src/kit/camera/index';
 import {tiltStyle} from '../src/kit/camera/Tilt3D';
+import {iosSpring, SPRING_PRESETS} from '../src/kit/motion';
+import {directionalBlurVector, motionBlurLength} from '../src/kit/transitions/MotionBlur';
 
 let failed = 0;
 const ok = (name: string, cond: boolean, info = '') => {
@@ -8,6 +10,14 @@ const ok = (name: string, cond: boolean, info = '') => {
   console.log(`${cond ? 'PASS' : 'FAIL'}  ${name}${info ? '  ' + info : ''}`);
 };
 const near = (a: number, b: number, e = 1e-9) => Math.abs(a - b) <= e;
+
+// underdamped motion
+ok('bounce 0 exactly preserves the critically-damped spring', iosSpring(0.37, 0.8, {bounce: 0}) === iosSpring(0.37, 0.8));
+ok('hero spring overshoots and settles within 1%', iosSpring(SPRING_PRESETS.hero.response, SPRING_PRESETS.hero.response, SPRING_PRESETS.hero) > 1
+  && Math.abs(iosSpring(SPRING_PRESETS.hero.response * 4, SPRING_PRESETS.hero.response, SPRING_PRESETS.hero) - 1) < 0.01);
+let bounceThrew = false;
+try { iosSpring(0.2, 0.8, {bounce: 0.41}); } catch { bounceThrew = true; }
+ok('bounce above 0.4 throws', bounceThrew);
 
 // keyframes
 const kf = [{t: 0, x: 0, scale: 1}, {t: 2, x: 300, scale: 2, rotate: 4, ease: 'spring' as const}, {t: 3, x: 300}];
@@ -20,6 +30,8 @@ for (const e of ['ios', 'spring', 'linear', [0.4, 0, 0.2, 1] as const]) {
   const f = resolveEase(e as never, 1.7);
   ok(`ease ${JSON.stringify(e)}: f(0)=0, f(1)=1`, near(f(0), 0, 1e-6) && near(f(1), 1, 1e-6), `f(0.5)=${f(0.5).toFixed(3)}`);
 }
+const springBounce = resolveEase('spring', 1.2, 0.8, 0.15);
+ok('underdamped keyframe ease overshoots then lands at 1', springBounce(0.5) > 1 && near(springBounce(0), 0) && near(springBounce(1), 1));
 let threw = false;
 try { sampleCamera([{t: 0, scale: 0}], 0); } catch { threw = true; }
 ok('scale <= 0 throws', threw);
@@ -36,6 +48,19 @@ const d = cameraScreenDelta({x: 0, y: 0, scale: 1, rotate: 0}, {x: 10, y: 4, sca
 ok('pan right 10 / down 4 moves picture (-10,-4)', near(d.dx, -10) && near(d.dy, -4));
 ok('zoom 2 doubles screen speed', near(cameraScreenDelta({x: 0, y: 0, scale: 2, rotate: 0}, {x: 10, y: 0, scale: 2, rotate: 0}).dx, -20));
 ok('no motion -> exactly 0 delta', cameraAt(10, [{t: 0, x: 5}], {fps: 60, width: 1920, height: 1080}).speed === 0);
+const canvas = {fps: 60, width: 1920, height: 1080};
+const zoomMove = cameraAt(60, [{t: 0, scale: 1, ease: 'linear'}, {t: 2, scale: 1.5}], canvas);
+const rollMove = cameraAt(60, [{t: 0, rotate: 0, ease: 'linear'}, {t: 2, rotate: 20}], canvas);
+ok('camera blur vector includes zoom velocity', zoomMove.motionSpeed > 1);
+ok('camera blur vector includes roll velocity', rollMove.motionSpeed > 1);
+ok('zero pose change has no apparent camera motion', JSON.stringify(cameraMotionDelta(zoomMove.base, zoomMove.base, canvas)) === JSON.stringify({dx: 0, dy: 0}));
+const looked = lookAt({x: 900, y: 500, width: 120, height: 80}, {canvas, padding: 100});
+ok('lookAt centres and fits a canvas rectangle', near(looked.x, 0) && near(looked.y, 0) && near(looked.scale, 11));
+const idLook = lookAt('card', {canvas, zoom: 1.4, elementRects: {card: {x: 1100, y: 500, width: 200, height: 100}}});
+ok('lookAt resolves a deterministic element id', near(idLook.x, 240) && near(idLook.y, 10) && idLook.scale === 1.4);
+let missingIdThrew = false;
+try { lookAt('missing', {canvas}); } catch { missingIdThrew = true; }
+ok('lookAt rejects an unresolved element id', missingIdThrew);
 
 // handheld
 let maxX = 0, maxR = 0, nonzero = 0;
@@ -58,6 +83,10 @@ ok('blur 0 at/below threshold', cameraBlurLength(3, {threshold: 3}) === 0 && cam
 ok('blur threshold never below 1 px/frame', cameraBlurLength(1, {threshold: 0}) === 0 && cameraBlurLength(1.5, {threshold: 0}) > 0);
 ok('blur continuous at threshold', cameraBlurLength(3.0001, {threshold: 3}) < 0.001);
 ok('blur capped at 20 even if asked for 99', cameraBlurLength(1e6, {cap: 99}) === CAMERA_BLUR_CAP);
+const diagonalBlur = directionalBlurVector(3, 4, 0.5, 20, 1);
+ok('directional blur follows the full diagonal vector', near(diagonalBlur.dx, 1.5) && near(diagonalBlur.dy, 2) && near(diagonalBlur.length, 2.5));
+ok('directional blur gates low speeds and caps length', directionalBlurVector(0.5, 0.5).length === 0 && directionalBlurVector(1e6, 0, 1, 99).length === 20);
+ok('legacy blur-length helper also honours the 20px hard cap', motionBlurLength(1e6, 1, 99) === 20);
 
 // rack focus
 const sched = [{t: 0, layer: 'a'}, {t: 4, layer: 'b'}];

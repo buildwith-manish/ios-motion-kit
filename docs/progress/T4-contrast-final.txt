@@ -1,0 +1,16 @@
+bundling src/kit/demo/entry.tsx ...
+browser: KIT_CHROME
+Kit-Camera-Demo: 20 frames, 0 finding(s)
+Kit-Camera-Demo-Vertical: 20 frames, 0 finding(s)
+Kit-Camera-Demo-30fps: 20 frames, 0 finding(s)
+Kit-Camera-Depth-Compare: 6 frames, 0 finding(s)
+
+Text below 4.5:1 (10th-percentile pixel)
+composition               status  text                   ratio  text on background  size  seen  samples
+------------------------  ------  ---------------------  -----  ------------------  ----  ----  -------
+Kit-Camera-Demo           pass    5 text run(s) checked  -      -                   -     -     -
+Kit-Camera-Demo-Vertical  pass    5 text run(s) checked  -      -                   -     -     -
+Kit-Camera-Demo-30fps     pass    5 text run(s) checked  -      -                   -     -     -
+Kit-Camera-Depth-Compare  pass    5 text run(s) checked  -      -                   -     -     -
+
+JSON: ../../../../tmp/t4-contrast-final/contrast.json

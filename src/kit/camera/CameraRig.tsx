@@ -9,21 +9,21 @@ import {cameraTransform} from './keyframes';
 import type {HandheldOptions} from './handheld';
 import type {CameraKeyframe, CameraSample} from './types';
 
-/** Hard cap on camera motion-blur sigma, px (full-layer blur stays <= 20px). */
+/** Hard cap on camera motion-blur travel, px (full-layer blur stays <= 20px). */
 export const CAMERA_BLUR_CAP = 20;
 
 /** Options for camera motion blur. */
 export interface CameraMotionBlurOptions {
-  /** On-screen speed in px/frame above which blur starts (never below 1). Default 3. */
+  /** Apparent picture speed in px/frame above which blur starts (never below 1), including pan/zoom/roll. Default 3. */
   threshold?: number;
   /** Shutter, 0..1 (0.5 = 180 degrees). Default 0.5. */
   shutter?: number;
-  /** Max blur sigma in px, clamped to {@link CAMERA_BLUR_CAP}. Default 14. */
+  /** Max blur travel in px, clamped to {@link CAMERA_BLUR_CAP}. Default 14. */
   cap?: number;
 }
 
 /**
- * Blur sigma (px) for a camera moving `speed` px/frame: 0 up to `threshold`, then ramps from 0 (no pop at the
+ * Blur travel (px) for a camera moving `speed` px/frame: 0 up to `threshold`, then ramps from 0 (no pop at the
  * threshold) at `shutter` px of blur per extra px/frame, capped. Pure.
  * @example cameraBlurLength(13, {threshold: 3, shutter: 0.5}) // 5
  */
@@ -74,10 +74,10 @@ export const CameraRig: React.FC<CameraRigProps> = ({frame, keyframes, canvas, t
   let bdx = 0;
   let bdy = 0;
   if (mb) {
-    const len = cameraBlurLength(cam.speed, mb);
+    const len = cameraBlurLength(cam.motionSpeed, mb);
     if (len > 0) {
-      bdx = (cam.delta.dx / cam.speed) * len;
-      bdy = (cam.delta.dy / cam.speed) * len;
+      bdx = (cam.motion.dx / cam.motionSpeed) * len;
+      bdy = (cam.motion.dy / cam.motionSpeed) * len;
     }
   }
   const content = typeof children === 'function' ? children(cam) : children;
