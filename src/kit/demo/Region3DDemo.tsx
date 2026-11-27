@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useCallback, useState} from 'react';
 import {AbsoluteFill, Composition, useCurrentFrame} from 'remotion';
 import {CANVAS, createTheme, rgba, textStyle, ThemeProvider, unit, useTheme, type Canvas, type ThemeName} from '../tokens';
 import {Glass} from '../glass';
@@ -7,6 +7,8 @@ import {NumberText} from '../text';
 import {Region3D} from '../map/three';
 
 const SECONDS = 3.5;
+const clamp01 = (x: number) => Math.min(1, Math.max(0, x));
+const easeOut = (x: number) => 1 - Math.pow(1 - clamp01(x), 3);
 
 const Scene: React.FC<{id: string; name: string}> = ({id, name}) => {
   const theme = useTheme();
@@ -17,21 +19,52 @@ const Scene: React.FC<{id: string; name: string}> = ({id, name}) => {
   const portrait = height > width;
   const title = enter(t, 0.5, SPRING.SMOOTH, fps);
   const card = enter(t, 1.55, SPRING.SNAPPY, fps); // after the rise has settled
-  const cardW = 300 * u, cardH = 132 * u;
-  const pad = 96 * u;
+  const [anchor, setAnchor] = useState<{x: number; y: number} | null>(null);
+  const onAnchor = useCallback((x: number, y: number) => setAnchor({x, y}), []);
+
+  // card geometry from the reference: landscape ~17% of the width at ~31% of the height, right margin ~7.5%;
+  // portrait ~35% of the width, centred, top at ~62% of the height
+  const cardW = width * (portrait ? 0.35 : 0.17), cardH = cardW * 0.46;
+  const s = cardW / 300; // inner content scale
+  const cardLeft = portrait ? (width - cardW) / 2 : width - width * 0.075 - cardW;
+  const cardTop = portrait ? height * 0.62 : height * 0.31;
+  // leader target: landscape = left edge, mid-height; portrait = top edge, centre
+  const tx = portrait ? cardLeft + cardW / 2 : cardLeft;
+  const ty = portrait ? cardTop : cardTop + cardH / 2;
+
+  // pin after the rise settles (~1.2 s), line draws just before the card and the count-up
+  const pinIn = easeOut((t - 1.15) / 0.35);
+  const lineIn = easeOut((t - 1.3) / 0.5);
+  const pinR = 5 * u, ringR = 17 * u;
+  let line: {x1: number; y1: number; x2: number; y2: number} | null = null;
+  if (anchor) {
+    const dx = tx - anchor.x, dy = ty - anchor.y, len = Math.hypot(dx, dy) || 1;
+    const x1 = anchor.x + (dx / len) * ringR, y1 = anchor.y + (dy / len) * ringR;
+    line = {x1, y1, x2: x1 + (tx - x1) * lineIn, y2: y1 + (ty - y1) * lineIn};
+  }
+  const lineColor = rgba(theme.colors.text.primary, 0.55);
+  const pad = width * 0.05;
   return (
     <AbsoluteFill style={{background: theme.colors.background.base}}>
       <AbsoluteFill style={{background: `radial-gradient(ellipse at 38% 45%, ${rgba(theme.colors.background.lift, 0.55)} 0%, ${rgba(theme.colors.background.lift, 0)} 62%)`}} />
-      <Region3D id={id} t={t} duration={SECONDS} />
+      <Region3D id={id} t={t} duration={SECONDS} onAnchor={onAnchor} />
       <AbsoluteFill style={{background: `radial-gradient(ellipse at 50% 50%, ${rgba(theme.colors.background.deep, 0)} 55%, ${rgba(theme.colors.background.deep, 0.75)} 100%)`}} />
-      <div style={{position: 'absolute', left: pad, right: portrait ? pad : undefined, top: pad * (portrait ? 1.5 : 0.8), textAlign: portrait ? 'center' : 'left', opacity: title.opacity, transform: `translateY(${title.y}px)`}}>
+      {anchor && (
+        <svg width={width} height={height} style={{position: 'absolute', left: 0, top: 0, pointerEvents: 'none'}}>
+          {line && lineIn > 0.001 && <line x1={line.x1} y1={line.y1} x2={line.x2} y2={line.y2} stroke={lineColor} strokeWidth={Math.max(1.5, 2 * u)} strokeLinecap="round" />}
+          <circle cx={anchor.x} cy={anchor.y} r={ringR * pinIn} fill={rgba(theme.colors.text.primary, 0.12)} stroke={rgba(theme.colors.text.primary, 0.3)} strokeWidth={Math.max(1, 1.5 * u)} opacity={pinIn} />
+          <circle cx={anchor.x} cy={anchor.y} r={pinR * pinIn} fill={theme.colors.text.primary} opacity={pinIn} />
+        </svg>
+      )}
+      <div style={{position: 'absolute', left: pad, right: portrait ? pad : undefined, top: portrait ? height * 0.17 : height * 0.12, textAlign: portrait ? 'center' : 'left', opacity: title.opacity, transform: `translateY(${title.y}px)`}}>
         <div style={{...textStyle(theme, 'caption', {color: 'accent'}), letterSpacing: '0.18em', textTransform: 'uppercase'}}>Region spotlight</div>
         <div style={{...textStyle(theme, 'title'), marginTop: 10 * u, fontSize: theme.type.title.size * u * 1.15}}>{name}</div>
       </div>
-      <Glass tier="card" radius={22 * u} width={cardW} height={cardH} frame={frame} style={{position: 'absolute', left: portrait ? (width - cardW) / 2 : undefined, right: portrait ? undefined : pad * 1.2, top: portrait ? height * 0.74 : height * 0.5 - cardH / 2, boxSizing: 'border-box', padding: `${20 * u}px ${24 * u}px`, opacity: card.opacity, transform: `translateY(${card.y}px) scale(${card.scale})`}}>
+      <Glass tier="card" radius={22 * s} width={cardW} height={cardH} frame={frame} style={{position: 'absolute', left: cardLeft, top: cardTop, boxSizing: 'border-box', padding: `${20 * s}px ${24 * s}px`, opacity: card.opacity, transform: `translateY(${card.y}px) scale(${card.scale})`}}>
         <div style={textStyle(theme, 'caption', {color: 'secondary'})}>Sample index</div>
-        <div style={{marginTop: 6 * u}}>
-          <NumberText to={42.5} frame={frame} start={1.75} duration={0.9} decimals={1} suffix="%" role="number" fontSize={46 * u} />
+        <div style={{marginTop: 6 * s, display: 'flex', alignItems: 'baseline', gap: 4 * s}}>
+          <NumberText to={42.5} frame={frame} start={1.75} duration={0.9} decimals={1} role="number" fontSize={46 * s} />
+          <span style={{...textStyle(theme, 'caption', {color: 'accent'}), fontSize: 26 * s, fontWeight: 600}}>%</span>
         </div>
       </Glass>
     </AbsoluteFill>
