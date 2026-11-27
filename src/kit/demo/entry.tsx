@@ -24,3 +24,4 @@ registerRoot(() => (
     <KitDatavizCompositions />
   </>
 ));
+export {KitNumberRollCompositions} from './NumberRollDemo';

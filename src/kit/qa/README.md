@@ -85,8 +85,8 @@ Both DOM checks drive the bundle in their own page; compositions that use `<Offt
 
 - Scale is relative to the composition. `remotion.config.ts` (4K) does **not** apply to these scripts; use `--scale 2`.
 - Frame rate is only reduced, by dropping whole frames. A 30 fps composition stays 30 fps in review and final.
-- `motionBlurSamples` arrives as the input prop `kitRender`. It changes nothing unless a composition reads it with
-  `motionBlurSamples(props, fallback)` (the render props reach the composition as `props.kitRender`). `Kit-NumberRoll-Demo` (`src/kit/demo/numberRollEntry.tsx`) does: 1 sample turns its digit blur off.
+- `kit_render.mjs` passes the profile and `motionBlurSamples` as `props.kitRender`. A composition can read it with
+  `motionBlurSamples(props, fallback)`; `Kit-NumberRoll-Demo` (`src/kit/demo/NumberRollDemo.tsx`) turns digit blur off at 1 sample.
 - AAC is encoded from a lossless mix, because Remotion 4.0.250's own MP4 plays audio 42.7 ms late.
 
 ## Example (10 lines)
