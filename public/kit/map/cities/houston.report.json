@@ -1,0 +1,68 @@
+{
+ "rows": [
+  {
+   "city": "houston",
+   "detail": "light",
+   "kb": 64.1,
+   "budget": {
+    "scale": 1,
+    "dropped": []
+   },
+   "primary": 89,
+   "secondary": 39,
+   "water": 88,
+   "waterPolys": 0,
+   "parks": 0
+  },
+  {
+   "city": "houston",
+   "detail": "rich",
+   "kb": 358,
+   "budget": {
+    "scale": 1.5,
+    "dropped": []
+   },
+   "primary": 89,
+   "secondary": 39,
+   "local": 4082,
+   "ramp": 536,
+   "service": 134,
+   "other": 934,
+   "water": 97,
+   "waterPolys": 15,
+   "parks": 1
+  }
+ ],
+ "unmapped": {
+  "K1236": 1,
+  "K2540": 1,
+  "K1231": 1,
+  "K1235": 1,
+  "K1237": 1
+ },
+ "counties": [
+  "48201"
+ ],
+ "sources": [
+  {
+   "layer": "roads",
+   "vintage": "2025",
+   "files": 1
+  },
+  {
+   "layer": "areawater",
+   "vintage": "2025",
+   "files": 1
+  },
+  {
+   "layer": "linearwater",
+   "vintage": "2025",
+   "files": 1
+  },
+  {
+   "layer": "arealm",
+   "vintage": "2025",
+   "files": 1
+  }
+ ]
+}

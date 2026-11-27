@@ -13,15 +13,10 @@ houston: box 14 km at 29.7604,-95.3698; counties 48201
 [dissolve2] Dissolved 6,251 features into 36 features
 [o] Wrote /home/runner/work/ios-motion-kit/ios-motion-kit/.cache/city-tmp/houston/arealm.json
   arealm: 6 features in box (TIGER2025)
-file:///home/runner/work/ios-motion-kit/ios-motion-kit/scripts/map_bake_city.mjs:167
-const lines = (g) => g.type === 'LineString' ? [g.coordinates] : g.type === 'MultiLineString' ? g.coordinates : [];
-                       ^
-
-TypeError: Cannot read properties of null (reading 'type')
-    at lines (file:///home/runner/work/ios-motion-kit/ios-motion-kit/scripts/map_bake_city.mjs:167:24)
-    at build (file:///home/runner/work/ios-motion-kit/ios-motion-kit/scripts/map_bake_city.mjs:210:21)
-    at assemble (file:///home/runner/work/ios-motion-kit/ios-motion-kit/scripts/map_bake_city.mjs:247:15)
-    at file:///home/runner/work/ios-motion-kit/ios-motion-kit/scripts/map_bake_city.mjs:274:25
-    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
-
-Node.js v20.20.2
+┌─────────┬───────────┬─────────┬──────┬─────────────────────────────┬─────────┬───────────┬───────┬────────────┬───────┬───────┬──────┬─────────┬───────┐
+│ (index) │ city      │ detail  │ kb   │ budget                      │ primary │ secondary │ water │ waterPolys │ parks │ local │ ramp │ service │ other │
+├─────────┼───────────┼─────────┼──────┼─────────────────────────────┼─────────┼───────────┼───────┼────────────┼───────┼───────┼──────┼─────────┼───────┤
+│ 0       │ 'houston' │ 'light' │ 64.1 │ { scale: 1, dropped: [] }   │ 89      │ 39        │ 88    │ 0          │ 0     │       │      │         │       │
+│ 1       │ 'houston' │ 'rich'  │ 358  │ { scale: 1.5, dropped: [] } │ 89      │ 39        │ 97    │ 15         │ 1     │ 4082  │ 536  │ 134     │ 934   │
+└─────────┴───────────┴─────────┴──────┴─────────────────────────────┴─────────┴───────────┴───────┴────────────┴───────┴───────┴──────┴─────────┴───────┘
+MTFCC codes in the data but not in the table (audit against the official list): { K1236: 1, K2540: 1, K1231: 1, K1235: 1, K1237: 1 }
