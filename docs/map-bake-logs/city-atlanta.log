@@ -6,12 +6,25 @@ atlanta: box 14 km at 33.749,-84.388; counties 13089, 13121
   areawater: 3 features in box (TIGER2025)
 [o] Wrote /home/runner/work/ios-motion-kit/ios-motion-kit/.cache/city-tmp/atlanta/linearwater.json
   linearwater: 127 features in box (TIGER2025)
-  arealm 13089: not published, skipped
-  arealm 13121: not published, skipped
-  arealm: 0 features in box (TIGER-)
+[merge-layers] Use the target= option to specify multiple layers for merging
+[dissolve2] Dissolved 4,554 features into 31 features
+[o] Wrote /home/runner/work/ios-motion-kit/ios-motion-kit/.cache/city-tmp/atlanta/arealm.json
+  arealm: 13 features in box (TIGER2025)
 ┌─────────┬───────────┬─────────┬───────┬─────────────────────────────┬─────────┬───────────┬───────┬────────────┬───────┬───────┬──────┬─────────┬───────┐
 │ (index) │ city      │ detail  │ kb    │ budget                      │ primary │ secondary │ water │ waterPolys │ parks │ local │ ramp │ service │ other │
 ├─────────┼───────────┼─────────┼───────┼─────────────────────────────┼─────────┼───────────┼───────┼────────────┼───────┼───────┼──────┼─────────┼───────┤
 │ 0       │ 'atlanta' │ 'light' │ 78.1  │ { scale: 1, dropped: [] }   │ 28      │ 142       │ 137   │ 0          │ 0     │       │      │         │       │
-│ 1       │ 'atlanta' │ 'rich'  │ 348.1 │ { scale: 1.5, dropped: [] } │ 28      │ 142       │ 142   │ 19         │ 0     │ 4224  │ 317  │ 0       │ 125   │
+│ 1       │ 'atlanta' │ 'rich'  │ 353.1 │ { scale: 1.5, dropped: [] } │ 28      │ 142       │ 142   │ 19         │ 22    │ 4224  │ 317  │ 0       │ 125   │
 └─────────┴───────────┴─────────┴───────┴─────────────────────────────┴─────────┴───────────┴───────┴────────────┴───────┴───────┴──────┴─────────┴───────┘
+MTFCC codes in the data but not in the table (audit against the official list): {
+  K1237: 1,
+  K1236: 1,
+  K2582: 1,
+  K1231: 1,
+  K1235: 1,
+  K2540: 1,
+  K2561: 1,
+  K2564: 1,
+  K1121: 1,
+  K2165: 1
+}
