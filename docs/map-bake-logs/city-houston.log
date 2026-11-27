@@ -1,0 +1,25 @@
+houston: box 14 km at 29.7604,-95.3698; counties 48201
+[merge-layers] Use the target= option to specify multiple layers for merging
+[o] Wrote /home/runner/work/ios-motion-kit/ios-motion-kit/.cache/city-tmp/houston/roads.json
+  roads: 6690 features in box (TIGER2025)
+[merge-layers] Use the target= option to specify multiple layers for merging
+[dissolve2] Dissolved 5,889 features into 6 features
+[o] Wrote /home/runner/work/ios-motion-kit/ios-motion-kit/.cache/city-tmp/houston/areawater.json
+  areawater: 2 features in box (TIGER2025)
+[merge-layers] Use the target= option to specify multiple layers for merging
+[o] Wrote /home/runner/work/ios-motion-kit/ios-motion-kit/.cache/city-tmp/houston/linearwater.json
+  linearwater: 84 features in box (TIGER2025)
+  arealm 48201: not published, skipped
+  arealm: 0 features in box (TIGER-)
+file:///home/runner/work/ios-motion-kit/ios-motion-kit/scripts/map_bake_city.mjs:167
+const lines = (g) => g.type === 'LineString' ? [g.coordinates] : g.type === 'MultiLineString' ? g.coordinates : [];
+                       ^
+
+TypeError: Cannot read properties of null (reading 'type')
+    at lines (file:///home/runner/work/ios-motion-kit/ios-motion-kit/scripts/map_bake_city.mjs:167:24)
+    at build (file:///home/runner/work/ios-motion-kit/ios-motion-kit/scripts/map_bake_city.mjs:208:21)
+    at assemble (file:///home/runner/work/ios-motion-kit/ios-motion-kit/scripts/map_bake_city.mjs:245:15)
+    at file:///home/runner/work/ios-motion-kit/ios-motion-kit/scripts/map_bake_city.mjs:272:25
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+
+Node.js v20.20.2
