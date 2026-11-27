@@ -107,7 +107,7 @@ export const MetroMap: React.FC<MetroMapProps> = ({
   const waterTop = style.waterFill;
   const waterBottom = mixColor(style.waterFill, style.landAlt, hero ? 0.5 : 0.3);
   const landGlow = mixColor(style.land, style.landAlt, 0.55);
-  const roadInk = (cls: MetroClass) => rgba(theme.colors.text.primary, metroTierAlpha(cls, light));
+  const roadInk = (cls: MetroClass) => rgba(theme.colors.text.primary, metroTierAlpha(cls, light, !hero));
   const glowInk = rgba(theme.colors.accent, light ? 0.3 : 0.24);
   const wScale = (cls: MetroClass) => metroStrokePx(cls, zoom, weight);
 

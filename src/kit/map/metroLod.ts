@@ -45,7 +45,11 @@ export const metroStrokePx = (cls: MetroClass, zoom: number, weight = 1): number
  * `light` themes need a little more ink to hold the same hierarchy.
  */
 export const METRO_TIER_ALPHA: Record<MetroClass, number> = {primary: 0.88, secondary: 0.52, ramp: 0.4, local: 0.3, service: 0.2, other: 0.16};
-export const metroTierAlpha = (cls: MetroClass, light: boolean): number => Math.min(1, METRO_TIER_ALPHA[cls] * (light ? 1.3 : 1));
+export const metroTierAlpha = (cls: MetroClass, light: boolean, compress = false): number => {
+  const a = Math.min(1, METRO_TIER_ALPHA[cls] * (light ? 1.3 : 1));
+  // dim mode multiplies everything by a low opacity, so the quiet tiers would vanish: compress the range, keep the order
+  return compress ? Math.pow(a, 0.55) : a;
+};
 
 /** Hero keeps full brightness. Dim sits behind content at low opacity. */
 export type MetroMode = 'hero' | 'dim';
