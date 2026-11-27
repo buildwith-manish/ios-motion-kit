@@ -26,6 +26,12 @@
       ]
     },
     {
+      "id": "houston",
+      "counties": [
+        "48201"
+      ]
+    },
+    {
       "id": "los-angeles",
       "counties": [
         "06037"
