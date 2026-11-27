@@ -17,23 +17,34 @@
   {
    "city": "los-angeles",
    "detail": "rich",
-   "kb": 397.6,
+   "kb": 356.8,
    "budget": {
-    "scale": 1,
+    "scale": 1.5,
     "dropped": []
    },
    "primary": 71,
    "secondary": 9,
-   "local": 5084,
-   "ramp": 772,
+   "local": 4961,
+   "ramp": 758,
    "service": 2,
-   "other": 133,
-   "water": 46,
+   "other": 112,
+   "water": 44,
    "waterPolys": 16,
-   "parks": 0
+   "parks": 55
   }
  ],
- "unmapped": {},
+ "unmapped": {
+  "K2582": 1,
+  "K2543": 1,
+  "K1236": 1,
+  "K2564": 1,
+  "K1237": 1,
+  "K2361": 1,
+  "K1231": 1,
+  "K2540": 1,
+  "K1235": 1,
+  "K1238": 1
+ },
  "counties": [
   "06037"
  ],
@@ -55,8 +66,8 @@
   },
   {
    "layer": "arealm",
-   "vintage": null,
-   "files": 0
+   "vintage": "2025",
+   "files": 1
   }
  ]
 }
