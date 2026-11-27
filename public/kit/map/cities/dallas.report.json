@@ -17,7 +17,7 @@
   {
    "city": "dallas",
    "detail": "rich",
-   "kb": 388.4,
+   "kb": 388.6,
    "budget": {
     "scale": 1,
     "dropped": []
@@ -30,10 +30,18 @@
    "other": 147,
    "water": 122,
    "waterPolys": 48,
-   "parks": 0
+   "parks": 1
   }
  ],
- "unmapped": {},
+ "unmapped": {
+  "K1236": 1,
+  "K2540": 1,
+  "K1231": 1,
+  "K2457": 1,
+  "K1235": 1,
+  "K2543": 1,
+  "K1237": 1
+ },
  "counties": [
   "48113"
  ],
@@ -55,8 +63,8 @@
   },
   {
    "layer": "arealm",
-   "vintage": null,
-   "files": 0
+   "vintage": "2025",
+   "files": 1
   }
  ]
 }

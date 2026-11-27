@@ -9,11 +9,22 @@ dallas: box 14 km at 32.7767,-96.797; counties 48113
 [merge-layers] Use the target= option to specify multiple layers for merging
 [o] Wrote /home/runner/work/ios-motion-kit/ios-motion-kit/.cache/city-tmp/dallas/linearwater.json
   linearwater: 65 features in box (TIGER2025)
-  arealm 48113: not published, skipped
-  arealm: 0 features in box (TIGER-)
+[merge-layers] Use the target= option to specify multiple layers for merging
+[dissolve2] Dissolved 6,251 features into 36 features
+[o] Wrote /home/runner/work/ios-motion-kit/ios-motion-kit/.cache/city-tmp/dallas/arealm.json
+  arealm: 8 features in box (TIGER2025)
 ┌─────────┬──────────┬─────────┬───────┬───────────────────────────┬─────────┬───────────┬───────┬────────────┬───────┬───────┬──────┬─────────┬───────┐
 │ (index) │ city     │ detail  │ kb    │ budget                    │ primary │ secondary │ water │ waterPolys │ parks │ local │ ramp │ service │ other │
 ├─────────┼──────────┼─────────┼───────┼───────────────────────────┼─────────┼───────────┼───────┼────────────┼───────┼───────┼──────┼─────────┼───────┤
 │ 0       │ 'dallas' │ 'light' │ 61.4  │ { scale: 1, dropped: [] } │ 59      │ 63        │ 108   │ 0          │ 0     │       │      │         │       │
-│ 1       │ 'dallas' │ 'rich'  │ 388.4 │ { scale: 1, dropped: [] } │ 59      │ 63        │ 122   │ 48         │ 0     │ 4373  │ 416  │ 56      │ 147   │
+│ 1       │ 'dallas' │ 'rich'  │ 388.6 │ { scale: 1, dropped: [] } │ 59      │ 63        │ 122   │ 48         │ 1     │ 4373  │ 416  │ 56      │ 147   │
 └─────────┴──────────┴─────────┴───────┴───────────────────────────┴─────────┴───────────┴───────┴────────────┴───────┴───────┴──────┴─────────┴───────┘
+MTFCC codes in the data but not in the table (audit against the official list): {
+  K1236: 1,
+  K2540: 1,
+  K1231: 1,
+  K2457: 1,
+  K1235: 1,
+  K2543: 1,
+  K1237: 1
+}
