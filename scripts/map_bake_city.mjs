@@ -63,6 +63,7 @@ const MTFCC = {
   H2051: ['water', 'bay'],       // Bay/Estuary/Gulf/Sound
   H2053: ['water', 'ocean'],     // Ocean/Sea
   H2060: ['water', 'pit'],       // Gravel Pit/Quarry filled with water
+  H1100: ['skip', 'connector'], // Connector (water line across a water body; not drawn)
   H2081: ['water', 'glacier'],   // Glacier
   H3010: ['water', 'stream'],    // Stream/River
   H3013: ['water', 'braided'],   // Braided Stream
