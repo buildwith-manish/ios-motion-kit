@@ -1,5 +1,5 @@
-import React, {useCallback, useState} from 'react';
-import {AbsoluteFill, Composition, useCurrentFrame} from 'remotion';
+import React, {useCallback, useEffect, useState} from 'react';
+import {AbsoluteFill, Composition, continueRender, delayRender, staticFile, useCurrentFrame} from 'remotion';
 import {CANVAS, createTheme, rgba, textStyle, ThemeProvider, unit, useTheme, type Canvas, type ThemeName} from '../tokens';
 import {Glass} from '../glass';
 import {enter, SPRING} from '../motion';
@@ -10,7 +10,16 @@ const SECONDS = 3.5;
 const clamp01 = (x: number) => Math.min(1, Math.max(0, x));
 const easeOut = (x: number) => 1 - Math.pow(1 - clamp01(x), 3);
 
+/** Bundled Inter (woff2 in public/kit/fonts, from @fontsource/inter): the theme font stacks already list "Inter", so CI renders it instead of a system fallback. */
+let interLoad: Promise<unknown> | null = null;
+const loadInter = () => (interLoad ??= Promise.all([600, 700].map((w) => new FontFace('Inter', `url(${staticFile(`kit/fonts/inter-latin-${w}-normal.woff2`)}) format('woff2')`, {weight: String(w), style: 'normal'}).load().then((f) => document.fonts.add(f)))).catch((e) => console.warn('Inter failed to load', e)));
+const useInter = () => {
+  const [handle] = useState(() => delayRender('Inter font'));
+  useEffect(() => { loadInter().finally(() => continueRender(handle)); }, [handle]);
+};
+
 const Scene: React.FC<{id: string; name: string}> = ({id, name}) => {
+  useInter();
   const theme = useTheme();
   const frame = useCurrentFrame();
   const {width, height, fps} = theme.canvas;
@@ -27,7 +36,7 @@ const Scene: React.FC<{id: string; name: string}> = ({id, name}) => {
   const cardW = width * (portrait ? 0.35 : 0.17), cardH = cardW * 0.46;
   const s = cardW / 300; // inner content scale
   const cardLeft = portrait ? (width - cardW) / 2 : width - width * 0.075 - cardW;
-  const cardTop = portrait ? height * 0.62 : height * 0.31;
+  const cardTop = portrait ? height * 0.62 : height * 0.27;
   // leader target: landscape = left edge, mid-height; portrait = top edge, centre
   const tx = portrait ? cardLeft + cardW / 2 : cardLeft;
   const ty = portrait ? cardTop : cardTop + cardH / 2;
@@ -58,7 +67,7 @@ const Scene: React.FC<{id: string; name: string}> = ({id, name}) => {
       )}
       <div style={{position: 'absolute', left: pad, right: portrait ? pad : undefined, top: portrait ? height * 0.17 : height * 0.12, textAlign: portrait ? 'center' : 'left', opacity: title.opacity, transform: `translateY(${title.y}px)`}}>
         <div style={{...textStyle(theme, 'caption', {color: 'accent'}), letterSpacing: '0.18em', textTransform: 'uppercase'}}>Region spotlight</div>
-        <div style={{...textStyle(theme, 'title'), marginTop: 10 * u, fontSize: theme.type.title.size * u * 1.15}}>{name}</div>
+        <div style={{...textStyle(theme, 'title'), marginTop: 10 * u, fontSize: theme.type.title.size * u * 1.0}}>{name}</div>
       </div>
       <Glass tier="card" radius={22 * s} width={cardW} height={cardH} frame={frame} style={{position: 'absolute', left: cardLeft, top: cardTop, boxSizing: 'border-box', padding: `${20 * s}px ${24 * s}px`, opacity: card.opacity, transform: `translateY(${card.y}px) scale(${card.scale})`}}>
         <div style={textStyle(theme, 'caption', {color: 'secondary'})}>Sample index</div>

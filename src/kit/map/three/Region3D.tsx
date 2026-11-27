@@ -229,13 +229,13 @@ export const Region3D: React.FC<Region3DProps> = ({file = 'states.json', id, t, 
     const proj = geoAlbers().fitSize([SIZE, SIZE], target);
     const main = buildShapes(target, proj, {eps: SIZE * 0.01, minArea: SIZE * SIZE * 0.0005, minHole: SIZE * SIZE * 0.004, smooth: true});
     const maxDim = Math.max(main.w, main.h);
-    const depth = 0.055 * maxDim;
+    const depth = 0.085 * maxDim;
     // pin point: visual centre of the largest part
     const big = main.outers.reduce((a, b) => (ringArea(b) > ringArea(a) ? b : a), main.outers[0]);
     const pole = poleOf(big);
     // camera fit: the bounding extent fills the same share of the frame in every state, at the widest drift angle
-    const fillW = portrait ? 0.8 : 0.62, fillH = portrait ? 0.34 : 0.56;
-    const elMax = 60 * deg, elMin = 53 * deg, azMax = 5 * deg;
+    const fillW = portrait ? 0.86 : 0.7, fillH = portrait ? 0.38 : 0.64;
+    const elMax = 54 * deg, elMin = 44 * deg, azMax = 5 * deg;
     const wExt = main.w * Math.cos(azMax) + main.h * Math.sin(azMax);
     const hExt = main.h * Math.sin(elMax) + depth * Math.cos(elMin);
     const tanH = Math.tan((fov * deg) / 2);
@@ -245,7 +245,7 @@ export const Region3D: React.FC<Region3DProps> = ({file = 'states.json', id, t, 
     const bg = mix(theme.colors.background.deep, theme.colors.background.base, 0.45);
     const tiles: {geo: THREE.BufferGeometry; key: string}[] = [];
     if (neighbors) {
-      const c = {top: mix(theme.colors.background.base, theme.colors.background.lift, 0.25), edge: mix(theme.colors.background.lift, theme.colors.text.secondary, 0.16), side: new THREE.Color(theme.colors.background.deep), bg};
+      const c = {top: mix(bg, theme.colors.background.deep, 0.4), edge: mix(theme.colors.background.lift, theme.colors.text.secondary, 0.16), side: new THREE.Color(theme.colors.background.deep), bg};
       for (const f of fc.features) {
         const fid = String(f.id);
         if (fid === id || skipIds.includes(fid)) continue;
@@ -259,11 +259,11 @@ export const Region3D: React.FC<Region3DProps> = ({file = 'states.json', id, t, 
     // reference palette, all from theme tokens: a teal between the cool tint and the accent, darkened toward the deep background
     const teal = mix(theme.colors.tint.a, theme.colors.accent, 0.42);
     const slab = slabGeometry(main.shapes, {
-      top0: mix(theme.colors.background.deep, teal, 0.7),
-      topMid: mix(theme.colors.background.deep, theme.colors.tint.a, 0.42),
+      top0: mix(mix(theme.colors.background.base, mix(theme.colors.tint.a, theme.colors.accent, 0.35), 0.45), theme.colors.text.primary, 0.02),
+      topMid: mix(theme.colors.background.base, mix(theme.colors.tint.a, theme.colors.accent, 0.15), 0.2),
       top1: mix(theme.colors.background.base, theme.colors.background.lift, 0.53),
-      wallHi: mix(theme.colors.background.deep, teal, 0.22),
-      wallLo: mix(theme.colors.background.deep, teal, 0.08),
+      wallHi: mix(theme.colors.background.deep, teal, 0.3),
+      wallLo: mix(theme.colors.background.deep, teal, 0.12),
       glint: mix(theme.colors.background.deep, teal, 0.4),
       rim: mix(teal, theme.colors.text.primary, 0.42),
     }, main.w, main.h, main.cx, main.cy);
@@ -278,7 +278,7 @@ export const Region3D: React.FC<Region3DProps> = ({file = 'states.json', id, t, 
   const k = riseSpring(t - 0.15, rise); // tiny overshoot, then rests at 1
   const ep = smoother(p);
   const az = (-2 - 3 * ep) * deg;
-  const el = (60 - 7 * easeOut(t / (rise + 0.9))) * deg; // tilts down onto the region as it lands
+  const el = (54 - 9 * easeOut(t / (rise + 0.9))) * deg; // tilts down onto the region as it lands
   const pose = scene ? (() => {
     const d = scene.dist * (1.04 - 0.04 * ep);
     const look: [number, number, number] = [scene.main.cx, scene.depth * 0.35, -scene.main.cy];
@@ -311,9 +311,14 @@ export const Region3D: React.FC<Region3DProps> = ({file = 'states.json', id, t, 
         </mesh>
       ))}
       {/* soft teal ground glow and a tighter contact shadow lie just above the neighbour tops */}
-      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[main.cx - maxDim * 0.05, tileH + 0.002, -main.cy + maxDim * 0.05]} scale={[main.w * 1.45 + maxDim * 0.3, main.h * 1.45 + maxDim * 0.3, 1]} renderOrder={1}>
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[main.cx - maxDim * 0.05, tileH + 0.002, -main.cy + maxDim * 0.05]} scale={[main.w * 1.8 + maxDim * 0.4, main.h * 1.8 + maxDim * 0.4, 1]} renderOrder={1}>
         <planeGeometry args={[1, 1]} />
-        <meshBasicMaterial map={glowTex} transparent depthWrite={false} opacity={shadowA * 0.6} toneMapped={false} />
+        <meshBasicMaterial map={glowTex} transparent depthWrite={false} opacity={shadowA * 0.95} toneMapped={false} />
+      </mesh>
+      {/* faint accent-teal glow hugging the west and south walls */}
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[main.cx - maxDim * 0.035, tileH + 0.003, -main.cy + maxDim * 0.04]} scale={[main.w * 1.2, main.h * 1.2, 1]} renderOrder={1}>
+        <planeGeometry args={[1, 1]} />
+        <meshBasicMaterial map={glowTex} transparent depthWrite={false} blending={THREE.AdditiveBlending} opacity={shadowA * 0.4} toneMapped={false} />
       </mesh>
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[main.cx + maxDim * 0.012, tileH + 0.004, -main.cy - maxDim * 0.02]} scale={[main.w * 1.1, main.h * 1.1, 1]} renderOrder={2}>
         <planeGeometry args={[1, 1]} />
