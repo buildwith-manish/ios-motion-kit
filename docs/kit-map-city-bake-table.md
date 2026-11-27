@@ -1,0 +1,26 @@
+# City bake table (generated)
+
+TIGER/Line vintage(s): 2025
+
+| city | tier | KB | primary | secondary | local | ramp | service | other | water | waterPolys | parks | budget step |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| atlanta | light | 78.1 | 28 | 142 | - | - | - | - | 137 | 0 | 0 | x1 |
+| atlanta | rich | 348.1 | 28 | 142 | 4224 | 317 | 0 | 125 | 142 | 19 | 0 | x1.5 |
+| chicago | light | 32.9 | 57 | 36 | - | - | - | - | 21 | 0 | 0 | x1 |
+| chicago | rich | 312.3 | 57 | 37 | 2489 | 300 | 119 | 3449 | 22 | 15 | 0 | x1 |
+| dallas | light | 61.4 | 59 | 63 | - | - | - | - | 108 | 0 | 0 | x1 |
+| dallas | rich | 388.4 | 59 | 63 | 4373 | 416 | 56 | 147 | 122 | 48 | 0 | x1 |
+| los-angeles | light | 37.4 | 71 | 9 | - | - | - | - | 44 | 0 | 0 | x1 |
+| los-angeles | rich | 397.6 | 71 | 9 | 5084 | 772 | 2 | 133 | 46 | 16 | 0 | x1 |
+| miami | light | 73.6 | 26 | 123 | - | - | - | - | 83 | 0 | 0 | x1 |
+| miami | rich | 310.3 | 26 | 125 | 2611 | 231 | 0 | 80 | 104 | 51 | 0 | x1 |
+| new-york | light | 70.7 | 154 | 84 | - | - | - | - | 76 | 0 | 0 | x1 |
+| new-york | rich | 323.1 | 157 | 85 | 3403 | 430 | 19 | 64 | 90 | 44 | 0 | x1 |
+| philadelphia | light | 93.8 | 48 | 295 | - | - | - | - | 142 | 0 | 0 | x1 |
+| philadelphia | rich | 385.3 | 48 | 297 | 5563 | 404 | 150 | 27 | 155 | 47 | 0 | x1.5 |
+| phoenix | light | 27.8 | 36 | 9 | - | - | - | - | 124 | 0 | 0 | x1 |
+| phoenix | rich | 248.1 | 37 | 9 | 4006 | 253 | 0 | 96 | 130 | 14 | 0 | x1 |
+| washington | light | 90.2 | 90 | 271 | - | - | - | - | 111 | 0 | 0 | x1 |
+| washington | rich | 372.9 | 87 | 269 | 4345 | 593 | 156 | 64 | 99 | 25 | 0 | x2 |
+
+MTFCC codes seen in the data but missing from the baker's table: {"H1100":1}
