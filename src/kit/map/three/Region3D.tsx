@@ -218,7 +218,7 @@ export const Region3D: React.FC<Region3DProps> = ({file = 'states.json', id, t, 
   // composition: where the region's centre sits in the frame, as a fraction of the frame (reference: left of centre in
   // landscape to leave room for the card, upper part in portrait)
   const fx = layout === 'center' || portrait ? 0.5 : 0.4;
-  const fy = layout === 'center' || !portrait ? 0.5 : 0.43;
+  const fy = layout === 'center' ? 0.5 : portrait ? 0.43 : 0.53;
   const offX = -(fx - 0.5) * width, offY = -(fy - 0.5) * height;
 
   const scene = useMemo(() => {
@@ -227,7 +227,7 @@ export const Region3D: React.FC<Region3DProps> = ({file = 'states.json', id, t, 
     const target = fc.features.find((x: any) => String(x.id) === id);
     if (!target) return null;
     const proj = geoAlbers().fitSize([SIZE, SIZE], target);
-    const main = buildShapes(target, proj, {eps: SIZE * 0.01, minArea: SIZE * SIZE * 0.0005, minHole: SIZE * SIZE * 0.004, smooth: true});
+    const main = buildShapes(target, proj, {eps: SIZE * 0.014, minArea: SIZE * SIZE * 0.0008, minHole: SIZE * SIZE * 0.004, smooth: true});
     const maxDim = Math.max(main.w, main.h);
     const depth = 0.07 * maxDim;
     // pin point: visual centre of the largest part
