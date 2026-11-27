@@ -92,7 +92,7 @@ function mapshaper(argv) {
 }
 
 const censusUrl = (path, y = VINTAGE) => `https://www2.census.gov/geo/tiger/GENZ${y}/shp/${path}`;
-const YEAR_LIST = ['2026', '2025', '2024', '2023', '2022'].filter((y) => y <= VINTAGE);
+const YEAR_LIST = ['2026', '2025', '2024', '2023', '2022', '2021', '2020'].filter((y) => y <= VINTAGE);
 /** Downloads a cartographic file for the newest vintage that publishes it (<= the picked vintage; e.g. ZCTAs lag one year). */
 async function getZip(fileFor) {
   for (const y of YEAR_LIST) {
