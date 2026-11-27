@@ -20,3 +20,4 @@ export {MapLegend, type MapLegendProps} from './MapLegend';
 export {MetroMap, type MetroMapProps} from './MetroMap';
 export * from './metroLod';
 export {metroGeometry, metroView, metroIndex, visibleChunks, boundaryPath, lonLatToCity, simplifyMetres, CHUNK_POINTS, type MetroBudget, type MetroGeometry, type MetroView, type MetroViewInput, type Chunk} from './metroIndex';
+export {useCityAlignment} from './metroData';

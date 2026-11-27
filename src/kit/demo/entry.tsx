@@ -13,6 +13,7 @@ import {KitTextCompositions} from './TextDemo';
 import {KitQaCompositions} from './QaDemo';
 import {KitDatavizCompositions} from './DatavizDemo';
 import {KitMapCompositions} from './MapDemo';
+import {KitMetroCompositions} from './MetroDemo';
 
 registerRoot(() => (
   <>
@@ -24,5 +25,6 @@ registerRoot(() => (
     <KitQaCompositions />
     <KitDatavizCompositions />
     <KitMapCompositions />
+    <KitMetroCompositions />
   </>
 ));
