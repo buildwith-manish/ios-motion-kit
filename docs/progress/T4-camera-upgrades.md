@@ -20,12 +20,12 @@
 | Title-safe area (four camera compositions) | Eight findings across landscape, vertical, and 30 fps demos | 0 findings |
 | Numeric camera audit | — | All assertions pass |
 | TypeScript | — | `npx tsc --noEmit` passes |
-| Motion audit | Not completed locally | Pending GitHub Actions run |
+| Motion audit | Not completed locally | GitHub Actions run `46065708166` dispatched; result pending |
 
 Contrast logs: `T4-contrast.txt` and `T4-contrast-final.txt`; safe-area logs: `T4-safe-area.txt` and `T4-safe-area-confirm.txt`.
 
 ## NOT verified
 
-- Final four-composition motion audit is pending GitHub Actions.
+- Final four-composition motion audit is pending GitHub Actions run `46065708166`.
 - No full-motion video playback or cross-browser comparison.
 - No render-concurrency or performance benchmark for the seven-sample directional filter.
