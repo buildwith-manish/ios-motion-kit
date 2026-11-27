@@ -1,0 +1,62 @@
+{
+ "rows": [
+  {
+   "city": "dallas",
+   "detail": "light",
+   "kb": 61.4,
+   "budget": {
+    "scale": 1,
+    "dropped": []
+   },
+   "primary": 59,
+   "secondary": 63,
+   "water": 108,
+   "waterPolys": 0,
+   "parks": 0
+  },
+  {
+   "city": "dallas",
+   "detail": "rich",
+   "kb": 388.4,
+   "budget": {
+    "scale": 1,
+    "dropped": []
+   },
+   "primary": 59,
+   "secondary": 63,
+   "local": 4373,
+   "ramp": 416,
+   "service": 56,
+   "other": 147,
+   "water": 122,
+   "waterPolys": 48,
+   "parks": 0
+  }
+ ],
+ "unmapped": {},
+ "counties": [
+  "48113"
+ ],
+ "sources": [
+  {
+   "layer": "roads",
+   "vintage": "2025",
+   "files": 1
+  },
+  {
+   "layer": "areawater",
+   "vintage": "2025",
+   "files": 1
+  },
+  {
+   "layer": "linearwater",
+   "vintage": "2025",
+   "files": 1
+  },
+  {
+   "layer": "arealm",
+   "vintage": null,
+   "files": 0
+  }
+ ]
+}
