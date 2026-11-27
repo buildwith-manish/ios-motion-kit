@@ -1,5 +1,5 @@
 # Renders kit-map demo stills (1080p + 4K crops + city stills) and measures seconds per frame; commits them to kit-map.
-# Run: Actions -> "Map stills" -> Run workflow (after the region and city bakes).
+# Runs when this file or the stills script changes on kit-map (or manually once the workflow is on the default branch).
 name: Map stills
 on:
   workflow_dispatch:
@@ -7,6 +7,11 @@ on:
       cities:
         description: 'city ids (blank = all in cities.json)'
         default: ''
+  push:
+    branches: [kit-map]
+    paths:
+      - .github/workflows/map-stills.yml
+      - scripts/map_stills.mjs
 permissions:
   contents: write
 concurrency:
