@@ -33,7 +33,15 @@
    "parks": 0
   }
  ],
- "unmapped": {},
+ "unmapped": {
+  "K1237": 1,
+  "K1231": 1,
+  "K1236": 1,
+  "K2540": 1,
+  "K1235": 1,
+  "C3023": 1,
+  "K2543": 1
+ },
  "counties": [
   "12086"
  ],
@@ -55,8 +63,8 @@
   },
   {
    "layer": "arealm",
-   "vintage": null,
-   "files": 0
+   "vintage": "2025",
+   "files": 1
   }
  ]
 }
