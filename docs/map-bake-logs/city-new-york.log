@@ -1,0 +1,20 @@
+new-york: box 14 km at 40.7128,-74.006; counties 34003, 34017, 36047, 36061, 36081
+[o] Wrote /home/runner/work/ios-motion-kit/ios-motion-kit/.cache/city-tmp/new-york/roads.json
+  roads: 4488 features in box (TIGER2025)
+[dissolve2] Dissolved 764 features into 6 features
+[o] Wrote /home/runner/work/ios-motion-kit/ios-motion-kit/.cache/city-tmp/new-york/areawater.json
+  areawater: 5 features in box (TIGER2025)
+[o] Wrote /home/runner/work/ios-motion-kit/ios-motion-kit/.cache/city-tmp/new-york/linearwater.json
+  linearwater: 29 features in box (TIGER2025)
+  arealm 34003: not published, skipped
+  arealm 34017: not published, skipped
+  arealm 36047: not published, skipped
+  arealm 36061: not published, skipped
+  arealm 36081: not published, skipped
+  arealm: 0 features in box (TIGER-)
+┌─────────┬────────────┬─────────┬───────┬───────────────────────────┬─────────┬───────────┬───────┬────────────┬───────┬───────┬──────┬─────────┬───────┐
+│ (index) │ city       │ detail  │ kb    │ budget                    │ primary │ secondary │ water │ waterPolys │ parks │ local │ ramp │ service │ other │
+├─────────┼────────────┼─────────┼───────┼───────────────────────────┼─────────┼───────────┼───────┼────────────┼───────┼───────┼──────┼─────────┼───────┤
+│ 0       │ 'new-york' │ 'light' │ 70.7  │ { scale: 1, dropped: [] } │ 154     │ 84        │ 76    │ 0          │ 0     │       │      │         │       │
+│ 1       │ 'new-york' │ 'rich'  │ 323.1 │ { scale: 1, dropped: [] } │ 157     │ 85        │ 90    │ 44         │ 0     │ 3403  │ 430  │ 19      │ 64    │
+└─────────┴────────────┴─────────┴───────┴───────────────────────────┴─────────┴───────────┴───────┴────────────┴───────┴───────┴──────┴─────────┴───────┘

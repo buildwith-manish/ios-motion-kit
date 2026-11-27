@@ -1,0 +1,66 @@
+{
+ "rows": [
+  {
+   "city": "new-york",
+   "detail": "light",
+   "kb": 70.7,
+   "budget": {
+    "scale": 1,
+    "dropped": []
+   },
+   "primary": 154,
+   "secondary": 84,
+   "water": 76,
+   "waterPolys": 0,
+   "parks": 0
+  },
+  {
+   "city": "new-york",
+   "detail": "rich",
+   "kb": 323.1,
+   "budget": {
+    "scale": 1,
+    "dropped": []
+   },
+   "primary": 157,
+   "secondary": 85,
+   "local": 3403,
+   "ramp": 430,
+   "service": 19,
+   "other": 64,
+   "water": 90,
+   "waterPolys": 44,
+   "parks": 0
+  }
+ ],
+ "unmapped": {},
+ "counties": [
+  "34003",
+  "34017",
+  "36047",
+  "36061",
+  "36081"
+ ],
+ "sources": [
+  {
+   "layer": "roads",
+   "vintage": "2025",
+   "files": 5
+  },
+  {
+   "layer": "areawater",
+   "vintage": "2025",
+   "files": 5
+  },
+  {
+   "layer": "linearwater",
+   "vintage": "2025",
+   "files": 5
+  },
+  {
+   "layer": "arealm",
+   "vintage": null,
+   "files": 0
+  }
+ ]
+}
