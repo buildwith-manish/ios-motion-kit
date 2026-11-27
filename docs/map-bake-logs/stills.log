@@ -1,0 +1,48 @@
+Downloading Chrome Headless Shell https://www.remotion.dev/chrome-headless-shell
+Customize this behavior by adding a onBrowserDownload function to openBrowser().
+Downloading Chrome Headless Shell - 9.5 Mb/88.2 Mb
+Downloading Chrome Headless Shell - 19.1 Mb/88.2 Mb
+Downloading Chrome Headless Shell - 28.6 Mb/88.2 Mb
+Downloading Chrome Headless Shell - 38.2 Mb/88.2 Mb
+Downloading Chrome Headless Shell - 47.7 Mb/88.2 Mb
+Downloading Chrome Headless Shell - 57.3 Mb/88.2 Mb
+Downloading Chrome Headless Shell - 66.8 Mb/88.2 Mb
+Downloading Chrome Headless Shell - 76.3 Mb/88.2 Mb
+Downloading Chrome Headless Shell - 85.9 Mb/88.2 Mb
+Downloading Chrome Headless Shell - 88.2 Mb/88.2 Mb
+Kit-Map-Night-Landscape us 1.08 s/frame
+Kit-Map-Night-Landscape state 0.78 s/frame
+node:internal/child_process:1123
+    result.error = new ErrnoException(result.error, 'spawnSync ' + options.file);
+                   ^
+
+<ref *1> Error: spawnSync convert ENOENT
+    at Object.spawnSync (node:internal/child_process:1123:20)
+    at spawnSync (node:child_process:877:24)
+    at execFileSync (node:child_process:920:15)
+    at crop (file:///home/runner/work/ios-motion-kit/ios-motion-kit/scripts/map_stills.mjs:40:34)
+    at file:///home/runner/work/ios-motion-kit/ios-motion-kit/scripts/map_stills.mjs:55:7
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+  errno: -2,
+  code: 'ENOENT',
+  syscall: 'spawnSync convert',
+  path: 'convert',
+  spawnargs: [
+    '/home/runner/work/ios-motion-kit/ios-motion-kit/docs/previews/kit-map/_4k-night-state.png',
+    '-gravity',
+    'center',
+    '-crop',
+    '1280x720+0+0',
+    '+repage',
+    '/home/runner/work/ios-motion-kit/ios-motion-kit/docs/previews/kit-map/crop4k-night-state.png'
+  ],
+  error: [Circular *1],
+  status: null,
+  signal: null,
+  output: null,
+  pid: 0,
+  stdout: null,
+  stderr: null
+}
+
+Node.js v20.20.2
