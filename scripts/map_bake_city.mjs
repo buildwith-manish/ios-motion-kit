@@ -169,7 +169,9 @@ const polys = (g) => g.type === 'Polygon' ? [g.coordinates] : g.type === 'MultiP
 
 // ---- download + clip per layer ---------------------------------------------------------------------------------------
 const LAYERS = {roads: ['ROADS', 'roads'], areawater: ['AREAWATER', 'areawater'], linearwater: ['LINEARWATER', 'linearwater'], arealm: ['AREALM', 'arealm']};
-async function fetchLayer(layer, geoids) {
+async function fetchLayer(layer, countyIds) {
+  // TIGER/Line publishes ROADS, AREAWATER and LINEARWATER per county, but landmarks (AREALM) per STATE (tl_<year>_<ST>_arealm.zip).
+  const geoids = layer === 'arealm' ? [...new Set(countyIds.map((g) => g.slice(0, 2)))] : countyIds;
   let vintage = null; const zips = [];
   for (const g of geoids) {
     let got = null;
