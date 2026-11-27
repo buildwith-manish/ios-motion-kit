@@ -1,0 +1,10 @@
+bundling src/kit/demo/numberRollEntry.tsx ...
+browser: KIT_CHROME
+ffmpeg could not decode a screenshot: spawnSync ffmpeg ENOENT
+bundling src/kit/demo/numberRollEntry.tsx ...
+browser: KIT_CHROME
+ffmpeg could not decode a screenshot: spawnSync ffmpeg ENOENT
+bundling src/kit/demo/numberRollEntry.tsx ...
+browser: KIT_CHROME
+
+could not run: ffmpeg could not start: spawn ffmpeg ENOENT
