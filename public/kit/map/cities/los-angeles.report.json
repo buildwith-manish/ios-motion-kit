@@ -1,0 +1,62 @@
+{
+ "rows": [
+  {
+   "city": "los-angeles",
+   "detail": "light",
+   "kb": 37.4,
+   "budget": {
+    "scale": 1,
+    "dropped": []
+   },
+   "primary": 71,
+   "secondary": 9,
+   "water": 44,
+   "waterPolys": 0,
+   "parks": 0
+  },
+  {
+   "city": "los-angeles",
+   "detail": "rich",
+   "kb": 397.6,
+   "budget": {
+    "scale": 1,
+    "dropped": []
+   },
+   "primary": 71,
+   "secondary": 9,
+   "local": 5084,
+   "ramp": 772,
+   "service": 2,
+   "other": 133,
+   "water": 46,
+   "waterPolys": 16,
+   "parks": 0
+  }
+ ],
+ "unmapped": {},
+ "counties": [
+  "06037"
+ ],
+ "sources": [
+  {
+   "layer": "roads",
+   "vintage": "2025",
+   "files": 1
+  },
+  {
+   "layer": "areawater",
+   "vintage": "2025",
+   "files": 1
+  },
+  {
+   "layer": "linearwater",
+   "vintage": "2025",
+   "files": 1
+  },
+  {
+   "layer": "arealm",
+   "vintage": null,
+   "files": 0
+  }
+ ]
+}
