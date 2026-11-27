@@ -82,3 +82,27 @@ Not verified (M4):
 - 4K was only checked by eye on crops (`crop4k-t5p2.png`, `crop4k-t12p5.png`, `crop4k-t12p8.png`), not by an automated test.
 - The demo's lat/lng, city box and values are generic samples; no real data is claimed.
 - `tsc --noEmit` last ran at exit 0 on commit 4c30020; it has not been re-run on the commit that adds this note (docs only).
+
+## M5: optional 3D region insert (timing spike)
+
+Built and pushed: `src/kit/map/three/Region3D.tsx` (one extruded state from the baked states layer, matte material, one key light, no HDR/bloom), separate entry `src/kit/demo/entry3d.tsx` so `three` never enters the main bundle, `src/kit/demo/Region3DDemo.tsx`, `scripts/map_3d_timing.mjs`, workflow `map-3d`. Verified in GitHub Actions (typecheck and timing run succeeded). Region is picked by feature id through a prop, nothing is named in the kit.
+
+Seconds per still, software GL (swangle), GitHub runner, median of 3 repeats per time sample (t = 0.3, 1, 2, 2.9 s), reused browser. Budget 1.5 s at 1080p. Log: `docs/map-bake-logs/three.log`, data: `docs/previews/kit-map/three/perf.json`.
+
+| State | Landscape 1080p | Portrait 1080p | Landscape 4K | Portrait 4K |
+|---|---|---|---|---|
+| CO | 0.98 (max 1.36) | 1.00 | 2.28 | 2.33 |
+| MI | 0.99 | 1.23 | 2.13 | 2.56 (max 3.06) |
+| FL | 1.07 | 0.96 | 1.93 | 1.98 |
+| TX | 1.20 | 1.19 | 2.64 | 3.07 |
+
+Result: all 1080p cases are inside 1.5 s. Every 4K case is over budget (1.9 to 3.1 s).
+
+Not verified / known problems:
+- Framing is wrong: the camera distance is too small for a 6-unit region, so FL, MI and TX are cropped at the frame edges.
+- The top face (`background.lift`) is almost the same colour as the background, so the state reads as a hole with green walls. Needs a lighter top or a stronger light.
+- Side walls of coastal states are jagged (many thin faces from the generalised outline); looks noisy next to the flat top.
+- The cross-dissolve from and back to the 2.5D map and the 2.5D fallback were not built.
+- Metros need a county-merge bake; not started.
+- Timings are per still (include page load), not per frame inside a video render; video-render cost was not measured.
+- `tsc --noEmit` exit 0 was reported on the commit that added the component; not re-run on this docs commit.
