@@ -10,6 +10,7 @@ on:
       - scripts/map_verify_mtfcc.mjs
       - scripts/map_verify_seams.mjs
       - scripts/map_merge.mjs
+      - scripts/map_bake_city.mjs
 permissions:
   contents: write
 concurrency:

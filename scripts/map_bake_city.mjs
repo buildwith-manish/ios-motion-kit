@@ -37,19 +37,19 @@ const CACHE = join(ROOT, '.cache', 'census', 'tiger');
 const YEARS = opt.year ? [String(opt.year)] : ['2025', '2024', '2023']; // newest first; first one that answers wins
 
 // ---- MTFCC (MAF/TIGER Feature Class Codes) -> kit class -------------------------------------------------------
-// Official list: https://www.census.gov/library/reference/code-lists/mt-feature-class-codes.html (TIGER/Line Technical
-// Documentation, appendix "MAF/TIGER Feature Class Code Definitions"). ONE table; any code seen in the data but missing
+// Official list: https://www2.census.gov/geo/pdfs/reference/mtfccs2025.pdf, checked by scripts/map_verify_mtfcc.mjs
+// (workflow "Map verify", report docs/map-verify-mtfcc.md). ONE table; any code seen in the data but missing
 // here is counted in the report as "unmapped" so the table can be audited against the official list.
 const MTFCC = {
   // roads (ROADS layer)
   S1100: ['road', 'primary'],    // Primary Road (limited-access highway)
   S1200: ['road', 'secondary'],  // Secondary Road (main arteries, US/state/county highways)
-  S1400: ['road', 'local'],      // Local Neighborhood Road, Rural Road, City Street
+  S1400: ['road', 'local'],      // Local Neighborhood Road, Rural Road/Path, City Street
   S1630: ['road', 'ramp'],       // Ramp
-  S1640: ['road', 'service'],    // Service Drive usually along a limited access highway
+  S1640: ['road', 'service'],    // Frontage/access road along a highway (service drive)
   S1500: ['road', 'other'],      // Vehicular Trail (4WD)
   S1730: ['road', 'other'],      // Alley
-  S1740: ['road', 'other'],      // Private Road for service vehicles
+  S1740: ['road', 'other'],      // Service Road (industrial, ranch, resource extraction access)
   S1780: ['road', 'other'],      // Parking Lot Road
   S1710: ['skip', 'walkway'],    // Walkway/Pedestrian Trail (not drawn)
   S1720: ['skip', 'stairway'],   // Stairway
@@ -57,14 +57,12 @@ const MTFCC = {
   S1820: ['skip', 'bikepath'],   // Bike Path or Trail
   S1810: ['skip', 'wintertrail'], // Winter Trail
   S1830: ['skip', 'bridle'],     // Bridle Path
-  S2000: ['skip', 'median'],     // Road Median
   // water (AREAWATER / LINEARWATER layers)
   H2030: ['water', 'lake'],      // Lake/Pond
   H2040: ['water', 'reservoir'], // Reservoir
   H2041: ['water', 'treatment'], // Treatment Pond
   H2051: ['water', 'bay'],       // Bay/Estuary/Gulf/Sound
   H2053: ['water', 'ocean'],     // Ocean/Sea
-  H2060: ['water', 'pit'],       // Gravel Pit/Quarry filled with water
   H1100: ['skip', 'connector'], // Connector (water line across a water body; not drawn)
   H2081: ['water', 'glacier'],   // Glacier
   H3010: ['water', 'stream'],    // Stream/River
