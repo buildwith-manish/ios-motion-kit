@@ -2,8 +2,8 @@
  "note": "seconds per still on a reused browser (no launch cost), software GL, GitHub-hosted runner; hd = 1920x1080, uhd = 3840x2160 (scale 2); median of repeats for hd, single run for uhd",
  "scenes": {
   "washington-light-z1": {
-   "hd": 0.61,
-   "uhd": 1.41,
+   "hd": 0.55,
+   "uhd": 1.21,
    "budget": {
     "visiblePaths": 298,
     "elements": 4,
@@ -12,8 +12,8 @@
    }
   },
   "washington-light-z2p2": {
-   "hd": 0.55,
-   "uhd": 1.22,
+   "hd": 0.48,
+   "uhd": 1.02,
    "budget": {
     "visiblePaths": 127,
     "elements": 4,
@@ -22,8 +22,8 @@
    }
   },
   "washington-light-z4p5": {
-   "hd": 0.49,
-   "uhd": 1.11,
+   "hd": 0.38,
+   "uhd": 0.86,
    "budget": {
     "visiblePaths": 46,
     "elements": 4,
@@ -32,8 +32,8 @@
    }
   },
   "washington-rich-z1": {
-   "hd": 0.62,
-   "uhd": 1.48,
+   "hd": 0.47,
+   "uhd": 1.14,
    "budget": {
     "visiblePaths": 332,
     "elements": 6,
@@ -42,8 +42,8 @@
    }
   },
   "washington-rich-z2p2": {
-   "hd": 0.6,
-   "uhd": 1.46,
+   "hd": 0.45,
+   "uhd": 1.13,
    "budget": {
     "visiblePaths": 861,
     "elements": 8,
@@ -52,8 +52,8 @@
    }
   },
   "washington-rich-z4p5": {
-   "hd": 0.57,
-   "uhd": 1.22,
+   "hd": 0.44,
+   "uhd": 0.97,
    "budget": {
     "visiblePaths": 263,
     "elements": 9,
@@ -62,8 +62,8 @@
    }
   },
   "new-york-light-z1": {
-   "hd": 0.59,
-   "uhd": 1.4,
+   "hd": 0.44,
+   "uhd": 1.07,
    "budget": {
     "visiblePaths": 190,
     "elements": 4,
@@ -72,8 +72,8 @@
    }
   },
   "new-york-light-z2p2": {
-   "hd": 0.54,
-   "uhd": 1.24,
+   "hd": 0.4,
+   "uhd": 0.95,
    "budget": {
     "visiblePaths": 65,
     "elements": 4,
@@ -82,8 +82,8 @@
    }
   },
   "new-york-light-z4p5": {
-   "hd": 0.52,
-   "uhd": 1.18,
+   "hd": 0.4,
+   "uhd": 0.87,
    "budget": {
     "visiblePaths": 32,
     "elements": 4,
@@ -92,8 +92,8 @@
    }
   },
   "new-york-rich-z1": {
-   "hd": 0.64,
-   "uhd": 1.62,
+   "hd": 0.47,
+   "uhd": 1.26,
    "budget": {
     "visiblePaths": 251,
     "elements": 6,
@@ -102,8 +102,8 @@
    }
   },
   "new-york-rich-z2p2": {
-   "hd": 0.62,
-   "uhd": 1.61,
+   "hd": 0.44,
+   "uhd": 1.21,
    "budget": {
     "visiblePaths": 779,
     "elements": 8,
@@ -112,8 +112,8 @@
    }
   },
   "new-york-rich-z4p5": {
-   "hd": 0.59,
-   "uhd": 1.45,
+   "hd": 0.44,
+   "uhd": 1.1,
    "budget": {
     "visiblePaths": 321,
     "elements": 9,
@@ -122,8 +122,8 @@
    }
   },
   "houston-light-z1": {
-   "hd": 0.61,
-   "uhd": 1.4,
+   "hd": 0.46,
+   "uhd": 1.03,
    "budget": {
     "visiblePaths": 128,
     "elements": 4,
@@ -132,8 +132,8 @@
    }
   },
   "houston-light-z2p2": {
-   "hd": 0.57,
-   "uhd": 1.29,
+   "hd": 0.45,
+   "uhd": 0.98,
    "budget": {
     "visiblePaths": 61,
     "elements": 4,
@@ -142,8 +142,8 @@
    }
   },
   "houston-light-z4p5": {
-   "hd": 0.55,
-   "uhd": 1.22,
+   "hd": 0.42,
+   "uhd": 0.95,
    "budget": {
     "visiblePaths": 31,
     "elements": 3,
@@ -152,8 +152,8 @@
    }
   },
   "houston-rich-z1": {
-   "hd": 0.62,
-   "uhd": 1.49,
+   "hd": 0.47,
+   "uhd": 1.16,
    "budget": {
     "visiblePaths": 144,
     "elements": 5,
@@ -162,8 +162,8 @@
    }
   },
   "houston-rich-z2p2": {
-   "hd": 0.64,
-   "uhd": 1.56,
+   "hd": 0.48,
+   "uhd": 1.2,
    "budget": {
     "visiblePaths": 969,
     "elements": 7,
@@ -172,8 +172,8 @@
    }
   },
   "houston-rich-z4p5": {
-   "hd": 0.62,
-   "uhd": 1.39,
+   "hd": 0.46,
+   "uhd": 1.12,
    "budget": {
     "visiblePaths": 351,
     "elements": 8,
@@ -182,8 +182,8 @@
    }
   },
   "chicago-light-z1": {
-   "hd": 0.54,
-   "uhd": 1.21,
+   "hd": 0.43,
+   "uhd": 0.98,
    "budget": {
     "visiblePaths": 88,
     "elements": 4,
@@ -192,8 +192,8 @@
    }
   },
   "chicago-light-z2p2": {
-   "hd": 0.54,
-   "uhd": 1.14,
+   "hd": 0.39,
+   "uhd": 0.85,
    "budget": {
     "visiblePaths": 35,
     "elements": 4,
@@ -202,8 +202,8 @@
    }
   },
   "chicago-light-z4p5": {
-   "hd": 0.52,
-   "uhd": 1.15,
+   "hd": 0.38,
+   "uhd": 0.87,
    "budget": {
     "visiblePaths": 20,
     "elements": 4,
@@ -212,8 +212,8 @@
    }
   },
   "chicago-rich-z1": {
-   "hd": 0.59,
-   "uhd": 1.32,
+   "hd": 0.43,
+   "uhd": 0.99,
    "budget": {
     "visiblePaths": 104,
     "elements": 6,
@@ -222,8 +222,8 @@
    }
   },
   "chicago-rich-z2p2": {
-   "hd": 0.58,
-   "uhd": 1.36,
+   "hd": 0.43,
+   "uhd": 1.04,
    "budget": {
     "visiblePaths": 668,
     "elements": 8,
@@ -232,8 +232,8 @@
    }
   },
   "chicago-rich-z4p5": {
-   "hd": 0.58,
-   "uhd": 1.31,
+   "hd": 0.43,
+   "uhd": 0.98,
    "budget": {
     "visiblePaths": 289,
     "elements": 10,
@@ -242,8 +242,8 @@
    }
   },
   "philadelphia-light-z1": {
-   "hd": 0.61,
-   "uhd": 1.55,
+   "hd": 0.46,
+   "uhd": 1.1,
    "budget": {
     "visiblePaths": 282,
     "elements": 4,
@@ -252,8 +252,8 @@
    }
   },
   "philadelphia-light-z2p2": {
-   "hd": 0.59,
-   "uhd": 1.35,
+   "hd": 0.44,
+   "uhd": 1.02,
    "budget": {
     "visiblePaths": 148,
     "elements": 4,
@@ -262,8 +262,8 @@
    }
   },
   "philadelphia-light-z4p5": {
-   "hd": 0.55,
-   "uhd": 1.18,
+   "hd": 0.42,
+   "uhd": 1,
    "budget": {
     "visiblePaths": 78,
     "elements": 4,
@@ -272,8 +272,8 @@
    }
   },
   "philadelphia-rich-z1": {
-   "hd": 0.64,
-   "uhd": 1.6,
+   "hd": 0.48,
+   "uhd": 1.3,
    "budget": {
     "visiblePaths": 324,
     "elements": 6,
@@ -282,8 +282,8 @@
    }
   },
   "philadelphia-rich-z2p2": {
-   "hd": 0.67,
-   "uhd": 1.69,
+   "hd": 0.68,
+   "uhd": 1.98,
    "budget": {
     "visiblePaths": 1305,
     "elements": 8,
@@ -293,7 +293,7 @@
   },
   "philadelphia-rich-z4p5": {
    "hd": 0.62,
-   "uhd": 1.35,
+   "uhd": 1.03,
    "budget": {
     "visiblePaths": 480,
     "elements": 9,
@@ -302,8 +302,8 @@
    }
   },
   "miami-light-z1": {
-   "hd": 0.55,
-   "uhd": 1.32,
+   "hd": 0.4,
+   "uhd": 1.02,
    "budget": {
     "visiblePaths": 164,
     "elements": 4,
@@ -312,8 +312,8 @@
    }
   },
   "miami-light-z2p2": {
-   "hd": 0.52,
-   "uhd": 1.22,
+   "hd": 0.4,
+   "uhd": 1.04,
    "budget": {
     "visiblePaths": 68,
     "elements": 4,
@@ -322,8 +322,8 @@
    }
   },
   "miami-light-z4p5": {
-   "hd": 0.51,
-   "uhd": 1.18,
+   "hd": 0.43,
+   "uhd": 1,
    "budget": {
     "visiblePaths": 23,
     "elements": 4,
@@ -332,8 +332,8 @@
    }
   },
   "miami-rich-z1": {
-   "hd": 0.59,
-   "uhd": 1.63,
+   "hd": 0.44,
+   "uhd": 1.25,
    "budget": {
     "visiblePaths": 197,
     "elements": 5,
@@ -342,8 +342,8 @@
    }
   },
   "miami-rich-z2p2": {
-   "hd": 0.58,
-   "uhd": 1.54,
+   "hd": 0.44,
+   "uhd": 1.18,
    "budget": {
     "visiblePaths": 487,
     "elements": 7,
@@ -352,8 +352,8 @@
    }
   },
   "miami-rich-z4p5": {
-   "hd": 0.56,
-   "uhd": 1.43,
+   "hd": 0.42,
+   "uhd": 1.08,
    "budget": {
     "visiblePaths": 152,
     "elements": 8,
@@ -362,8 +362,8 @@
    }
   },
   "los-angeles-light-z1": {
-   "hd": 0.62,
-   "uhd": 1.35,
+   "hd": 0.48,
+   "uhd": 1.18,
    "budget": {
     "visiblePaths": 97,
     "elements": 4,
@@ -372,8 +372,8 @@
    }
   },
   "los-angeles-light-z2p2": {
-   "hd": 0.59,
-   "uhd": 1.3,
+   "hd": 0.5,
+   "uhd": 0.98,
    "budget": {
     "visiblePaths": 53,
     "elements": 3,
@@ -382,8 +382,8 @@
    }
   },
   "los-angeles-light-z4p5": {
-   "hd": 0.55,
-   "uhd": 1.18,
+   "hd": 0.42,
+   "uhd": 0.92,
    "budget": {
     "visiblePaths": 21,
     "elements": 3,
@@ -392,8 +392,8 @@
    }
   },
   "los-angeles-rich-z1": {
-   "hd": 0.64,
-   "uhd": 1.38,
+   "hd": 0.54,
+   "uhd": 1.07,
    "budget": {
     "visiblePaths": 146,
     "elements": 6,
@@ -402,8 +402,8 @@
    }
   },
   "los-angeles-rich-z2p2": {
-   "hd": 0.67,
-   "uhd": 1.53,
+   "hd": 0.5,
+   "uhd": 1.2,
    "budget": {
     "visiblePaths": 1080,
     "elements": 7,
@@ -412,8 +412,8 @@
    }
   },
   "los-angeles-rich-z4p5": {
-   "hd": 0.61,
-   "uhd": 1.28,
+   "hd": 0.46,
+   "uhd": 0.99,
    "budget": {
     "visiblePaths": 299,
     "elements": 8,
@@ -422,8 +422,8 @@
    }
   },
   "phoenix-light-z1": {
-   "hd": 0.56,
-   "uhd": 1.22,
+   "hd": 0.45,
+   "uhd": 1.04,
    "budget": {
     "visiblePaths": 89,
     "elements": 4,
@@ -432,8 +432,8 @@
    }
   },
   "phoenix-light-z2p2": {
-   "hd": 0.53,
-   "uhd": 1.1,
+   "hd": 0.43,
+   "uhd": 0.89,
    "budget": {
     "visiblePaths": 29,
     "elements": 3,
@@ -442,8 +442,8 @@
    }
   },
   "phoenix-light-z4p5": {
-   "hd": 0.53,
-   "uhd": 1.11,
+   "hd": 0.4,
+   "uhd": 1.02,
    "budget": {
     "visiblePaths": 9,
     "elements": 3,
@@ -452,8 +452,8 @@
    }
   },
   "phoenix-rich-z1": {
-   "hd": 0.57,
-   "uhd": 1.28,
+   "hd": 0.44,
+   "uhd": 0.98,
    "budget": {
     "visiblePaths": 126,
     "elements": 6,
@@ -462,8 +462,8 @@
    }
   },
   "phoenix-rich-z2p2": {
-   "hd": 0.59,
-   "uhd": 1.32,
+   "hd": 0.46,
+   "uhd": 1.05,
    "budget": {
     "visiblePaths": 593,
     "elements": 7,
@@ -472,8 +472,8 @@
    }
   },
   "phoenix-rich-z4p5": {
-   "hd": 0.57,
-   "uhd": 1.24,
+   "hd": 0.44,
+   "uhd": 0.93,
    "budget": {
     "visiblePaths": 187,
     "elements": 7,
@@ -482,8 +482,8 @@
    }
   },
   "dallas-light-z1": {
-   "hd": 0.62,
-   "uhd": 1.39,
+   "hd": 0.47,
+   "uhd": 1.07,
    "budget": {
     "visiblePaths": 170,
     "elements": 4,
@@ -492,8 +492,8 @@
    }
   },
   "dallas-light-z2p2": {
-   "hd": 0.59,
-   "uhd": 1.27,
+   "hd": 0.44,
+   "uhd": 0.99,
    "budget": {
     "visiblePaths": 64,
     "elements": 4,
@@ -502,8 +502,8 @@
    }
   },
   "dallas-light-z4p5": {
-   "hd": 0.54,
-   "uhd": 1.24,
+   "hd": 0.44,
+   "uhd": 0.89,
    "budget": {
     "visiblePaths": 34,
     "elements": 4,
@@ -512,8 +512,8 @@
    }
   },
   "dallas-rich-z1": {
-   "hd": 0.65,
-   "uhd": 1.5,
+   "hd": 0.49,
+   "uhd": 1.18,
    "budget": {
     "visiblePaths": 199,
     "elements": 6,
@@ -522,8 +522,8 @@
    }
   },
   "dallas-rich-z2p2": {
-   "hd": 0.65,
-   "uhd": 1.66,
+   "hd": 0.52,
+   "uhd": 1.44,
    "budget": {
     "visiblePaths": 1192,
     "elements": 7,
@@ -532,8 +532,8 @@
    }
   },
   "dallas-rich-z4p5": {
-   "hd": 0.68,
-   "uhd": 1.45,
+   "hd": 0.58,
+   "uhd": 1.15,
    "budget": {
     "visiblePaths": 522,
     "elements": 8,
@@ -542,8 +542,8 @@
    }
   },
   "atlanta-light-z1": {
-   "hd": 0.6,
-   "uhd": 1.37,
+   "hd": 0.47,
+   "uhd": 1.09,
    "budget": {
     "visiblePaths": 166,
     "elements": 4,
@@ -552,8 +552,8 @@
    }
   },
   "atlanta-light-z2p2": {
-   "hd": 0.55,
-   "uhd": 1.18,
+   "hd": 0.44,
+   "uhd": 0.96,
    "budget": {
     "visiblePaths": 33,
     "elements": 4,
@@ -562,8 +562,8 @@
    }
   },
   "atlanta-light-z4p5": {
-   "hd": 0.55,
-   "uhd": 1.2,
+   "hd": 0.44,
+   "uhd": 0.96,
    "budget": {
     "visiblePaths": 24,
     "elements": 3,
@@ -572,8 +572,8 @@
    }
   },
   "atlanta-rich-z1": {
-   "hd": 0.62,
-   "uhd": 1.38,
+   "hd": 0.47,
+   "uhd": 1.09,
    "budget": {
     "visiblePaths": 190,
     "elements": 6,
@@ -582,8 +582,8 @@
    }
   },
   "atlanta-rich-z2p2": {
-   "hd": 0.61,
-   "uhd": 1.43,
+   "hd": 0.48,
+   "uhd": 1.1,
    "budget": {
     "visiblePaths": 1061,
     "elements": 7,
@@ -592,8 +592,8 @@
    }
   },
   "atlanta-rich-z4p5": {
-   "hd": 0.61,
-   "uhd": 1.33,
+   "hd": 0.48,
+   "uhd": 1.19,
    "budget": {
     "visiblePaths": 377,
     "elements": 7,
@@ -604,29 +604,29 @@
  },
  "reveal": {
   "z1-mid": {
-   "hd": 0.63,
-   "uhd": 1.48
+   "hd": 0.57,
+   "uhd": 1.17
   },
   "z2p2-mid": {
-   "hd": 0.67,
-   "uhd": 1.59
+   "hd": 0.52,
+   "uhd": 1.26
   }
  },
  "summary": {
   "light": {
-   "hdMedian": 0.55,
-   "hdMax": 0.62,
-   "uhdMedian": 1.22,
-   "uhdMax": 1.55,
+   "hdMedian": 0.44,
+   "hdMax": 0.55,
+   "uhdMedian": 1,
+   "uhdMax": 1.21,
    "maxElementPoints": 3241,
    "maxPoints": 6080,
    "maxElements": 4
   },
   "rich": {
-   "hdMedian": 0.62,
+   "hdMedian": 0.47,
    "hdMax": 0.68,
-   "uhdMedian": 1.45,
-   "uhdMax": 1.69,
+   "uhdMedian": 1.13,
+   "uhdMax": 1.98,
    "maxElementPoints": 3917,
    "maxPoints": 9450,
    "maxElements": 10
