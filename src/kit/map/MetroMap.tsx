@@ -118,7 +118,7 @@ export const MetroMap: React.FC<MetroMapProps> = ({
   const content = (
     <g opacity={hero ? 1 : dimOpacity}>
       <g opacity={fadeFill}>
-        <Paths chunks={geo.parks} fill={style.park} />
+        <g opacity={0.7}><Paths chunks={geo.parks} fill={style.park} /></g>
         <Paths chunks={geo.waterPolys} fill={`url(#mm-${uid}-water)`} />
         <Paths chunks={geo.waterPolys} stroke={style.strokeSoft} width={style.hairline * weight} />
         <Paths chunks={geo.waterLines} stroke={style.strokeSoft} width={style.hairline * weight} />

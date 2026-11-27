@@ -54,7 +54,7 @@ export const MetroScene: React.FC<MetroSceneProps> = (p) => {
     <AbsoluteFill>
       {p.boundary && CBSA_OF[p.cityId] ? <WithBoundary {...p} /> : <Inner {...p} />}
       {p.mode === 'dim' ? <SampleContent /> : null}
-      <div style={{position: 'absolute', left: portrait ? 64 : 96, top: portrait ? 160 : 72, ...textStyle(theme, 'title', {scale: 0.7}), color: theme.colors.text.primary}}>{p.label ?? `${p.cityId} · ${p.zoom}×`}</div>
+      <div style={{position: 'absolute', left: portrait ? 64 : 96, top: portrait ? 160 : 72, ...textStyle(theme, 'title', {scale: 0.7}), color: theme.colors.text.primary}}>{p.label ?? `${p.cityId.split('-').map((w) => w[0].toUpperCase() + w.slice(1)).join(' ')} · ${p.zoom}×`}</div>
       <MapSourceLine style={{position: 'absolute', left: portrait ? 64 : 96, bottom: 56}} />
     </AbsoluteFill>
   );

@@ -55,11 +55,11 @@ export const METRO_DIM_OPACITY = 0.3;
 export const METRO_REVEAL_OFFSET: Record<MetroLodTier, number> = {major: 0, secondary: 0.1, local: 0.22, minor: 0.34};
 export const tierReveal = (progress: number, tier: MetroLodTier): number => clamp01((progress - METRO_REVEAL_OFFSET[tier]) / (1 - METRO_REVEAL_OFFSET[tier]));
 
-/** Ease-out cubic reveal progress for a frame (0 before `delay`, 1 after delay + duration). Seconds in, frame in. */
+/** Ease-in-out cubic reveal progress for a frame (0 before `delay`, 1 after delay + duration), so the reveal reads across its whole duration. Seconds in, frame in. */
 export const metroRevealProgress = (frame: number, fps: number, delaySeconds: number, durationSeconds: number): number => {
   if (durationSeconds <= 0) return 1;
   const t = clamp01((frame / fps - delaySeconds) / durationSeconds);
-  return 1 - Math.pow(1 - t, 3);
+  return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
 };
 
 /** Radius of the soft reveal disc in metres for a progress, reaching `farthest` (+ the soft edge) at 1. */
