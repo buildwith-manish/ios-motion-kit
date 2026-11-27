@@ -1,0 +1,23 @@
+/** Map styles derived ONLY from kit theme tokens (no hard-coded colours). `night` = midnight: navy land, hairline borders. */
+import {rgba, getTheme, type Theme} from '../tokens';
+import type {MapStyle, MapStyleName} from './types';
+
+/** Builds a style from any theme. Dark themes: land sits above the water. Light theme: land is the lifted white. */
+export const mapStyleFromTheme = (theme: Theme, name: MapStyleName = theme.name === 'midnight' ? 'night' : (theme.name as MapStyleName)): MapStyle => {
+  const c = theme.colors;
+  const lightTheme = theme.name === 'light';
+  return {
+    name,
+    water: c.background.deep,
+    land: lightTheme ? c.background.lift : c.background.base,
+    landAlt: lightTheme ? c.background.base : c.background.lift,
+    stroke: rgba(c.text.tertiary, lightTheme ? 0.7 : 0.55),
+    strokeSoft: rgba(c.text.tertiary, lightTheme ? 0.35 : 0.28),
+    highlight: c.accent,
+    highlightFill: rgba(c.accent, lightTheme ? 0.22 : 0.28),
+    hairline: 0.75,
+  };
+};
+
+/** night (midnight), light, mono variants. */
+export const mapStyle = (name: MapStyleName): MapStyle => mapStyleFromTheme(getTheme(name === 'night' ? 'midnight' : name), name);
