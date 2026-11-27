@@ -82,10 +82,15 @@ const decimate = (pts: THREE.Vector2[], eps: number): THREE.Vector2[] => {
   while (out.length > 3 && out[out.length - 1].distanceTo(out[0]) < eps) out.pop();
   return out.length >= 3 ? out : pts;
 };
-/** One light Chaikin pass: rounds corners without moving straight runs. */
-const chaikin = (pts: THREE.Vector2[], r = 0.18): THREE.Vector2[] => {
+/** One light Chaikin pass: rounds short coastal corners; corners between two long straight edges (state borders, e.g. Colorado) stay crisp. */
+const chaikin = (pts: THREE.Vector2[], r = 0.18, keepLong = SIZE * 0.12): THREE.Vector2[] => {
   const out: THREE.Vector2[] = [];
-  for (let i = 0; i < pts.length; i++) { const a = pts[i], b = pts[(i + 1) % pts.length]; out.push(a.clone().lerp(b, r), a.clone().lerp(b, 1 - r)); }
+  const n = pts.length;
+  for (let i = 0; i < n; i++) {
+    const prev = pts[(i + n - 1) % n], v = pts[i], next = pts[(i + 1) % n];
+    if (v.distanceTo(prev) > keepLong && v.distanceTo(next) > keepLong) out.push(v.clone());
+    else out.push(v.clone().lerp(prev, r), v.clone().lerp(next, r));
+  }
   return out;
 };
 
@@ -306,13 +311,13 @@ export const Region3D: React.FC<Region3DProps> = ({file = 'states.json', id, t, 
         </mesh>
       ))}
       {/* soft teal ground glow and a tighter contact shadow lie just above the neighbour tops */}
-      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[main.cx, tileH + 0.002, -main.cy]} scale={[main.w * 1.9 + maxDim * 0.5, main.h * 1.9 + maxDim * 0.5, 1]} renderOrder={1}>
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[main.cx - maxDim * 0.05, tileH + 0.002, -main.cy + maxDim * 0.05]} scale={[main.w * 1.45 + maxDim * 0.3, main.h * 1.45 + maxDim * 0.3, 1]} renderOrder={1}>
         <planeGeometry args={[1, 1]} />
-        <meshBasicMaterial map={glowTex} transparent depthWrite={false} opacity={shadowA} toneMapped={false} />
+        <meshBasicMaterial map={glowTex} transparent depthWrite={false} opacity={shadowA * 0.6} toneMapped={false} />
       </mesh>
-      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[main.cx + maxDim * 0.03, tileH + 0.004, -main.cy - maxDim * 0.04]} scale={[main.w * 1.28, main.h * 1.28, 1]} renderOrder={2}>
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[main.cx + maxDim * 0.012, tileH + 0.004, -main.cy - maxDim * 0.02]} scale={[main.w * 1.1, main.h * 1.1, 1]} renderOrder={2}>
         <planeGeometry args={[1, 1]} />
-        <meshBasicMaterial map={shadowTex} transparent depthWrite={false} opacity={shadowA} toneMapped={false} />
+        <meshBasicMaterial map={shadowTex} transparent depthWrite={false} opacity={shadowA * 0.55} toneMapped={false} />
       </mesh>
       <mesh geometry={slab} rotation={[-Math.PI / 2, 0, 0]} scale={[1, 1, Math.max(0.0008, depth * grow)]} renderOrder={3}>
         <meshBasicMaterial vertexColors toneMapped={false} />
