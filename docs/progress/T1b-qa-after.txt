@@ -1,0 +1,30 @@
+bundling src/kit/demo/numberRollEntry.tsx ...
+browser: KIT_CHROME
+Kit-NumberRoll-Demo: 20 frames, 0 finding(s)
+
+Text below 4.5:1 (10th-percentile pixel)
+composition          status  text                    ratio  text on background  size  seen  samples
+-------------------  ------  ----------------------  -----  ------------------  ----  ----  -------
+Kit-NumberRoll-Demo  pass    28 text run(s) checked  -      -                   -     -     -
+
+JSON: ../../../../tmp/t1b-qa-local-after/contrast.json
+bundling src/kit/demo/numberRollEntry.tsx ...
+browser: KIT_CHROME
+Kit-NumberRoll-Demo: 20 frames, 0 finding(s)
+
+Outside the title-safe area
+composition          type  what        overshoot  seen  samples
+-------------------  ----  ----------  ---------  ----  -------
+Kit-NumberRoll-Demo  -     all inside  -          -     -
+
+JSON: ../../../../tmp/t1b-qa-local-after/safe-area.json
+bundling src/kit/demo/numberRollEntry.tsx ...
+browser: KIT_CHROME
+Kit-NumberRoll-Demo: 100 samples, 0 static stretch(es)
+
+Static stretches longer than 1 s
+composition          from  to  length  peak mean  peak changed
+-------------------  ----  --  ------  ---------  ------------
+Kit-NumberRoll-Demo  -     -   none    -          -
+
+JSON: ../../../../tmp/t1b-qa-local-after/motion-audit.json
