@@ -21,6 +21,7 @@ import {existsSync, mkdirSync, readFileSync, statSync, writeFileSync, readdirSyn
 import {dirname, join} from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {feature} from 'topojson-client';
+import {mergeArgs} from './map_merge.mjs';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const argv = process.argv.slice(2);
@@ -54,6 +55,7 @@ const MTFCC = {
   S1720: ['skip', 'stairway'],   // Stairway
   S1750: ['skip', 'internal'],   // Internal Census Bureau use
   S1820: ['skip', 'bikepath'],   // Bike Path or Trail
+  S1810: ['skip', 'wintertrail'], // Winter Trail
   S1830: ['skip', 'bridle'],     // Bridle Path
   S2000: ['skip', 'median'],     // Road Median
   // water (AREAWATER / LINEARWATER layers)
@@ -190,11 +192,7 @@ async function fetchLayer(layer, countyIds) {
 function clipToGeoJson(zips, layer, tmp) {
   if (!zips.length) return {features: []};
   const out = join(tmp, `${layer}.json`);
-  const dissolve = layer === 'areawater' || layer === 'arealm';
-  const cmds = ['-i', ...zips, 'combine-files', '-merge-layers', '-filter-fields', 'MTFCC'];
-  if (dissolve) cmds.push('-dissolve2', 'MTFCC'); // union across county seams (water/parks split at county lines)
-  cmds.push('-clip', `bbox=${lonLat.w},${lonLat.s},${lonLat.e},${lonLat.n}`, '-o', out, 'format=geojson', 'precision=0.000001');
-  mapshaper(cmds);
+  mapshaper(mergeArgs(zips, layer, lonLat, out));
   return JSON.parse(readFileSync(out, 'utf8'));
 }
 

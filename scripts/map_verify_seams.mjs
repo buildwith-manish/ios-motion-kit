@@ -1,0 +1,78 @@
+#!/usr/bin/env node
+/**
+ * Checks the county-seam water merge on REAL TIGER/Line data (run in CI: needs census.gov).
+ *   node scripts/map_verify_seams.mjs [--cities=washington,new-york,philadelphia,atlanta]
+ * For each multi-county city: processes every county's AREAWATER separately, finds boundary segments that two counties
+ * share with the same MTFCC (the seams), then runs the baker's merge and checks that (1) none of those segments
+ * survives in the output and (2) the water area is conserved. Writes docs/map-verify-seams.md. Exit 1 on failure.
+ */
+import {execFileSync} from 'node:child_process';
+import {existsSync, mkdirSync, readFileSync, writeFileSync} from 'node:fs';
+import {dirname, join} from 'node:path';
+import {fileURLToPath} from 'node:url';
+import {mergeArgs} from './map_merge.mjs';
+
+const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
+const arg = (k, d) => (process.argv.find((a) => a.startsWith(`--${k}=`)) ?? `--${k}=${d}`).split('=').slice(1).join('=');
+const cities = JSON.parse(readFileSync(join(ROOT, 'public/kit/map/cities.json'), 'utf8'));
+const wanted = arg('cities', 'washington,new-york,philadelphia,atlanta').split(',');
+const TMP = join(ROOT, '.cache', 'verify');
+mkdirSync(TMP, {recursive: true});
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+async function download(url, path) {
+  if (existsSync(path)) return path;
+  for (let a = 0; ; a++) {
+    try {
+      const r = await fetch(url);
+      if (!r.ok) throw new Error(`HTTP ${r.status}`);
+      writeFileSync(path, Buffer.from(await r.arrayBuffer()));
+      return path;
+    } catch (e) { if (a >= 4) throw new Error(`${url}: ${e.message}`); await sleep(1000 * 2 ** a); }
+  }
+}
+const run = (zips, lonLat, out) => {
+  execFileSync(join(ROOT, 'node_modules', '.bin', 'mapshaper'), mergeArgs(zips, 'areawater', lonLat, out), {stdio: ['ignore', 'inherit', 'inherit']});
+  return (JSON.parse(readFileSync(out, 'utf8')).features ?? []).filter((f) => f.geometry);
+};
+const rings = (f) => (f.geometry.type === 'Polygon' ? [f.geometry.coordinates] : f.geometry.coordinates);
+const edges = (f, visit) => { for (const poly of rings(f)) for (const r of poly) for (let i = 1; i < r.length; i++) { const a = r[i - 1].join(','), b = r[i].join(','); if (a !== b) visit(a < b ? `${a} ${b}` : `${b} ${a}`); } };
+const ringArea = (r) => { let s = 0; for (let i = 1; i < r.length; i++) s += r[i - 1][0] * r[i][1] - r[i][0] * r[i - 1][1]; return Math.abs(s / 2); };
+const area = (fs) => fs.reduce((a, f) => a + rings(f).reduce((b, p) => b + p.reduce((c, r, i) => c + (i ? -1 : 1) * ringArea(r), 0), 0), 0);
+/** a segment lying on the clip box is an artefact of clipping, not a seam */
+const onBox = (key, b) => key.split(' ').map((p) => p.split(',').map(Number)).every(([x, y], _, ps) => [b.w, b.e].some((v) => ps.every((p) => Math.abs(p[0] - v) < 2e-6)) || [b.s, b.n].some((v) => ps.every((p) => Math.abs(p[1] - v) < 2e-6)));
+
+const rows = [];
+let failed = false;
+for (const id of wanted) {
+  const city = cities.find((c) => c.id === id);
+  const report = JSON.parse(readFileSync(join(ROOT, `public/kit/map/cities/${id}.report.json`), 'utf8'));
+  const year = report.sources.find((s) => s.layer === 'areawater').vintage;
+  const half = ((city.boxKm ?? 14) * 1000) / 2;
+  const k = Math.cos((city.lat * Math.PI) / 180) * 111320;
+  const box = {w: city.lng - half / k, e: city.lng + half / k, s: city.lat - half / 110574, n: city.lat + half / 110574};
+  const zips = [];
+  for (const g of report.counties) {
+    const name = `tl_${year}_${g}_areawater.zip`;
+    zips.push(await download(`https://www2.census.gov/geo/tiger/TIGER${year}/AREAWATER/${name}`, join(TMP, name)));
+  }
+  const owners = new Map(); // `${mtfcc}|${edge}` -> set of county indexes
+  let before = 0;
+  const parts = zips.map((z, i) => run([z], box, join(TMP, `${id}-${i}.json`)));
+  parts.forEach((fs, i) => {
+    before += area(fs);
+    for (const f of fs) edges(f, (e) => { const key = `${f.properties.MTFCC}|${e}`; (owners.get(key) ?? owners.set(key, new Set()).get(key)).add(i); });
+  });
+  const seams = new Set([...owners].filter(([key, s]) => s.size > 1 && !onBox(key.split('|')[1], box)).map(([key]) => key));
+  const merged = run(zips, box, join(TMP, `${id}-merged.json`));
+  let left = 0;
+  for (const f of merged) edges(f, (e) => { if (seams.has(`${f.properties.MTFCC}|${e}`)) left++; });
+  const after = area(merged);
+  const drift = before ? Math.abs(after - before) / before : 0;
+  const ok = left === 0 && drift < 0.005;
+  failed ||= !ok;
+  const row = `| ${id} | ${report.counties.length} | ${parts.reduce((a, p) => a + p.length, 0)} | ${merged.length} | ${seams.size} | ${left} | ${(drift * 100).toFixed(4)}% | ${seams.size === 0 ? 'not exercised' : ok ? 'pass' : 'FAIL'} |`;
+  console.log(row);
+  rows.push(row);
+}
+writeFileSync(join(ROOT, 'docs/map-verify-seams.md'), `# County-seam water merge check (real TIGER/Line AREAWATER)\n\nGenerated by scripts/map_verify_seams.mjs. "Seam segments" are boundary segments two counties share with the same MTFCC inside the city box.\n\n| city | counties | features per county (sum) | features merged | seam segments | seam segments left | area drift | result |\n|---|---|---|---|---|---|---|---|\n${rows.join('\n')}\n`);
+process.exit(failed ? 1 : 0);
