@@ -54,15 +54,30 @@ export const cubicBezier = (x1: number, y1: number, x2: number, y2: number): ((x
 };
 
 /**
- * iOS critically-damped spring parameterised by `response` (seconds to settle). Monotonic, never exceeds 1.
- * progress(t) = 1 - (1 + w t) e^(-w t), w = 2 PI / response.
+ * iOS spring parameterised by `response` (seconds). Without `bounce`, it stays critically damped and monotonic.
+ * Underdamped mode uses damping ratio `1 - 2 * bounce`; values are capped at 0.4 so the tail remains bounded.
  * @param t seconds since the spring started
  * @param response seconds to settle
+ * @param options optional underdamped motion; `bounce` is between 0 and 0.4
  * @example iosSpring(0.25, 0.5) // ~0.54
  */
-export const iosSpring = (t: number, response: number): number => {
+export interface SpringOptions {
+  /** 0 is critically damped; larger values add overshoot, up to 0.4. */
+  bounce?: number;
+}
+
+export const iosSpring = (t: number, response: number, options?: SpringOptions): number => {
+  const bounce = options?.bounce ?? 0;
+  if (!Number.isFinite(bounce) || bounce < 0 || bounce > 0.4) throw new RangeError('iosSpring: bounce must be between 0 and 0.4');
+  if (bounce > 0 && (!Number.isFinite(response) || response <= 0)) throw new RangeError('iosSpring: response must be > 0');
   if (t <= 0) return 0;
   const w = (2 * Math.PI) / response;
+  if (bounce > 0) {
+    const damping = 1 - 2 * bounce;
+    const wd = w * Math.sqrt(1 - damping * damping);
+    const ratio = damping / Math.sqrt(1 - damping * damping);
+    return 1 - Math.exp(-damping * w * t) * (Math.cos(wd * t) + ratio * Math.sin(wd * t));
+  }
   return 1 - (1 + w * t) * Math.exp(-w * t);
 };
 
@@ -74,6 +89,11 @@ export const SPRING = {
   GENTLE: 0.7,
   /** Quicker, for small chips/labels/ticks. */
   SNAPPY: 0.4,
+} as const;
+
+/** A spring preset with a restrained underdamped landing for large visual hits. */
+export const SPRING_PRESETS = {
+  hero: {response: 0.8, bounce: 0.15},
 } as const;
 
 /**
