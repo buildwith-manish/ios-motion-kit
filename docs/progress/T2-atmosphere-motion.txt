@@ -1,0 +1,18 @@
+Motion audit on the atmosphere demo (branch kit-T2-T9, after the grain-animation and per-slot-beats changes)
+Command: node scripts/kit_motion_audit.mjs --comp Kit-Atmosphere-Demo,Kit-Atmosphere-Demo-Vertical,Kit-Atmosphere-Demo-30fps --out out/kit-qa
+Run: 2026-11-27T20:45:16Z, sandbox (2 CPUs, software GL, Remotion headless shell)
+
+bundling src/kit/demo/entry.tsx ...
+browser: remotion
+Kit-Atmosphere-Demo: 240 samples, 0 static stretch(es)
+Kit-Atmosphere-Demo-Vertical: 240 samples, 0 static stretch(es)
+Kit-Atmosphere-Demo-30fps: 240 samples, 0 static stretch(es)
+
+Static stretches longer than 1 s
+composition                   from  to  length  peak mean  peak changed
+----------------------------  ----  --  ------  ---------  ------------
+Kit-Atmosphere-Demo           -     -   none    -          -
+Kit-Atmosphere-Demo-Vertical  -     -   none    -          -
+Kit-Atmosphere-Demo-30fps     -     -   none    -          -
+
+JSON: out/kit-qa/motion-audit.json

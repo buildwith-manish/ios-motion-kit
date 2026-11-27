@@ -1,10 +1,10 @@
 import React from 'react';
-import {useMemo} from 'react';
 import type {CSSProperties, ReactNode} from 'react';
 import {idleDrift} from '../motion';
 import {useTheme} from '../tokens/ThemeProvider';
 import {rgba} from '../tokens/color';
 import {unit} from '../tokens/helpers';
+import {lum, parseColor} from '../tokens/contrast';
 import type {Theme, TintColors} from '../tokens/types';
 import {lightAt, type LightBeat} from './focusPoints';
 
@@ -75,6 +75,15 @@ const PRESETS: Record<AtmospherePreset, PresetToken> = {
 
 const tintOf = (theme: Theme, tint: TintKey): string => tint === 'accent' ? theme.colors.accent : theme.colors.tint[tint];
 
+/** Quiet mode scales orb and key-light alpha by this factor (lower contrast behind charts and text). */
+export const ATMOSPHERE_QUIET_FACTOR = 0.52;
+/** Base alpha of the key light, as a fraction of `orbMaxAlpha` (the light is softer than the orbs). */
+const KEY_LIGHT_ALPHA = 0.58;
+/** Vignette strength at intensity 1. */
+const VIGNETTE_ALPHA = 0.36;
+/** Grain opacity at intensity 1, applied with mix-blend soft-light so it works on light and dark themes. */
+const GRAIN_OPACITY = 0.16;
+
 const grainSvg = (dark: string, light: string): string => {
   let state = 0x5eed1234;
   const next = () => {
@@ -119,7 +128,6 @@ export const Atmosphere: React.FC<AtmosphereProps> = ({
 }) => {
   const contextTheme = useTheme();
   const theme = themeProp ?? contextTheme;
-  const grain = useMemo(() => grainSvg(theme.colors.background.deep, theme.colors.background.lift), [theme.colors.background.deep, theme.colors.background.lift]);
   if (!Number.isFinite(intensity) || intensity < 0 || intensity > 1) throw new RangeError('Atmosphere: intensity must be between 0 and 1');
   if (!Number.isFinite(frame)) throw new RangeError('Atmosphere: frame must be finite');
   const config = PRESETS[preset];
@@ -128,11 +136,19 @@ export const Atmosphere: React.FC<AtmosphereProps> = ({
   const u = unit(theme);
   const time = frame / fps;
   const alphaCap = theme.colors.orbMaxAlpha;
-  const opacityScale = (quiet ? 0.52 : 1) * intensity;
+  const opacityScale = (quiet ? ATMOSPHERE_QUIET_FACTOR : 1) * intensity;
   const lightBeats = beats ?? config.beats;
   const light = lightAt(time, lightBeats, theme.motion.spring.GENTLE);
   const lightColour = light.colour ?? tintOf(theme, config.keyTint);
-  const lightAlpha = Math.min(alphaCap, alphaCap * 0.58 * opacityScale);
+  const lightAlpha = Math.min(alphaCap, alphaCap * KEY_LIGHT_ALPHA * opacityScale);
+  // Grain needs one colour darker and one lighter than the backdrop, or soft-light has nothing to add
+  // (the light theme's own lift/base/deep are all near-white, so use pure black/white dots there).
+  const backdropLum = lum(parseColor(theme.colors.background.base).rgb);
+  const grain = grainSvg(backdropLum > 0.5 ? '#000000' : theme.colors.background.deep, backdropLum > 0.5 ? '#FFFFFF' : theme.colors.background.lift);
+  // Deterministic grain shift (same every render of the same frame; cadence matches the video-4 original).
+  const grainStep = Math.floor(frame / 2);
+  const grainX = grainStep * 37 % ATMOSPHERE_GRAIN_TILE_PX;
+  const grainY = grainStep * 53 % ATMOSPHERE_GRAIN_TILE_PX;
 
   return (
     <div
@@ -178,14 +194,15 @@ export const Atmosphere: React.FC<AtmosphereProps> = ({
             background: `radial-gradient(58% 64% at ${light.x * 100}% ${light.y * 100}%, ${rgba(lightColour, lightAlpha)} 0%, transparent 100%)`,
           }}
         />
-        <div style={{position: 'absolute', inset: 0, background: `radial-gradient(ellipse at center, transparent 44%, ${rgba(theme.colors.background.deep, 0.36 * intensity)} 100%)`}} />
+        <div style={{position: 'absolute', inset: 0, background: `radial-gradient(ellipse at center, transparent 44%, ${rgba(theme.colors.background.deep, VIGNETTE_ALPHA * intensity)} 100%)`}} />
         <div
           style={{
             position: 'absolute',
             inset: 0,
-            opacity: 0.16 * intensity,
+            opacity: GRAIN_OPACITY * intensity,
             backgroundImage: `url("${grain}")`,
             backgroundSize: `${ATMOSPHERE_GRAIN_TILE_PX * u}px ${ATMOSPHERE_GRAIN_TILE_PX * u}px`,
+            backgroundPosition: `${grainX * u}px ${grainY * u}px`,
             mixBlendMode: 'soft-light',
           }}
         />

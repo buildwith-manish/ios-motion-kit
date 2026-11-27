@@ -1,8 +1,12 @@
+Safe-area check on the atmosphere demo (branch kit-T2-T9, after the grain-animation and per-slot-beats changes)
+Command: node scripts/kit_safe_area_check.mjs --comp Kit-Atmosphere-Demo,Kit-Atmosphere-Demo-Vertical,Kit-Atmosphere-Demo-30fps --out out/kit-qa
+Run: 2026-11-27T21:10:38Z, sandbox. Exit 0, no findings.
+
 bundling src/kit/demo/entry.tsx ...
-browser: KIT_CHROME
-Kit-Atmosphere-Demo: 12 frames, 0 finding(s)
-Kit-Atmosphere-Demo-Vertical: 12 frames, 0 finding(s)
-Kit-Atmosphere-Demo-30fps: 12 frames, 0 finding(s)
+browser: remotion
+Kit-Atmosphere-Demo: 48 frames, 0 finding(s)
+Kit-Atmosphere-Demo-Vertical: 48 frames, 0 finding(s)
+Kit-Atmosphere-Demo-30fps: 48 frames, 0 finding(s)
 
 Outside the title-safe area
 composition                   type  what        overshoot  seen  samples
@@ -11,4 +15,4 @@ Kit-Atmosphere-Demo           -     all inside  -          -     -
 Kit-Atmosphere-Demo-Vertical  -     all inside  -          -     -
 Kit-Atmosphere-Demo-30fps     -     all inside  -          -     -
 
-JSON: ../../../../tmp/t2-atmosphere-final/safe-area.json
+JSON: out/kit-qa/safe-area.json

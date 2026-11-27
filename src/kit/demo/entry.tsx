@@ -22,7 +22,8 @@ registerRoot(() => (
     <KitCameraCompositions />
     <KitTextCompositions />
     <KitQaCompositions />
-    <><KitDatavizCompositions /><KitAtmosphereCompositions /></>
+    <KitDatavizCompositions />
+    <KitAtmosphereCompositions />
   </>
 ));
 export {KitNumberRollCompositions} from './NumberRollDemo';

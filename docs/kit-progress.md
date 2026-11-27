@@ -300,6 +300,10 @@ The GitHub token was used for clone and push only (the camera session cloned wit
 
 ## T2 — Background kit
 
+> Note: a later pass on this branch (see "T2 — Atmosphere background" below) animated the grain, made the demo
+> number roll, and moved the key-light beats to per-slot windows; the deviations below that those changes supersede
+> are marked. The QA numbers below were measured on the GitHub Actions runner; the later section's on the sandbox.
+
 ### Built
 
 - `src/kit/background/`: `<Atmosphere>` presets (`midnight-aurora`, `graphite`, `soft-light`, `deep-ocean`), `focusPoints`, and spring-sampled `lightAt`.
@@ -309,8 +313,8 @@ The GitHub token was used for clone and push only (the camera session cloned wit
 ### Deviations
 
 - Recreated the useful ambient-background design ideas (radial-falloff orbs, staggered drift, key light, vignette and grain) with theme tokens; no parent-repository code was imported.
-- Grain is a static seeded tile, not time-animated, to keep identical-frame output deterministic.
-- The demo number is held at its final value so QA measures readable text over the brightest preset/theme backdrops rather than transient rolling digits.
+- Grain is a static seeded tile, not time-animated, to keep identical-frame output deterministic. *(Superseded: the later pass animates the grain deterministically — same tile, `frame/2` cadence, still frame-pure.)*
+- The demo number is held at its final value so QA measures readable text over the brightest preset/theme backdrops rather than transient rolling digits. *(Superseded: the later pass rolls the number per slot; mid-roll digits read as the check's known "transient" findings, not failures.)*
 
 ### Verified
 
@@ -321,7 +325,7 @@ The GitHub token was used for clone and push only (the camera session cloned wit
 
 ### NOT verified
 
-- GitHub Actions run `46059189770` completed successfully for contrast, safe-area, and motion checks on all 3 Atmosphere compositions. Contrast and safe-area reported 0 findings each. Motion audit reported static stretches longer than 1 second in all 3 compositions (6 landscape, 10 vertical, 6 30 fps); the workflow uses `--no-fail`, so these findings remain unverified rather than passing motion QA.
+- GitHub Actions run `46059189770` completed successfully for contrast, safe-area, and motion checks on all 3 Atmosphere compositions. Contrast and safe-area reported 0 findings each. Motion audit reported static stretches longer than 1 second in all 3 compositions (6 landscape, 10 vertical, 6 30 fps); the workflow uses `--no-fail`, so these findings remain unverified rather than passing motion QA. *(Resolved by the later pass: with animated grain and the per-slot rolling demo, the sandbox motion audit reports 0 static stretches — see the next T2 section.)*
 
 ## T3 — Finishing kit
 
@@ -348,3 +352,64 @@ The GitHub token was used for clone and push only (the camera session cloned wit
 ### NOT verified
 
 - No known outstanding T3 verification items.
+
+## T2 — Atmosphere background (`src/kit/background/`), follow-up pass
+
+### Built
+
+- `<Atmosphere frame preset>`: base linear gradient from the theme's background tiers; 2–4 colour orbs per preset
+  (`midnight-aurora`, `graphite`, `soft-light`, `deep-ocean`) using radial-gradient falloff (no CSS filter blur),
+  each with its own drift period (14–20 s) and 10–14 %-of-width horizontal amplitude; a key light that eases
+  between `{t, x, y, colour?}` beats on the theme's GENTLE spring; a vignette; deterministic seeded grain
+  (LCG-generated SVG tile, `ATMOSPHERE_GRAIN_TILE_PX = 64` at the 1080 design size, scaled by `unit(theme)` for 4K,
+  shifting a few px every other frame like the video-4 original).
+- Props: `intensity` (0–1, validated), `quiet` (orbs + key light at `ATMOSPHERE_QUIET_FACTOR` 0.52 alpha, for behind
+  charts/text), `reducedMotion` (no drift; static colour and light position kept), `beats` override, `theme`.
+- `focusPoints(rects, canvas, {start, duration, colour})` converts element rects into key-light beats; `lightAt`
+  samples the beats with the iOS spring (pure, deterministic, validated).
+- Ported from `PayRanked-video3` video-4 `AmbientBackground.tsx` (orb drift maths, key-light idea, grain cadence),
+  rewritten to be theme-driven and video-agnostic; orb alpha is always capped by `theme.colors.orbMaxAlpha`
+  (midnight/light 0.35, mono 0.25) and the demo composites the brightest orb at that cap.
+- Demo `Kit-Atmosphere-Demo` / `-Vertical` / `-30fps`: all 4 presets × 3 themes (2 s slots), a glass card with title,
+  body, a rolling `NumberText`, and a glass pill; the key light follows the number then the pill each slot. One line
+  in `src/kit/index.ts` and `src/kit/demo/entry.tsx`.
+- Scripts: `scripts/kit-atmosphere-stills.mjs` (stills + 4K crop), `scripts/kit-atmosphere-verify.py` (numeric still
+  checks), `scripts/kit-atmosphere-check.mjs` (pure-function checks).
+
+### Deviations
+
+- The session started from a prior agent's T2 commit on this branch (`b895ecd`); this pass fixed its gaps rather
+  than redoing it: animated the (previously static) grain deterministically, made grain visible on the light theme
+  (black/white dot pair via backdrop luminance), moved the demo's key-light beats into per-slot windows (they
+  previously spanned the full 24 s, so the light sat still for ~22 s), made the demo number actually roll, and
+  restored the entry.tsx one-line-per-composition style.
+- Grain is an SVG `data:` URI of 256 seeded 1-px rects (LCG), not `feTurbulence` (the reference's filter): cheaper
+  in software GL and identical across renderers. `soft-light` blend instead of `overlay` so it works on light themes.
+- Stills were verified **numerically** (structure, saturation per theme, text edges, 4K hairlines and grain via
+  `scripts/kit-atmosphere-verify.py`), not by eye: this sandbox's model cannot view images. Numbers are in the
+  script output; all checks pass.
+
+### Verified
+
+- `npx tsc --noEmit` clean (strict), run after the changes.
+- Contrast: exit 0; the only findings are 3 "transient" single-sample rows from `NumberText` digits mid-roll with
+  directional blur (the check's known treatment of rolling digits; settled text passes 4.5:1). Log:
+  `docs/progress/T2-atmosphere-contrast.txt`.
+- Safe area: all three compositions "all inside" (title safe). Log: `docs/progress/T2-atmosphere-safe-area.txt`.
+- Motion audit: 240 samples per composition, **0 static stretches** (grain + drift + rolls keep it alive). Log:
+  `docs/progress/T2-atmosphere-motion.txt`.
+- Perf at 1080p (review profile, this 2-CPU software-GL sandbox): **1.689 s/frame** (1440 frames, 2431.9 s wall,
+  10.33 MB). The dominant cost is the glass `backdrop-filter` re-sampling the animated full-bleed background; the
+  atmosphere layers themselves use no filter blur. Log: `docs/progress/T2-atmosphere-perf.txt`.
+- Pure-function checks (determinism, focus/light maths, error paths, constants): `node scripts/kit-atmosphere-check.mjs` all pass.
+- Stills: 18 × 1080p (12 landscape slots, 4 vertical, 2 × 30 fps) + one 4K crop in `docs/previews/kit/`, all
+  passing the numeric checks.
+
+### NOT verified
+
+- **Stills were not viewed by a human eye** — numeric checks only (this sandbox's model has no image input). Please
+  eyeball `docs/previews/kit/atmosphere-*.jpg` and the 4K crop.
+- No 4K **video** render (only a 4K still crop); `--scale=2` video timing unmeasured.
+- Perf measured on this sandbox only (2 CPUs, software GL); no hardware-GL or CI-runner numbers.
+- `quiet` and `reducedMotion` are exercised by the pure-function checks and code, but not by a dedicated still.
+- The 30 fps variant was checked with 2 stills and the three QA scripts, not watched as video.
