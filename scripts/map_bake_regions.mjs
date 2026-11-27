@@ -38,7 +38,18 @@ const args = Object.fromEntries(
     return [m[1], m[2] ?? true];
   }),
 );
-const VINTAGE = String(args.vintage ?? '2023'); // newest 500k cartographic boundary vintage at time of writing; recorded in manifest.json
+/** Newest vintage that answers: probes GENZ<year> states file (2026 down to 2022) unless --vintage pins one. Recorded in manifest.json. */
+async function pickVintage() {
+  if (args.vintage) return String(args.vintage);
+  for (const y of ['2026', '2025', '2024', '2023', '2022']) {
+    try {
+      const r = await fetch(`https://www2.census.gov/geo/tiger/GENZ${y}/shp/cb_${y}_us_state_500k.zip`, {method: 'HEAD'});
+      if (r.ok) { console.log(`vintage ${y}`); return y; }
+    } catch { /* try older */ }
+  }
+  return '2023';
+}
+const VINTAGE = await pickVintage();
 const FORCE = Boolean(args.force);
 const LAYER_NAMES = args.layers ? String(args.layers).split(',') : ['states', 'counties', 'cbsa', 'zcta', 'outline'];
 const TRACT_FIPS = args.tracts ? String(args.tracts).split(',') : [];
@@ -101,7 +112,7 @@ const LAYERS = {
   },
   cbsa: {
     file: `cb_${VINTAGE}_us_cbsa_500k.zip`,
-    fields: 'CBSAFP,NAME,LSAD,MEMI',
+    fields: 'CBSAFP,GEOID,NAME,LSAD',
     idField: 'CBSAFP',
     simplifyPct: '8%',
     quantization: 1e5,
