@@ -29,7 +29,7 @@ Reusable, video-agnostic iOS-style motion kit for Remotion 4.0.250 / React 18.3.
 
 ## Directory map
 - `src/kit/index.ts`: re-exports every module below.
-- `motion`: iOS springs and easings. `tokens`: themes (midnight/light/mono), canvases, contrast engine. `glass`: `Glass` primitive.
+- `motion`: iOS springs and easings; `choreo.ts` choreography presets + velocity-keeping springs. `tokens`: themes (midnight/light/mono), canvases, contrast engine. `glass`: `Glass` primitive.
 - `text`: RevealText, Emphasis, NumberText, Caption. `dataviz`: SpringBar, Ring, Ticker, LineDraw, Delta, Callout. `charts`: scales, marks, Chart.
 - `transitions`: TransitionScene. `camera`: CameraRig, Tilt3D, DepthLayers, RackFocus. `timing`: word-timing parsers and timeline builder.
 - `audio`: cues, CueTrack, MusicBed, ducking; `families.ts` lists SFX families, `sfx-manifest.json` is generated.

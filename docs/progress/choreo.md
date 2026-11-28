@@ -4,5 +4,5 @@
 - [x] A: CI green on push
 - [x] B: data-kit-role attributes on kit components
 - [x] B: maxSimultaneous rule + config key + unit tests
-- [ ] B: run on demo scenes in CI under [qa] (report first)
-- [ ] tag choreo-v1
+- [x] B: run on demo scenes in CI under [qa] (report first)
+- [x] tag choreo-v1
