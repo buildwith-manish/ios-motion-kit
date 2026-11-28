@@ -4,4 +4,4 @@
 - [x] C pitched sets regenerated in D; valueToNoteIndex + pitchedCue + tests; README
 - [x] CI determinism step (sfx-build.yml)
 - [x] CI fix: audio test pitch classes -> D major
-- [ ] tag sfx-system-v1
+- [x] tag sfx-system-v1
