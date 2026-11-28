@@ -59,11 +59,16 @@ try {
       rows.push({preset: name, dither, width: w, height: h, crf: p.crf, x264Preset: p.x264Preset, lumaLevels: Math.min(...stats.map((s) => s.levels)), longestRunPx: longest, longestRunPct: Number(((100 * longest) / w).toFixed(2)), sourceLevels: srcStats.levels, sourceRunPct: Number(((100 * srcStats.longest) / w).toFixed(2))});
     }
   }
+} catch (e) {
+  // GitHub annotation: readable through the API when job logs are not downloadable.
+  console.log(`::error title=banding-script::${String(e?.stack ?? e).slice(0, 900).replace(/\n/g, ' | ')}`);
+  process.exitCode = 1;
 } finally {
   await puppeteerInstance.close({silent: true});
   rmSync(tmp, {recursive: true, force: true});
 }
 
+if (process.exitCode) process.exit(process.exitCode);
 const header = ['preset', 'dither', 'size', 'luma levels', 'longest run px', 'run % width', 'src levels', 'src run %'];
 const cells = rows.map((r) => [r.preset, r.dither, `${r.width}x${r.height}`, String(r.lumaLevels), String(r.longestRunPx), r.longestRunPct.toFixed(2)]);
 const widths = header.map((h, i) => Math.max(h.length, ...cells.map((c) => c[i].length)));
