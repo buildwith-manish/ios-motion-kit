@@ -29,6 +29,29 @@ node scripts/kit-audio-check.mjs       # rule checks (determinism, limits, ducki
 node scripts/kit-audio-table.mjs       # docs/kit-audio-cues.txt for the demo timeline
 ```
 
+## SFX report and listening page
+
+```
+pip install -r scripts/sfx_report_requirements.txt   # numpy, scipy, matplotlib
+python3 scripts/sfx_report.py          # dist/sfx-report/: report.json, report.md, spectrograms/, contact-sheet.png
+python3 scripts/sfx_build_page.py      # dist/sfx-report/index.html + audio/ (open it in a browser)
+npm run kit:sfx-report                 # both
+```
+
+The report reads the mono WAVs (not the `@L` / `@R` copies) and flags measurable issues: `too-harsh`, `too-thin`,
+`too-long`, `too-quiet`, `too-loud`, `inconsistent`. A flag is not a verdict, and an unflagged sound is not approved: judge
+by ear. `--strict` exits 1 when anything is flagged.
+
+**Editing thresholds:** `scripts/sfx_report_thresholds.json`. `defaults` applies to every family; an entry under `families`
+overrides it key by key; `null` switches a test off; the `_help` lines define each test. `rms_target_db` is the median of
+the set committed when the file was written, so after an intended level change, update it. Attack is the 10-90% rise to the
+highest point of the envelope, so for multi-note or swelling sounds it measures the time to the loudest part.
+
+**CI** (`.github/workflows/sfx-report.yml`) runs when the generator, report scripts or sounds change: it checks that the
+generator reproduces the committed files, uploads the report as an artifact, comments on pull requests, and on `main`
+deploys the page to GitHub Pages (needs Settings > Pages > Source: GitHub Actions). Run it manually with `strict` to fail
+on flags.
+
 ## Sounds (13 families x 3 variants, 48 kHz / 24-bit, peak -3 dBFS, 6 ms in / 10 ms out)
 
 `tap`, `tick`, `pop`, `whoosh-soft`, `whoosh-fast`, `swipe`, `slide`, `rise`, `fall`, `chime-success`, `soft-warn`,
