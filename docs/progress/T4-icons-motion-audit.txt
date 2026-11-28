@@ -1,0 +1,10 @@
+GitHub Actions run: 46113866331
+Result: workflow completed successfully on commit 9390be99a17fb4a6b74ef8bf20b55f3b9a962f16
+
+Composition             Samples  Static stretches  Detail
+Kit-Icons-Demo          60       1                  2.90-5.90 s (3.00 s), 0.000% changed pixels
+Kit-Icons-Demo-Vertical 60       1                  2.90-5.90 s (3.00 s), 0.000% changed pixels
+Kit-Icons-Demo-30fps    60       1                  2.90-5.90 s (3.00 s), 0.000% changed pixels
+
+The static interval is the intentional hold after all icon draw-on animations finish.
+Contrast and safe-area checks reported zero findings for all three compositions.
