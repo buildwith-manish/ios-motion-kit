@@ -1,7 +1,7 @@
 /**
  * Review stills of every new map scene type (choropleth, regionHighlight, tileGrid, flyToCity) at 72 % of each scene,
  * in the landscape and the portrait demo video. Dev/CI only (needs a browser and baked map data).
- *   npx tsx scripts/map_scenes_stills.ts [--out=docs/previews/kit-map-scenes]
+ *   npx tsx scripts/map_scenes_stills.mts [--out=docs/previews/kit-map-scenes]
  * Continues past a failing still and exits 1 at the end, naming every failure with its error.
  */
 import {bundle} from '@remotion/bundler';

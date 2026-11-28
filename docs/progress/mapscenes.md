@@ -10,4 +10,4 @@
 Notes: no gh CLI here; watch CI with the GitHub API (curl). Local runs: vitest on one file only.
 Not verifiable locally: renders, stills, baked-data scenes, tsc. City centres in BAKED_CITIES are downtown points (check pins in CI stills).
 
-  - C code: scenes/{mapScenesDemoData.ts,MapScenesDemo.tsx}, scripts/map_scenes_stills.ts, .github/workflows/map-scenes.yml, docs; QA matrix (kit-qa) covers new comps via entry.tsx. CI green on 4dd235c (Map scenes run 46139793662); tagged map-scenes-v1. Logs/artifacts not downloadable from the agent sandbox: read timings in the run log.
+  - C code: scenes/{mapScenesDemoData.ts,MapScenesDemo.tsx}, scripts/map_scenes_stills.mts, .github/workflows/map-scenes.yml, docs; QA matrix (kit-qa) covers new comps via entry.tsx. CI green on 4dd235c (Map scenes run 46139793662); tagged map-scenes-v1. Logs/artifacts not downloadable from the agent sandbox: read timings in the run log.

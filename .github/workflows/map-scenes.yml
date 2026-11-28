@@ -5,7 +5,7 @@ on:
   workflow_dispatch:
   push:
     branches: [main]
-    paths: ['src/kit/scenes/**', 'src/kit/map/**', 'scripts/map_scenes_stills.ts', '.github/workflows/map-scenes.yml']
+    paths: ['src/kit/scenes/**', 'src/kit/map/**', 'scripts/map_scenes_stills.mts', '.github/workflows/map-scenes.yml']
 permissions:
   contents: read
 concurrency:
@@ -32,7 +32,7 @@ jobs:
         run: |
           set -o pipefail
           mkdir -p docs/previews
-          npx tsx scripts/map_scenes_stills.ts --out=docs/previews/kit-map-scenes 2>&1 | tee docs/previews/kit-map-scenes-stills.log
+          npx tsx scripts/map_scenes_stills.mts --out=docs/previews/kit-map-scenes 2>&1 | tee docs/previews/kit-map-scenes-stills.log
       - name: Render landscape + portrait videos, timings
         id: render
         continue-on-error: true
