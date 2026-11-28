@@ -6,6 +6,7 @@ export * from './timing';
 export * from './RevealText';
 export * from './Emphasis';
 export * from './numberRoll';
+export * from './numberSize';
 export * from './NumberText';
 export * from './captionPages';
 export * from './Caption';

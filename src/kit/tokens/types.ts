@@ -60,6 +60,8 @@ export type RadiusKey = 'xs' | 'sm' | 'md' | 'lg' | 'xl' | 'xxl' | 'pill';
 export type SpacingKey = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 8 | 10 | 12 | 16 | 20;
 export type TypeRole = 'display' | 'title' | 'body' | 'caption' | 'number';
 export type FontRole = 'display' | 'body';
+/** Roles of the finer type scale (Theme.typeScale). */
+export type TypeScaleRole = 'hero' | 'number' | 'figure' | 'title' | 'stat' | 'label' | 'caption' | 'footnote';
 export type WeightRole = 'regular' | 'bold';
 export type EasingName = 'ios' | 'standard' | 'decelerate' | 'accelerate';
 export type SafeKind = 'title' | 'action';
@@ -99,6 +101,14 @@ export interface GlassTierSpec {
   shimmer: string;
   /** Default corner radius, a key of `Theme.radius`. */
   radius: RadiusKey;
+}
+
+/** Type-scale entry of Theme.typeScale: a TypeStyle plus the fit range (design px) used by numberSize()/fitText(). */
+export interface TypeScaleEntry extends TypeStyle {
+  /** Smallest size the role may shrink to when fitting. Never below the layout-lint minimum for its kind. */
+  min: number;
+  /** Largest size the role may grow to when fitting. */
+  max: number;
 }
 
 /** Type-scale entry. `size` is px at the 1080 design size. */
@@ -149,6 +159,8 @@ export interface Theme {
   /** 4pt grid: key n = n * 4 px at the 1080 design size. */
   spacing: Record<SpacingKey, number>;
   type: Record<TypeRole, TypeStyle>;
+  /** Finer scale: hero, number, figure, title, stat, label, caption, footnote. Optional so older custom themes stay valid; read it with typeScaleOf(). */
+  typeScale?: Record<TypeScaleRole, TypeScaleEntry>;
   fonts: Record<FontRole, string>;
   /** Exactly two weights. */
   weights: Record<WeightRole, number>;

@@ -226,3 +226,28 @@ export const saveAnnotated = async (browser, {png, width, height, boxes, file}) 
   await page.screenshot({path: file});
   await page.close();
 };
+
+/**
+ * Font state of the page for kit_font_check.mjs: every FontFace in document.fonts with its load status, and the
+ * first family/weight of every element that directly holds text (HTML and SVG), with a count and a sample.
+ */
+export const collectFontState = (page) => page.evaluate(async () => {
+  await document.fonts.ready;
+  const faces = [...document.fonts].map((f) => ({family: f.family.replace(/["']/g, ''), weight: String(f.weight), status: f.status}));
+  const skip = new Set(['SCRIPT', 'STYLE', 'NOSCRIPT', 'TITLE', 'HEAD']);
+  const seen = new Map();
+  for (const el of document.querySelectorAll('body *')) {
+    if (skip.has(el.tagName.toUpperCase())) continue;
+    const text = [...el.childNodes].filter((n) => n.nodeType === 3).map((n) => n.textContent.trim()).join('');
+    if (!text) continue;
+    const cs = getComputedStyle(el);
+    if (cs.visibility === 'hidden' || cs.display === 'none') continue;
+    const family = cs.fontFamily.split(',')[0].trim().replace(/["']/g, '');
+    const weight = cs.fontWeight;
+    const key = `${family}|${weight}`;
+    const e = seen.get(key) ?? {family, weight, count: 0, sample: text.slice(0, 40), loaded: document.fonts.check(`${weight} 16px "${family}"`)};
+    e.count++;
+    seen.set(key, e);
+  }
+  return {faces, used: [...seen.values()]};
+});

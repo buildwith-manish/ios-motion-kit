@@ -3,7 +3,7 @@ import {continueRender, delayRender, staticFile} from 'remotion';
 import {geoAlbers, geoAlbersUsa} from 'd3-geo';
 import {sampleCamera} from '../camera';
 import {iosSpring} from '../motion';
-import {safeRect, textStyle, unit, useTheme} from '../tokens';
+import {safeRect, tabularNums, textStyle, unit, useTheme} from '../tokens';
 import type {Theme} from '../tokens';
 import {rgba} from '../tokens/color';
 import {formatNumber} from '../text/format';
@@ -97,7 +97,7 @@ const RegionCallouts: React.FC<{
             <circle cx={shape.centroid[0]} cy={shape.centroid[1]} r={7 * u} fill={theme.colors.accent} stroke={theme.colors.background.deep} strokeWidth={2 * u} />
             <rect x={cx - w / 2} y={cy - h - 6 * u} width={w} height={h} rx={18 * u} fill={rgba(theme.colors.background.deep, 0.88)} stroke={rgba(theme.colors.text.primary, 0.22)} strokeWidth={1.5 * u} />
             <text x={cx} y={cy - h + fs * 0.95} textAnchor="middle" style={{...font, fontSize: fs * 0.82}} fill={theme.colors.text.secondary}>{label}</text>
-            <text x={cx} y={cy - h + fs * 2.05} textAnchor="middle" style={{...font, fontSize: fs * 1.1, fontWeight: 700}} fill={theme.colors.text.primary}>{value}</text>
+            <text x={cx} y={cy - h + fs * 2.05} textAnchor="middle" style={{...font, fontSize: fs * 1.1, fontWeight: 700, ...tabularNums()}} fill={theme.colors.text.primary}>{value}</text>
           </g>
         );
       })}
@@ -236,7 +236,7 @@ export const RegionHighlightScene: React.FC<RegionHighlightSceneProps> = ({frame
         return (
           <div key={p.id} style={{position: 'absolute', left: safe.left, top: portrait ? top : top + 20 * u, opacity: o}}>
             <div style={{...textStyle(theme, 'title', {scale: 1.1}), color: theme.colors.accent}}>{name}</div>
-            {input.value !== undefined ? <div style={{...textStyle(theme, 'title', {scale: 0.8}), color: theme.colors.text.primary}}>{formatNumber(input.value, format)}</div> : null}
+            {input.value !== undefined ? <div style={{...textStyle(theme, 'title', {scale: 0.8, tabular: true}), color: theme.colors.text.primary}}>{formatNumber(input.value, format)}</div> : null}
           </div>
         );
       })}

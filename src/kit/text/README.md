@@ -32,8 +32,13 @@ export const Scene: React.FC<{frame: number}> = ({frame}) => (
 | `paginateCaptions`, `pageAt` | Split word timings into pages of <= N lines; find the page at a time. | `maxLines`, `maxPageSeconds` (4), `breakOnGap` (0.7 s) |
 | `wordActivity`, `activeWordIndex`, `shiftTimings`, `validateTimings` | Timing helpers. | |
 | `rollValueAt`, `buildRollSegments` | Pure roll maths behind `<NumberText>`. | |
+| `numberSize(text, maxWidth, {min, max})` | Largest size in [min, max] at which a number fits one line (width table, 3 % slack). Pass the widest text. | `metrics` (INTER_700), `tracking` (-0.02), `step` (0.5) |
 | `unitEnter`, `unitStyle` | The per-unit enter used by `<RevealText>`. | `response`, `rise`, `blur`, `scale` |
 | `measureText`, `advanceOf`, `metricsForWeight`, `INTER_600`, `INTER_700`, `detectDirection`, `hasConnectedScript` | Width tables and script helpers. | |
+
+## Fonts and type scale
+
+Fonts, licenses and loading rules: `docs/fonts.md`. Type scale tokens (hero, number, figure, title, stat, label, caption, footnote) are `theme.typeScale` / `typeScaleOf(theme)` / `scaleStyle(theme, role)`; hero numbers: `numberSize(finalText, maxWidth, {min: 120, max: 200})`. Fonts load via `useKitFonts()` (`<KitFontGate>`, `withKitFonts(Root)`): frames wait, and a failure names the font. All number text uses tabular figures.
 
 ## Width tables (fonts)
 

@@ -1,6 +1,6 @@
 import React from 'react';
 import {Composition, useCurrentFrame} from 'remotion';
-import {CANVAS, SceneSequence, createTheme, sceneSequenceFrames, type SceneDefinition} from 'ios-motion-kit';
+import {CANVAS, KitFontGate, SceneSequence, createTheme, sceneSequenceFrames, type SceneDefinition} from 'ios-motion-kit';
 import scenesJson from '../data/scenes.json';
 
 // The video is data: edit data/scenes.json (scene types: see kit/src/kit/scenes/README.md).
@@ -14,5 +14,7 @@ const Video: React.FC = () => {
 };
 
 export const Root: React.FC = () => (
-  <Composition id="__COMP__" component={Video} durationInFrames={sceneSequenceFrames(scenes, canvas.fps)} width={canvas.width} height={canvas.height} fps={canvas.fps} />
+  <KitFontGate>
+    <Composition id="__COMP__" component={Video} durationInFrames={sceneSequenceFrames(scenes, canvas.fps)} width={canvas.width} height={canvas.height} fps={canvas.fps} />
+  </KitFontGate>
 );

@@ -7,6 +7,8 @@ const RADIUS: Theme['radius'] = {xs: 8, sm: 12, md: 16, lg: 24, xl: 32, xxl: 44,
 
 const SPACING: Theme['spacing'] = {0: 0, 1: 4, 2: 8, 3: 12, 4: 16, 5: 20, 6: 24, 8: 32, 10: 40, 12: 48, 16: 64, 20: 80} satisfies Record<SpacingKey, number>;
 
+import {TYPE_SCALE} from './typeScale';
+
 const TYPE: Record<TypeRole, TypeStyle> = {
   display: {size: 112, lineHeight: 1.04, tracking: -0.03, family: 'display', weight: 'bold', tabular: false},
   title: {size: 56, lineHeight: 1.1, tracking: -0.02, family: 'display', weight: 'bold', tabular: false},
@@ -77,6 +79,7 @@ export const midnight: Theme = {
   radius: RADIUS,
   spacing: SPACING,
   type: TYPE,
+  typeScale: TYPE_SCALE,
   fonts: FONTS,
   weights: WEIGHTS,
   safeArea: SAFE_AREA,

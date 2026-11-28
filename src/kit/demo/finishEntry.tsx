@@ -1,4 +1,5 @@
 import {registerRoot} from 'remotion';
+import {withKitFonts} from '../tokens/FontGate';
 import {KitFinishCompositions} from './FinishDemo';
 
-registerRoot(KitFinishCompositions);
+registerRoot(withKitFonts(KitFinishCompositions));

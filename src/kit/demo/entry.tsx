@@ -5,6 +5,7 @@
  */
 import React from 'react';
 import {registerRoot} from 'remotion';
+import {withKitFonts} from '../tokens/FontGate';
 import {KitDemoCompositions} from './TokensDemo';
 import {KitTransitionsCompositions} from './TransitionsDemo';
 import {KitAudioCompositions} from './AudioDemo';
@@ -21,7 +22,7 @@ import {KitFlyCompositions} from './FlyDemo';
 import {KitFormatCompositions} from './FormatDemo';
 import {KitChartsCompositions} from './ChartsDemo';
 
-registerRoot(() => (
+registerRoot(withKitFonts(() => (
   <>
     <KitDemoCompositions />
     <KitTransitionsCompositions />
@@ -40,7 +41,7 @@ registerRoot(() => (
     <KitChartsCompositions />
     <KitMapSceneRoot />
   </>
-));
+)));
 export {KitNumberRollCompositions} from './NumberRollDemo';
 export {KitFinishCompositions} from './FinishDemo';
 export {KitIconsCompositions} from '../icons/IconsDemo';

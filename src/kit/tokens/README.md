@@ -35,5 +35,7 @@ Non-React code: `import {themes, getTheme, midnight} from '../kit'` gives the pl
 | `toFrames`, `toSeconds`, `ease` | Seconds/frames at the theme fps; theme easing as a function. |
 | `shadowCss(spec, scale)` | `ShadowSpec` to a CSS box-shadow layer. |
 | `textStyle(theme, role, opts?)`, `<Text>` | Apply the type scale (size, family, weight, tracking, colour). |
+| `TYPE_SCALE`, `typeScaleOf(theme)`, `scaleStyle(theme, role)` | Finer scale: hero, number, figure, title, stat, label, caption, footnote (design px, lint-safe minimums). |
+| `useKitFonts()`, `<KitFontGate>`, `withKitFonts(Root)`, `loadKitFontsStrict()` | Hold the render until fonts load; errors name the font (docs/fonts.md). |
 | `tabularNums()` | Tabular-figures style patch. |
 | `rgba(hex, alpha)` | Hex + alpha to `rgba()`. |
