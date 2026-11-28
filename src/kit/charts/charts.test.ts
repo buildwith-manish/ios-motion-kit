@@ -111,3 +111,49 @@ describe('layout + geometry', () => {
     expect(barPath({x: 0, y: 0, w: 10, h: 50}, 'up', 99)).toContain('A5.00 5.00');
   });
 });
+
+import {candleGeometry, sectorAngles, slopeLayout, waterfallSteps, arcPath} from './recipeGeometry';
+
+describe('recipes geometry', () => {
+  it('waterfall running totals and total bars', () => {
+    const st = waterfallSteps([{label: 'Open', value: 100}, {label: 'Sales', value: 50}, {label: 'Costs', value: -30}, {label: 'Net', value: 0, total: true}, {label: 'Tax', value: -20}, {label: 'End', value: 0, total: true}]);
+    expect(st.map((s) => s.running)).toEqual([100, 150, 120, 120, 100, 100]);
+    expect(st[2]).toMatchObject({start: 150, end: 120, kind: 'down'});
+    expect(st[3]).toMatchObject({start: 0, end: 120, kind: 'total'});
+    expect(st[5].end).toBe(100);
+    expect(waterfallSteps([{label: 'a', value: 5}], 10)[0]).toMatchObject({start: 10, end: 15});
+    expect(waterfallSteps([])).toEqual([]);
+  });
+  it('candlestick geometry', () => {
+    const cs = [{x: 'a', open: 10, high: 14, low: 8, close: 12}, {x: 'b', open: 12, high: 12, low: 12, close: 12}, {x: 'c', open: 12, high: 13, low: 9, close: 9.5}, {x: 'd', open: NaN, high: 1, low: 0, close: 1}];
+    const spec = {x: cs.map((c) => c.x), series: [{name: 'H', values: cs.map((c) => c.high)}, {name: 'L', values: cs.map((c) => c.low)}], zero: false};
+    const l = chartLayout(theme, spec, 800, 400);
+    const g = candleGeometry(l, cs);
+    expect(g[0]!.up).toBe(true);
+    expect(g[0]!.wickTop).toBeLessThan(g[0]!.bodyTop);
+    expect(g[0]!.wickBottom).toBeGreaterThan(g[0]!.bodyTop + g[0]!.bodyH - 0.001);
+    expect(g[1]!.bodyH).toBe(1);
+    expect(g[2]!.up).toBe(false);
+    expect(g[3]).toBeNull();
+  });
+  it('sector angles sum to the sweep and skip non-positive', () => {
+    const a = sectorAngles([50, 25, 25, 0, null, -3], {gapDeg: 4});
+    expect(a.map((s) => s.index)).toEqual([0, 1, 2]);
+    expect(a[0].frac).toBe(0.5);
+    const spans = a.reduce((m, s) => m + (s.end - s.start), 0);
+    expect(spans + 4 * 3).toBeCloseTo(360, 6);
+    expect(a[2].end + 4).toBeCloseTo(360, 6);
+    expect(sectorAngles([0, 0])).toEqual([]);
+    const one = sectorAngles([7], {gapDeg: 10});
+    expect(one[0].start).toBe(0);
+    expect(one[0].end).toBe(360);
+    expect(arcPath(0, 0, 10, 5, 0, 360)).toContain('A10.00 10.00 0 1 1');
+  });
+  it('slope layout keeps order and shared scale', () => {
+    const s = slopeLayout([{name: 'a', from: 1, to: 5}, {name: 'b', from: 5, to: 1}], 600, 400, {padLeft: 50, padRight: 50, padTop: 10, padBottom: 10});
+    expect(s.from[0].y).toBeGreaterThan(s.to[0].y);
+    expect(s.from[0].y).toBe(s.to[1].y);
+    expect(s.leftX).toBe(50);
+    expect(s.rightX).toBe(550);
+  });
+});

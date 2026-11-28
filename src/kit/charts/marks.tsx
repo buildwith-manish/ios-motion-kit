@@ -1,6 +1,7 @@
 import React from 'react';
 import {unit} from '../tokens/helpers';
-import {clamp01, roleFontPx} from '../dataviz/common';
+import {clamp01, roleFontPx, toneColor, type Tone} from '../dataviz/common';
+import {formatNumber} from '../text/format';
 import {nudge1D} from '../dataviz/layout';
 import {isMissing} from './stack';
 import {barPath, barRects, endLabelText, growRect, lineSegments, prefixSamples, seriesPoints, type LineSegment} from './geometry';
@@ -162,3 +163,86 @@ export const BarMark: React.FC<BarMarkProps> = ({radius = 10, stagger = 0.04, se
   );
 };
 
+
+export interface PointMarkProps {
+  /** Design px, scaled by the theme. Default 7. */
+  radius?: number;
+  /** Seconds between points. Default 0.05. */
+  stagger?: number;
+  /** Seconds between series. Default 0.1. */
+  seriesStagger?: number;
+  /** Stem from the baseline to each point (lollipop). Default false (dot plot). */
+  stem?: boolean;
+  /** Stem width, design px. Default 3. */
+  stemWidth?: number;
+  only?: readonly number[];
+}
+
+/** Dots at every data point (scatter / dot plot); with `stem` a lollipop. Works vertical and horizontal. Gaps draw nothing. */
+export const PointMark: React.FC<PointMarkProps> = ({radius = 7, stagger = 0.05, seriesStagger = 0.1, stem = false, stemWidth = 3, only}) => {
+  const c = useChart();
+  const {theme, spec, layout} = c;
+  const u = unit(theme);
+  const zero = Math.min(Math.max(0, layout.value.domain[0]), layout.value.domain[1]);
+  return (
+    <g>
+      {spec.series.map((s, k) => {
+        if (only && !only.includes(k)) return null;
+        const color = seriesColor(theme, k, s.tone);
+        return s.values.map((v, i) => {
+          if (isMissing(v)) return null;
+          const p = chartReveal(c, k * seriesStagger + i * stagger);
+          if (p <= 0) return null;
+          const pt = layout.point(i, v);
+          const base = layout.point(i, zero);
+          const end = {x: base.x + (pt.x - base.x) * p, y: base.y + (pt.y - base.y) * p};
+          return (
+            <g key={`p${k}-${i}`}>
+              {stem ? <line x1={base.x} y1={base.y} x2={end.x} y2={end.y} stroke={color} strokeWidth={stemWidth * u} strokeLinecap="round" /> : null}
+              <circle cx={stem ? end.x : pt.x} cy={stem ? end.y : pt.y} r={radius * u * (stem ? 1 : p)} fill={color} />
+            </g>
+          );
+        });
+      })}
+    </g>
+  );
+};
+
+export interface RuleMarkProps {
+  /** Value on the value axis. */
+  value: number;
+  label?: string;
+  /** Append the formatted value (chart yFormat) to the label. */
+  showValue?: boolean;
+  tone?: Tone;
+  dashed?: boolean;
+  /** Seconds after the chart's start. */
+  delay?: number;
+}
+
+/** Reference line across the plot with an optional label. Outside the value domain it draws nothing. */
+export const RuleMark: React.FC<RuleMarkProps> = ({value, label, showValue = false, tone = 'secondary', dashed = true, delay = 0}) => {
+  const c = useChart();
+  const {theme, spec, layout} = c;
+  const u = unit(theme);
+  const [d0, d1] = layout.value.domain;
+  if (value < Math.min(d0, d1) || value > Math.max(d0, d1)) return null;
+  const p = chartReveal(c, delay);
+  const pos = layout.value(value);
+  const {plot, horizontal} = layout;
+  const font = roleFontPx(theme, 'caption');
+  const color = toneColor(theme, tone);
+  const text = [label, showValue ? formatNumber(value, spec.yFormat ?? 'int') : ''].filter(Boolean).join(' ');
+  const dash = dashed ? `${8 * u} ${8 * u}` : undefined;
+  return (
+    <g>
+      {horizontal
+        ? <line x1={pos} x2={pos} y1={plot.y} y2={plot.y + plot.h * p} stroke={color} strokeWidth={Math.max(1.5, 2.5 * u)} strokeDasharray={dash} />
+        : <line x1={plot.x} x2={plot.x + plot.w * p} y1={pos} y2={pos} stroke={color} strokeWidth={Math.max(1.5, 2.5 * u)} strokeDasharray={dash} />}
+      {text ? (
+        <text x={horizontal ? pos + 6 * u : plot.x + plot.w} y={horizontal ? plot.y + font : pos - 6 * u} textAnchor={horizontal ? 'start' : 'end'} opacity={clamp01((p - 0.5) * 2)}
+          style={{fontFamily: theme.fonts.body, fontSize: font, fontWeight: theme.weights.bold, fill: theme.colors.text.secondary, fontVariantNumeric: 'tabular-nums'}}>{text}</text>
+      ) : null}
+    </g>
+  );
+};
