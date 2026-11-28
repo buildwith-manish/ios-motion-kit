@@ -440,3 +440,22 @@ The GitHub token was used for clone and push only (the camera session cloned wit
 ### NOT verified
 
 - No full-motion playback review on alternate browsers.
+
+## T7 — Word timing and timeline builder
+
+### Built
+
+- Added JSON and Whisper/WhisperX word-timing parsers plus SRT/VTT subtitle parsers, including deterministic splitting of subtitle or segment spans into word times.
+- Added case- and punctuation-insensitive word/phrase anchors and a validated timeline builder for scenes and audio cues derived from motion events.
+- The same result supplies `RevealText` timings, `CueTrack` cues, and framework-neutral scene start/end records for the later scene kit.
+- Added a deterministic 40-word demo, parser/builder audit, API README, rendered stills, and `docs/kit-timing-table.txt`.
+
+### Verified
+
+- `scripts/kit-timing-audit.ts` passes parser, phrase/word matching, missing-anchor warning, scene overlap, and cue-order checks.
+- Generated 1080p and 4K demo stills and visually inspected both.
+- `npx tsc --noEmit` passes; GitHub Actions QA is pending.
+
+### NOT verified
+
+- GitHub Actions contrast, safe-area, and motion QA has not yet run.

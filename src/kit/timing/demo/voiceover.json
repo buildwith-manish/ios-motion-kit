@@ -1,0 +1,9 @@
+{
+  "segments": [
+    {"text": "Today we compare housing costs with one worker's monthly income.", "start": 0.35, "end": 2.05},
+    {"text": "Start with rent: two thousand dollars.", "start": 2.2, "end": 3.35},
+    {"text": "Add utilities, travel, and care to reveal the total.", "start": 3.55, "end": 5.25},
+    {"text": "Compare those costs with take-home pay.", "start": 5.5, "end": 6.85},
+    {"text": "This example shows a budget gap, not a forecast.", "start": 7.1, "end": 9.1}
+  ]
+}
