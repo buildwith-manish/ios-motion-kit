@@ -125,7 +125,7 @@ export interface FamilyDefaults {
  * the cue system applies these on top; a cue's own `gain` multiplies them.
  */
 export const FAMILY_DEFAULTS: Record<SfxFamily, FamilyDefaults> = {
-  tap: {gainDb: -9, priority: 3},
+  tap: {gainDb: -6, priority: 3},
   tick: {gainDb: -12, priority: 2},
   pop: {gainDb: -9, priority: 3},
   'whoosh-soft': {gainDb: -9, priority: 2},

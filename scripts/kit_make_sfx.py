@@ -171,8 +171,8 @@ def finish(x, dur=None):
 
 # ------------------------------------------------------------------------------------------------- the key
 # Note tables (names from sfx_key.py: C major pentatonic = C D E G A). Three variants = three scale-degree choices.
-# Percussive sounds keep their old register: the old frequency was snapped to the nearest scale note (in cents).
-TAP_NOTES = ("D7", "E7", "C7")  # was 2400 / 2900 / 2100 Hz (2900 would snap to G7 = +8%: too far, E7 is -9% but keeps the set close)
+# The ticks keep their old register: the old frequency was snapped to the nearest scale note (in cents).
+TAP_NOTES = ("D6", "E6", "C6")  # an octave under the old register: at 2.1-2.6 kHz about 90% of a tap sat in the harsh 2-5 kHz band
 TICK_NOTES = ("C8", "A7", "D8")  # was 4200 / 3600 / 4800 Hz
 NUMBER_TICK_NOTES = ("G7", "A7", "E7")  # was 3000 / 3400 / 2700 Hz
 POP_NOTES = (("G4", "G5"), ("A4", "A5"), ("E4", "E5"))  # (glide start, glide END) - an octave up, landing on the note
@@ -342,6 +342,14 @@ def gen_tick(v, rng, note=None):
     return (x + click) * attack(t, 0.0008)
 
 
+POP_BODY_LEVEL = 0.4  # peak of pop's low body relative to its main tone
+
+
+def pop_body_hz(note):
+    """The landing note's pitch class in octave 3 (131-220 Hz): a low body in key, in the same register for every pop."""
+    return note_freq(note.rstrip("-0123456789") + "3")
+
+
 def gen_pop(v, rng, note=None):
     """Small element appears, ~140 ms: an octave up-glide that lands on a scale note, blooms and decays, soft body."""
     t = tvec(0.14)
@@ -352,7 +360,10 @@ def gen_pop(v, rng, note=None):
         f0, f1 = (note_freq(n) for n in POP_NOTES[v - 1])
     ph = phase_of(log_glide(len(t), f0, f1, hold=0.0, glide=0.045))
     x = np.sin(ph) + 0.22 * np.sin(2 * ph) * exp_decay(t, 0.03)
-    return x * attack(t, 0.004) * exp_decay(t, 0.042)
+    main = x * attack(t, 0.004) * exp_decay(t, 0.042)
+    # A soft low "thup" under the glide, so the pop has some weight and is not only a mid-range blip.
+    body = np.sin(2 * np.pi * pop_body_hz(note or POP_NOTES[v - 1][1]) * t) * attack(t, 0.006) * exp_decay(t, 0.03)
+    return main + POP_BODY_LEVEL * body
 
 
 def gen_whoosh_soft(v, rng, note=None):
@@ -360,7 +371,7 @@ def gen_whoosh_soft(v, rng, note=None):
     dur = v_pick(v, 0.48, 0.52, 0.44)
     t = tvec(dur)
     env = np.sin(np.pi * np.clip(t / dur, 0, 1)) ** 2.2
-    f0, f1 = v_pick(v, (350.0, 1500.0), (300.0, 1250.0), (420.0, 1700.0))
+    f0, f1 = v_pick(v, (350.0, 1500.0), (300.0, 1250.0), (370.0, 1550.0))
     return sweep_noise(rng, dur, f0, f1, width=0.6, env=env, lp=4500.0)
 
 
@@ -445,6 +456,7 @@ def gen_number_tick(v, rng, note=None):
     t = tvec(0.03)
     f = note_freq(note or NUMBER_TICK_NOTES[v - 1])
     x = np.sin(2 * np.pi * f * t) * exp_decay(t, 0.006)
+    x += 0.3 * np.sin(2 * np.pi * f * 0.5 * t) * exp_decay(t, 0.006)  # the octave below (same note): less of a bare beep
     x += 0.2 * highpass(lowpass(rng.standard_normal(len(t)), 7000, 2), 2500, 2) * exp_decay(t, 0.001)
     return x * attack(t, 0.001)
 
