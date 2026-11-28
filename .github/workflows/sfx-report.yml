@@ -7,6 +7,7 @@ on:
       - scripts/sfx_report*
       - scripts/sfx_build_page.py
       - public/kit/sfx/**
+      - src/kit/audio/families.ts # gain / priority shown on the page
       - .github/workflows/sfx-report.yml
   push:
     branches: [main]
@@ -15,6 +16,7 @@ on:
       - scripts/sfx_report*
       - scripts/sfx_build_page.py
       - public/kit/sfx/**
+      - src/kit/audio/families.ts # gain / priority shown on the page
       - .github/workflows/sfx-report.yml
   workflow_dispatch:
     inputs:

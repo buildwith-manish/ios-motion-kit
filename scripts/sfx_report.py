@@ -51,6 +51,8 @@ def read_wav(path):
         top = np.iinfo(data.dtype).max - (255 if data.dtype.itemsize == 4 else 0)
         clipped = int(np.sum((data >= top) | (data <= np.iinfo(data.dtype).min)))
         return sr, data.astype(np.float64) / full, clipped
+    if data.dtype.kind != "f":
+        raise SystemExit(f"{path}: unsupported sample type {data.dtype} (use signed PCM or float)")
     x = data.astype(np.float64)
     return sr, x, int(np.sum(np.abs(x) >= 1.0))
 

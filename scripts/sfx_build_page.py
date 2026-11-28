@@ -37,14 +37,14 @@ body.only-flagged article:not(.flagged),body.only-flagged section:not(.flagged){
 
 JS = """
 (function(){
-  var run = 0, timer = null, active = null;
+  var run = 0, timer = null, active = null, current = null;
   var players = Array.prototype.slice.call(document.querySelectorAll('audio'));
   function mark(a){ players.forEach(function(p){ p.closest('article').classList.toggle('playing', p === a); }); }
-  function stop(){
-    run++; clearTimeout(timer);
+  function stop(keep){
+    run++; clearTimeout(timer); current = null;
     if (active) { active.setAttribute('aria-pressed','false'); active.textContent = active.dataset.label; active = null; }
-    players.forEach(function(p){ p.onended = null; p.pause(); });
-    mark(null);
+    players.forEach(function(p){ p.onended = null; if (p !== keep) p.pause(); });
+    mark(keep || null);
   }
   document.querySelectorAll('button[data-family]').forEach(function(btn){
     btn.addEventListener('click', function(){
@@ -54,7 +54,7 @@ JS = """
       (function next(){
         if (id !== run) return;
         if (i >= list.length) { stop(); return; }
-        var a = list[i++]; a.currentTime = 0; mark(a);
+        var a = list[i++]; current = a; a.currentTime = 0; mark(a);
         a.onended = function(){ a.onended = null; timer = setTimeout(next, 450); };
         var p = a.play(); if (p) p.catch(function(){ if (id === run) stop(); });
       })();
@@ -62,9 +62,12 @@ JS = """
   });
   players.forEach(function(a){
     a.addEventListener('play', function(){
-      if (!active) players.forEach(function(p){ if (p !== a) p.pause(); });
+      if (a.paused) return;
+      if (active && a !== current) stop(a);
+      players.forEach(function(p){ if (p !== a) p.pause(); });
       mark(a);
     });
+    a.addEventListener('pause', function(){ if (active && a === current && !a.ended) stop(); });
     a.addEventListener('pointerdown', function(){ if (active) stop(); });
   });
   document.getElementById('only').addEventListener('change', function(e){ stop(); document.body.classList.toggle('only-flagged', e.target.checked); });
