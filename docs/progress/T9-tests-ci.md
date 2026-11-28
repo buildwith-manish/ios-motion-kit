@@ -9,11 +9,12 @@
 
 ## Verified
 
-- `npx tsc --noEmit` passed and `npm run test:unit` passed all 11 tests.
+- `npx tsc --noEmit` passed and `npm run test:unit` passed all 16 tests.
 - Refreshed all four visual baselines; the follow-up comparison reported zero differing pixels for each.
 - Sampled UI and scene contrast/safe-area checks passed. Motion audits found no static stretches over 3 seconds across the UI variants or scene demo.
 - GitHub Actions run `46119243608` passed the type/unit, visual-regression, and tokens/transitions/UI/scenes QA jobs.
 - Corrected tokens QA sample points to stay within its four-second composition; transition-scene labels are ignored by safe-area QA only while the scene is moving.
+- Review follow-up adds regression coverage for CSS named background colors, delayed ListGroup rows, mixed cue ordering, invalid spring responses/tiny bounce, and camera zoom at a screen-space anchor. Also fixed the Sheet's duplicated safe inset and made CI motion findings fail the QA job.
 
 ## Remaining
 

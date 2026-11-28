@@ -187,9 +187,11 @@ export const ListGroup: React.FC<ListGroupProps> = ({rows, rowStagger, ...props}
   const stagger = rowStagger ?? theme.motion.stagger.tight;
   return (
     <Glass tier="card" theme={theme} className={props.className} style={{...uiMotionStyle(motion), borderRadius: radius(theme, 'lg'), padding: `${space(theme, 2)}px 0`, ...props.style}}>
-      {rows.map((row, index) => (
-        <ListRow key={row.id} row={row} frame={props.frame} start={props.start + index * stagger} end={props.end} response={props.response} theme={theme} divider={index < rows.length - 1} />
-      ))}
+      {rows.map((row, index) => {
+        const start = props.start + index * stagger;
+        if (props.end !== undefined && start >= props.end) return null;
+        return <ListRow key={row.id} row={row} frame={props.frame} start={start} end={props.end} response={props.response} theme={theme} divider={index < rows.length - 1} />;
+      })}
     </Glass>
   );
 };
@@ -246,14 +248,14 @@ export interface SheetProps extends UIMotionProps {
 
 export const Sheet: React.FC<SheetProps> = ({title, children, height = 460, ...props}) => {
   const {theme, motion} = useUIMotion(props);
-  const safe = safeRect(theme, 'action');
+  const safe = safeRect(theme, 'title');
   const u = unit(theme);
   const sheetHeight = Math.min(height * u, theme.canvas.height * 0.58);
   const travel = (1 - motion.enter + motion.exit) * sheetHeight;
   return (
     <div aria-hidden style={{position: 'absolute', inset: 0, zIndex: 40, opacity: motion.opacity, pointerEvents: 'none', ...props.style}}>
       <div style={{position: 'absolute', inset: 0, background: rgba(theme.colors.background.deep, 0.62 * motion.opacity)}} />
-      <Glass tier="sheet" theme={theme} className={props.className} style={{position: 'absolute', left: safe.left, bottom: 0, width: safe.width, height: sheetHeight, boxSizing: 'border-box', padding: space(theme, 8), borderBottomLeftRadius: 0, borderBottomRightRadius: 0, transform: `translate3d(0, ${travel}px, 0)`, opacity: motion.enter * (1 - motion.exit)}}>
+      <Glass tier="sheet" theme={theme} className={props.className} style={{position: 'absolute', left: safe.left, bottom: safe.bottom, width: safe.width, height: sheetHeight, boxSizing: 'border-box', padding: space(theme, 8), borderBottomLeftRadius: 0, borderBottomRightRadius: 0, transform: `translate3d(0, ${travel}px, 0)`, opacity: motion.enter * (1 - motion.exit)}}>
         <div style={{...textStyle(theme, 'title'), marginBottom: space(theme, 4)}}>{title}</div>
         {children}
       </Glass>

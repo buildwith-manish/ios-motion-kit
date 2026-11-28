@@ -450,9 +450,10 @@ The GitHub token was used for clone and push only (the camera session cloned wit
 
 ### Verified
 
-- Typecheck passed; all 11 unit tests passed. Contrast and safe-area checks passed for all three UI variants at 2, 4.5, 7.5, and 8.5 seconds.
+- Typecheck passed; all 16 unit tests passed. Contrast and safe-area checks passed for all three UI variants at 2, 4.5, 7.5, and 8.5 seconds.
 - Motion audit sampled 20 points per variant at 2 fps and 0.1 scale with no static stretch over 3 seconds. The `ui-frame-180.png` visual comparison had zero differing pixels.
 - Fixed tooltip placement, the dimmed modal's contrast-QA exclusion, and primary button text color.
+- Follow-up: moved the Sheet to the full composition stage and applied title-safe insets once; ListGroup now omits rows whose staggered start is after the group's end.
 
 ### Not verified
 
@@ -467,7 +468,7 @@ The GitHub token was used for clone and push only (the camera session cloned wit
 
 ### Verified
 
-- Typecheck passed; all 11 unit tests passed. Contrast and safe-area checks passed at 2, 7, 12, 17, 22, and 27 seconds.
+- Typecheck passed; all 16 unit tests passed. Contrast and safe-area checks passed at 2, 7, 12, 17, 22, and 27 seconds.
 - Motion audit sampled 60 points at 2 fps and 0.1 scale with no static stretch over 3 seconds. The `scenes-frame-300.png` visual comparison had zero differing pixels.
 - Corrected the EndCard action label's theme color.
 
@@ -485,8 +486,9 @@ The GitHub token was used for clone and push only (the camera session cloned wit
 ### Verified
 
 - Refreshed all four fixed-frame visual baselines and confirmed zero differing pixels in the follow-up comparison.
-- Typecheck and all 11 unit tests passed; sampled UI and scene contrast/safe-area checks passed, and motion audits found no static stretches over 3 seconds.
+- Typecheck and all 16 unit tests passed; sampled UI and scene contrast/safe-area checks passed, and motion audits found no static stretches over 3 seconds.
 - GitHub Actions run `46119243608` passed type/unit, visual regression, and tokens/transitions/UI/scenes QA. Token sample points now stay within the composition duration; transition-scene QA ignores moving scene labels only during active transitions.
+- Review follow-up fixed mixed cue ordering, spring response validation and tiny-bounce stability, camera zoom velocity at the screen-space anchor, and named CSS colors in Atmosphere; CI motion findings now fail the QA job.
 
 ### Remaining
 

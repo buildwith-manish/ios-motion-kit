@@ -4,7 +4,6 @@ import {idleDrift} from '../motion';
 import {useTheme} from '../tokens/ThemeProvider';
 import {rgba} from '../tokens/color';
 import {unit} from '../tokens/helpers';
-import {lum, parseColor} from '../tokens/contrast';
 import type {Theme, TintColors} from '../tokens/types';
 import {lightAt, type LightBeat} from './focusPoints';
 
@@ -141,10 +140,7 @@ export const Atmosphere: React.FC<AtmosphereProps> = ({
   const light = lightAt(time, lightBeats, theme.motion.spring.GENTLE);
   const lightColour = light.colour ?? tintOf(theme, config.keyTint);
   const lightAlpha = Math.min(alphaCap, alphaCap * KEY_LIGHT_ALPHA * opacityScale);
-  // Grain needs one colour darker and one lighter than the backdrop, or soft-light has nothing to add
-  // (the light theme's own lift/base/deep are all near-white, so use pure black/white dots there).
-  const backdropLum = lum(parseColor(theme.colors.background.base).rgb);
-  const grain = grainSvg(backdropLum > 0.5 ? '#000000' : theme.colors.background.deep, backdropLum > 0.5 ? '#FFFFFF' : theme.colors.background.lift);
+  const grain = grainSvg('#000000', '#FFFFFF');
   // Deterministic grain shift (same every render of the same frame; cadence matches the video-4 original).
   const grainStep = Math.floor(frame / 2);
   const grainX = grainStep * 37 % ATMOSPHERE_GRAIN_TILE_PX;

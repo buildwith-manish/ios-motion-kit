@@ -9,7 +9,7 @@
 
 ## Verification
 
-- `npx tsc --noEmit` passed; `npm run test:unit` passed all 11 tests.
+- `npx tsc --noEmit` passed; `npm run test:unit` passed all 16 tests.
 - Contrast and safe-area checks passed at 2, 7, 12, 17, 22, and 27 seconds.
 - Motion audit sampled 60 points at 2 fps and 0.1 scale; no static stretch over 3 seconds was found.
 - Visual regression baseline `scenes-frame-300.png` matches with zero differing pixels.

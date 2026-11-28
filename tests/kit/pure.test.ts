@@ -1,21 +1,38 @@
+import {createElement} from 'react';
+import {renderToStaticMarkup} from 'react-dom/server';
 import {describe, expect, it} from 'vitest';
 import {resolveCues, cue} from '../../src/kit/audio/cues';
 import {lookAt} from '../../src/kit/camera/lookAt';
+import {cameraMotionDelta} from '../../src/kit/camera/sample';
 import {tickerStateAt} from '../../src/kit/dataviz/flip';
 import {glassStyle} from '../../src/kit/glass/glassStyle';
+import {Atmosphere} from '../../src/kit/background/Atmosphere';
 import {iosSpring} from '../../src/kit/motion/ios';
 import {sceneSequenceDuration, layoutSceneSequence} from '../../src/kit/scenes/sequence';
 import type {SceneDefinition} from '../../src/kit/scenes/types';
+import {TimingTimeline, atTime} from '../../src/kit/timing/Timeline';
 import {parseTimedWordsJson} from '../../src/kit/timing/parsers';
 import {transitionProgress} from '../../src/kit/transitions/progress';
 import {buildRollSegments, rollValueAt} from '../../src/kit/text/numberRoll';
 import {CANVAS, createTheme, safeRect, unit} from '../../src/kit/tokens';
+import {ListGroup} from '../../src/kit/ui/components';
 import {uiMotionAt} from '../../src/kit/ui/motion';
 
 describe('motion and theme primitives', () => {
   it('keeps the spring bounded at its start and approaches its target', () => {
     expect(iosSpring(0, 0.5)).toBe(0);
     expect(iosSpring(2, 0.5)).toBeGreaterThan(0.99);
+  });
+
+  it('validates spring response and remains stable for tiny bounce values', () => {
+    expect(() => iosSpring(0.1, 0)).toThrow(RangeError);
+    expect(() => iosSpring(0.1, Number.NaN)).toThrow(RangeError);
+    expect(Number.isFinite(iosSpring(0.1, 0.5, {bounce: 1e-17}))).toBe(true);
+  });
+
+  it('renders Atmosphere with named CSS background colors', () => {
+    const theme = createTheme({colors: {background: {base: 'white'}}});
+    expect(() => renderToStaticMarkup(createElement(Atmosphere, {frame: 0, theme}))).not.toThrow();
   });
 
   it('scales tokens consistently and returns an inset safe rectangle', () => {
@@ -37,9 +54,29 @@ describe('motion and theme primitives', () => {
     expect(uiMotionAt(120, 60, 1, 3).opacity).toBeGreaterThan(0.99);
     expect(uiMotionAt(360, 60, 1, 3).opacity).toBeLessThan(0.01);
   });
+
+  it('omits staggered list rows whose start is after the group end', () => {
+    const html = renderToStaticMarkup(createElement(ListGroup, {
+      frame: 60,
+      start: 1,
+      end: 1.1,
+      rowStagger: 0.2,
+      theme: createTheme(),
+      rows: [{id: 'first', label: 'First'}, {id: 'delayed', label: 'Delayed'}],
+    }));
+    expect(html).toContain('First');
+    expect(html).not.toContain('Delayed');
+  });
 });
 
 describe('timeline and data helpers', () => {
+  it('sorts mixed explicit and motion cues by time', () => {
+    const timeline = new TimingTimeline([{text: 'hello', start: 0, end: 2}]);
+    timeline.motionCuesAt(atTime(1), [{kind: 'enter-start', at: 0}], [{on: 'enter-start', play: 'pop'}]);
+    timeline.cueAt(atTime(2), 'tap');
+    expect(timeline.build().cues.map(({name, at}) => [name, at])).toEqual([['pop', 1], ['tap', 2]]);
+  });
+
   it('chains number rolls from the preceding segment value', () => {
     const segments = buildRollSegments({from: 0, to: 100, start: 1, duration: 1, then: [{at: 3, to: 250}]});
     expect(segments[1].from).toBe(100);
@@ -66,6 +103,15 @@ describe('timeline and data helpers', () => {
   it('centers a camera target and fits it within the canvas', () => {
     const pose = lookAt({x: 100, y: 100, width: 200, height: 100}, {canvas: CANVAS.landscape60, padding: 20});
     expect(pose).toEqual({x: -760, y: -390, scale: 9.4});
+  });
+
+  it('keeps zoom motion at the screen anchor when camera pan matches its offset', () => {
+    const motion = cameraMotionDelta(
+      {x: 378, y: 0, scale: 1, rotate: 0},
+      {x: 378, y: 0, scale: 1.1, rotate: 0},
+      CANVAS.landscape60,
+    );
+    expect(Math.abs(motion.dx)).toBeGreaterThan(1);
   });
 
   it('resolves audio cues deterministically for a fixed seed', () => {

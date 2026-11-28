@@ -14,7 +14,7 @@ const hero = iosSpring(t - 1, SPRING_PRESETS.hero.response, {bounce: SPRING_PRES
 
 | Export | What it does |
 | --- | --- |
-| `iosSpring(t, response, {bounce?})` | Critically damped by default; optional underdamped overshoot with `bounce` 0..0.4. `bounce: 0` is identical to the legacy curve. |
+| `iosSpring(t, response, {bounce?})` | Critically damped by default; optional underdamped overshoot with `bounce` 0..0.4. `bounce: 0` is identical to the legacy curve; `0.15` overshoots about 4.6%, while the `0.4` maximum overshoots about 52.7%. |
 | `SPRING` | `SNAPPY` 0.4, `SMOOTH` 0.5, `GENTLE` 0.7 (seconds). |
 | `SPRING_PRESETS.hero` | `{response: 0.8, bounce: 0.15}` for large, restrained hits. |
 | `iosEase`, `cubicBezier(x1,y1,x2,y2)` | iOS ease curve; generic CSS-style bezier. |

@@ -56,6 +56,7 @@ export const cubicBezier = (x1: number, y1: number, x2: number, y2: number): ((x
 /**
  * iOS spring parameterised by `response` (seconds). Without `bounce`, it stays critically damped and monotonic.
  * Underdamped mode uses damping ratio `1 - 2 * bounce`; values are capped at 0.4 so the tail remains bounded.
+ * `bounce: 0.15` gives about 4.6% overshoot; the maximum `0.4` gives about 52.7%.
  * @param t seconds since the spring started
  * @param response seconds to settle
  * @param options optional underdamped motion; `bounce` is between 0 and 0.4
@@ -68,14 +69,16 @@ export interface SpringOptions {
 
 export const iosSpring = (t: number, response: number, options?: SpringOptions): number => {
   const bounce = options?.bounce ?? 0;
+  if (!Number.isFinite(t)) throw new RangeError('iosSpring: time must be finite');
+  if (!Number.isFinite(response) || response <= 0) throw new RangeError('iosSpring: response must be > 0');
   if (!Number.isFinite(bounce) || bounce < 0 || bounce > 0.4) throw new RangeError('iosSpring: bounce must be between 0 and 0.4');
-  if (bounce > 0 && (!Number.isFinite(response) || response <= 0)) throw new RangeError('iosSpring: response must be > 0');
   if (t <= 0) return 0;
   const w = (2 * Math.PI) / response;
   if (bounce > 0) {
     const damping = 1 - 2 * bounce;
-    const wd = w * Math.sqrt(1 - damping * damping);
-    const ratio = damping / Math.sqrt(1 - damping * damping);
+    const oscillation = Math.sqrt(4 * bounce * (1 - bounce));
+    const wd = w * oscillation;
+    const ratio = damping / oscillation;
     return 1 - Math.exp(-damping * w * t) * (Math.cos(wd * t) + ratio * Math.sin(wd * t));
   }
   return 1 - (1 + w * t) * Math.exp(-w * t);
