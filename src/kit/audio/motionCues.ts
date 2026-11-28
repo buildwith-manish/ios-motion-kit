@@ -149,6 +149,11 @@ export interface CueRule {
   gain?: number;
   pan?: number;
   variant?: number;
+  /**
+   * Pitched note (0..11), fixed or computed per event, e.g. rising ticks: `(e) => e.index`. Values past the ends are
+   * clamped. Returning undefined plays a normal variant.
+   */
+  note?: number | ((event: MotionEvent) => number | undefined);
   /** Play on every n-th event of this kind (1 = all). Default 1. */
   every?: number;
 }
@@ -166,7 +171,8 @@ export const cuesFromMotion = (events: readonly MotionEvent[], rules: readonly C
     const matching = events.filter((e) => e.kind === rule.on).sort((a, b) => a.at - b.at);
     matching.forEach((e, i) => {
       if (i % every !== 0) return;
-      out.push(cue(rule.play, e.at + (rule.offset ?? 0), {gain: rule.gain, pan: rule.pan, variant: rule.variant, anchor: rule.anchor}));
+      const note = typeof rule.note === 'function' ? rule.note(e) : rule.note;
+      out.push(cue(rule.play, e.at + (rule.offset ?? 0), {gain: rule.gain, pan: rule.pan, variant: rule.variant, anchor: rule.anchor, note}));
     });
   }
   return out.sort((a, b) => a.at - b.at);

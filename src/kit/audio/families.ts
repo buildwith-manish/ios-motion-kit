@@ -25,10 +25,10 @@ export const SFX_VARIANTS = 3;
 
 /** One generated sound file, as recorded in manifest.json. */
 export interface SfxInfo {
-  /** e.g. "tap-2" */
+  /** e.g. "tap-2", or "tick-n04" for a pitched file */
   name: string;
   family: SfxFamily;
-  /** 1..SFX_VARIANTS */
+  /** 1..SFX_VARIANTS; 0 for pitched files */
   variant: number;
   /** Path for staticFile(), e.g. "kit/sfx/tap-2.wav" */
   file: string;
@@ -45,7 +45,34 @@ export interface SfxInfo {
   lufs: number;
 }
 
+/** Families that also come as a set of pitched files, one per note of the kit's key (see scripts/sfx_key.py). */
+export const PITCHED_FAMILIES = ['number-tick', 'tick', 'pop'] as const;
+
+/** Name of a family with pitched files. */
+export type PitchedFamily = (typeof PITCHED_FAMILIES)[number];
+
+/** Notes in each pitched set, ascending along C major pentatonic. */
+export const PITCHED_NOTES = 12;
+
+/** One pitched sound file. */
+export interface PitchedSfxInfo extends SfxInfo {
+  family: PitchedFamily;
+  /** 0 (lowest) .. PITCHED_NOTES - 1 (highest). */
+  noteIndex: number;
+  /** Note name, e.g. "E6". */
+  note: string;
+  /** MIDI note number. */
+  midi: number;
+}
+
+/**
+ * Whether a family has pitched files.
+ * @example isPitchedFamily('pop') // true
+ */
+export const isPitchedFamily = (family: string): family is PitchedFamily => (PITCHED_FAMILIES as readonly string[]).includes(family);
+
 const SOUNDS = (rawManifest as {sounds: SfxInfo[]}).sounds;
+const PITCHED = (rawManifest as unknown as {pitched: PitchedSfxInfo[]}).pitched;
 
 /**
  * Manifest entry for a family variant.
@@ -57,8 +84,33 @@ export const sfxInfo = (family: SfxFamily, variant: number): SfxInfo => {
   return hit;
 };
 
-/** All manifest entries. */
+/** All variant entries (pitched files are listed by {@link allPitchedSfx}). */
 export const allSfx = (): readonly SfxInfo[] => SOUNDS;
+
+/**
+ * Manifest entry for one note of a pitched set.
+ * @example pitchedInfo('number-tick', 0).note // "C6"
+ */
+export const pitchedInfo = (family: PitchedFamily, noteIndex: number): PitchedSfxInfo => {
+  const hit = PITCHED.find((s) => s.family === family && s.noteIndex === noteIndex);
+  if (!hit) throw new Error(`kit/audio: no pitched sound "${family}" note ${noteIndex} in sfx-manifest.json (re-run scripts/kit_make_sfx.py)`);
+  return hit;
+};
+
+/** All pitched manifest entries. */
+export const allPitchedSfx = (): readonly PitchedSfxInfo[] => PITCHED;
+
+/**
+ * Note index for a data value: `min` gives the lowest note, `max` the highest, linearly in between; values outside the
+ * range are clamped. An empty range (`min === max`) gives the lowest note. For a falling scale, swap the sign of all three.
+ * @example cue('pop', 1.2, {note: noteForValue(72, 0, 100)}) // 8
+ */
+export const noteForValue = (value: number, min: number, max: number): number => {
+  if (![value, min, max].every(Number.isFinite) || max < min) throw new RangeError(`kit/audio: noteForValue(${value}, ${min}, ${max}) needs finite numbers and max >= min`);
+  if (max === min) return 0;
+  const x = Math.min(1, Math.max(0, (value - min) / (max - min)));
+  return Math.round(x * (PITCHED_NOTES - 1));
+};
 
 /** Default level and polyphony priority per family. Files are all normalised to -3 dBFS peak; these set the mix. */
 export interface FamilyDefaults {

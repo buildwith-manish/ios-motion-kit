@@ -1,4 +1,4 @@
-import {FAMILY_DEFAULTS, SFX_FAMILIES, SFX_VARIANTS, dbToGain, sfxInfo, type SfxFamily, type SfxInfo} from './families';
+import {FAMILY_DEFAULTS, PITCHED_NOTES, SFX_FAMILIES, SFX_VARIANTS, dbToGain, isPitchedFamily, pitchedInfo, sfxInfo, type SfxFamily, type SfxInfo} from './families';
 import {hashString, mulberry32} from './prng';
 
 /** Where in the sound the cue time points. */
@@ -12,6 +12,11 @@ export interface CueOptions {
   pan?: number;
   /** Force variant 1..3. Omit to let the seeded picker choose. */
   variant?: number;
+  /**
+   * Play a note of the family's pitched set instead of a variant: 0 (lowest) .. 11, rounded and clamped. Only for
+   * PITCHED_FAMILIES; `variant` is then ignored. Use `noteForValue` to turn a data value into a note.
+   */
+  note?: number;
   /** 'start' (default): `at` is when the file starts. 'peak': `at` is when the loudest sample lands (aligns whooshes to a move's peak velocity). */
   anchor?: CueAnchor;
 }
@@ -47,7 +52,10 @@ export interface ResolvedCue {
   /** Input order index. */
   id: number;
   name: SfxFamily;
+  /** 1..3; 0 when a pitched note is played. */
   variant: number;
+  /** Note index when a pitched file is played. */
+  note?: number;
   /** Start of the file, seconds (anchor already applied). */
   at: number;
   /** End of the file, seconds. */
@@ -61,7 +69,7 @@ export interface ResolvedCue {
 }
 
 /** Why a cue was removed. */
-export type DropReason = 'duplicate' | 'polyphony' | 'unknown-name' | 'negative-time';
+export type DropReason = 'duplicate' | 'polyphony' | 'unknown-name' | 'unknown-note' | 'negative-time';
 
 /** A cue that did not make it into the mix. */
 export interface DroppedCue {
@@ -104,6 +112,8 @@ export const cueFile = (info: SfxInfo, pan: PanBucket): string => {
  *   means the same file; a different variant of the same family is allowed).
  * - Polyphony: at most `maxSimultaneous` files sounding at once; when a new cue would exceed that, the lowest-priority
  *   one of the overlapping set is dropped (ties: the newest).
+ * - Pitched cues (`note` set) skip the picker; "the same file" is then the same family and note. They do not change which
+ *   variants the other cues get.
  * Pure and order-independent for equal times (stable by input order).
  * @example const {cues, dropped} = resolveCues([cue('tap', 1), cue('tap', 1.05)], {seed: 7});
  */
@@ -130,15 +140,31 @@ export const resolveCues = (input: readonly Cue[], options: ResolveOptions = {})
       dropped.push({cue: c, id, reason: 'negative-time', detail: `time ${c.at}s is before 0`});
       continue;
     }
+    const pitched = c.note !== undefined;
+    if (pitched && (!isPitchedFamily(c.name) || !Number.isFinite(c.note))) {
+      dropped.push({cue: c, id, reason: 'unknown-note', detail: isPitchedFamily(c.name) ? `note ${c.note} is not a number` : `"${c.name}" has no pitched notes`});
+      continue;
+    }
+    const note = pitched ? Math.min(PITCHED_NOTES - 1, Math.max(0, Math.round(c.note as number))) : undefined;
     const nth = occurrence.get(c.name) ?? 0;
-    occurrence.set(c.name, nth + 1);
+    if (!pitched) occurrence.set(c.name, nth + 1);
 
     // Variants that already started within minRepeat of where this cue will land are blocked (same file twice).
     const peakShift = (v: number) => (c.anchor === 'peak' ? sfxInfo(c.name, v).peakTime : 0);
     const blocked = (v: number) => kept.some((k) => k.name === c.name && k.variant === v && Math.abs(k.at - (c.at - peakShift(v))) < minRepeat);
 
     let variant: number;
-    if (c.variant !== undefined) {
+    let pitchedSound: SfxInfo | undefined;
+    if (note !== undefined && isPitchedFamily(c.name)) {
+      const sound = pitchedInfo(c.name, note);
+      const start = c.at - (c.anchor === 'peak' ? sound.peakTime : 0);
+      if (kept.some((k) => k.name === c.name && k.note === note && Math.abs(k.at - start) < minRepeat)) {
+        dropped.push({cue: c, id, reason: 'duplicate', detail: `note ${note} already started within ${Math.round(minRepeat * 1000)} ms`});
+        continue;
+      }
+      pitchedSound = sound;
+      variant = 0;
+    } else if (c.variant !== undefined) {
       variant = Math.min(SFX_VARIANTS, Math.max(1, Math.round(c.variant)));
       if (blocked(variant)) {
         dropped.push({cue: c, id, reason: 'duplicate', detail: `forced variant ${variant} already started within ${Math.round(minRepeat * 1000)} ms`});
@@ -156,16 +182,16 @@ export const resolveCues = (input: readonly Cue[], options: ResolveOptions = {})
       variant = candidates[Math.floor(rnd * candidates.length)];
     }
 
-    const info = sfxInfo(c.name, variant);
+    const info = pitchedSound ?? sfxInfo(c.name, variant);
     const at = c.anchor === 'peak' ? c.at - info.peakTime : c.at;
     if (at < 0) {
       dropped.push({cue: c, id, reason: 'negative-time', detail: `peak-anchored start ${at.toFixed(3)}s is before 0`});
       continue;
     }
     const gain = Math.min(1, Math.max(0, dbToGain(FAMILY_DEFAULTS[c.name].gainDb) * (c.gain ?? 1)));
-    const resolved: ResolvedCue = {id, name: c.name, variant, at, end: at + info.duration, gain, pan: panBucket(c.pan), file: '', info};
+    const resolved: ResolvedCue = {id, name: c.name, variant, ...(note === undefined ? {} : {note}), at, end: at + info.duration, gain, pan: panBucket(c.pan), file: '', info};
     resolved.file = cueFile(info, resolved.pan);
-    lastVariant.set(c.name, variant);
+    if (!pitched) lastVariant.set(c.name, variant);
 
     // Polyphony. Cues are processed in time order, so "active" = already-kept cues still sounding at `at`.
     const active = kept.filter((k) => k.end > resolved.at);
@@ -203,7 +229,7 @@ export const formatCueTable = (result: ResolveResult, fps: number): string => {
     '-'.repeat(72),
   ];
   const all = [
-    ...result.cues.map((c) => ({t: c.at, id: c.id, line: `${pad(c.at.toFixed(3), 9)}${pad(Math.round(c.at * fps), 7)}${pad(c.end.toFixed(3), 9)}${pad(`${c.name}-${c.variant}`, 20)}${pad(c.pan, 5)}${pad((20 * Math.log10(c.gain)).toFixed(1), 9)}`})),
+    ...result.cues.map((c) => ({t: c.at, id: c.id, line: `${pad(c.at.toFixed(3), 9)}${pad(Math.round(c.at * fps), 7)}${pad(c.end.toFixed(3), 9)}${pad(c.info.name, 20)}${pad(c.pan, 5)}${pad((20 * Math.log10(c.gain)).toFixed(1), 9)}`})),
     ...result.dropped.map((d) => ({t: d.cue.at, id: d.id, line: `${pad(d.cue.at.toFixed(3), 9)}${pad(Math.round(d.cue.at * fps), 7)}${pad('', 9)}${pad(d.cue.name, 20)}${pad('', 5)}${pad('', 9)}DROPPED (${d.reason}): ${d.detail}`})),
   ].sort((a, b) => a.t - b.t || a.id - b.id);
   return [...rows, ...all.map((a) => a.line)].join('\n');
