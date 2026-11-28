@@ -3,6 +3,8 @@ import type {AtmospherePreset} from '../background';
 import type {ShortfallBarsData, TickerStep} from '../dataviz';
 import type {FinishLevel} from '../finish';
 import type {TransitionKind, MotionBlurOption} from '../transitions';
+import type {ChoroplethOrder} from '../map/choroplethTiming';
+import type {BakedCityId, HighlightRegionInput, MapLevel} from './regionData';
 
 export interface SceneTransition {
   kind?: TransitionKind;
@@ -87,6 +89,83 @@ export interface MapHeroSceneData extends SceneBase {
   destination?: string;
 }
 
+/** A callout anchored to a region (state / county / CBSA / ZIP id in any accepted form). Shows the label and the region's value. */
+export interface RegionCalloutData {
+  region: string;
+  /** Default: the region's name from the baked layer. */
+  label?: string;
+}
+
+export interface ChoroplethSceneData extends SceneBase {
+  type: 'choropleth';
+  title: string;
+  subtitle?: string;
+  /** Default 'states'. */
+  level?: MapLevel;
+  /** counties: a state (FIPS, USPS or name) to zoom to; zcta: the CBSA code of a baked zcta-metro file (required). */
+  scope?: string;
+  /** {regionId: value}; null marks a missing value (hatched). State keys may be FIPS, USPS code or name. */
+  data: Record<string, number | null>;
+  scale?: 'sequential' | 'diverging';
+  /** sequential [min, max]; diverging [min, mid, max]. Default: from the data. */
+  domain?: number[];
+  /** Preset name or spec (kit/text/format) for the legend and callouts. Default 'int'. */
+  format?: FormatPresetName | FormatSpec;
+  legendTitle?: string;
+  /** Credit line under the map. Omitted: none is drawn. */
+  source?: string;
+  callouts?: readonly RegionCalloutData[];
+  /** Fill-in timing in seconds from the scene start. */
+  reveal?: {start?: number; spread?: number; order?: ChoroplethOrder};
+  /** Slow push-in: the map scales from 1 to `to` over the scene (default 1.04; 1 turns it off). */
+  camera?: {to?: number};
+}
+
+export interface RegionHighlightSceneData extends SceneBase {
+  type: 'regionHighlight';
+  title: string;
+  subtitle?: string;
+  /** Default 'states'. */
+  level?: Exclude<MapLevel, 'zcta'>;
+  /** counties: a state to zoom to. */
+  scope?: string;
+  /** Handed over one by one. `at` / `hold` are seconds from the scene start; omitted, they follow in order. */
+  regions: readonly HighlightRegionInput[];
+  format?: FormatPresetName | FormatSpec;
+  source?: string;
+  /** Tilt of the map in degrees (kit default 6; 0 turns the 3D mount off). */
+  tilt?: number;
+}
+
+export interface FlyCalloutData {
+  lat: number;
+  lng: number;
+  title: string;
+  value?: number;
+  decimals?: number;
+  prefix?: string;
+  suffix?: string;
+  /** Seconds after the camera lands (default: staggered 1.2 s, 1.5 s, ...). */
+  at?: number;
+}
+
+export interface FlyToCitySceneData extends SceneBase {
+  type: 'flyToCity';
+  title: string;
+  subtitle?: string;
+  /** One of the ten baked cities. */
+  city: BakedCityId;
+  /** Country-scale beat before the dive: pins, an arc between two places, callouts. Omit all to fly straight in. */
+  countryPins?: readonly {lat: number; lng: number; label?: string}[];
+  arc?: {from: {lat: number; lng: number}; to: {lat: number; lng: number}};
+  countryCallouts?: readonly FlyCalloutData[];
+  /** City scale (inside the 14 km baked box around the city centre). */
+  pins?: readonly {lat: number; lng: number; label?: string}[];
+  route?: readonly {lat: number; lng: number}[];
+  callouts?: readonly FlyCalloutData[];
+  source?: string;
+}
+
 export type SceneDefinition =
   | HookSceneData
   | StatSceneData
@@ -95,7 +174,10 @@ export type SceneDefinition =
   | NeededVsEarnedSceneData
   | TakeawaySceneData
   | EndCardSceneData
-  | MapHeroSceneData;
+  | MapHeroSceneData
+  | ChoroplethSceneData
+  | RegionHighlightSceneData
+  | FlyToCitySceneData;
 
 export interface SceneTransitionWindow extends SceneTransition {
   kind: TransitionKind;

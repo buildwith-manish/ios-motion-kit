@@ -1,5 +1,6 @@
 import type {SceneDefinition, ScenePlacement, SceneSequenceLayout, SceneSequenceOptions, SceneTransitionWindow} from './types';
 import type {TransitionKind} from '../transitions';
+import {validateMapScene} from './mapSceneValidation';
 
 const TRANSITION_KINDS: readonly TransitionKind[] = ['push', 'blurDissolve', 'sheet', 'zoomThrough', 'matchedGeometry', 'wipeMask'];
 
@@ -23,6 +24,7 @@ export const layoutSceneSequence = (
     if (!scene.id.trim() || ids.has(scene.id)) throw new RangeError(`Scene ids must be non-empty and unique: "${scene.id}"`);
     ids.add(scene.id);
     finitePositive(scene.duration, `Scene "${scene.id}" duration`);
+    validateMapScene(scene);
     return scene.duration;
   });
 
