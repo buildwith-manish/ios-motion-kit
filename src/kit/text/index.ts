@@ -9,3 +9,4 @@ export * from './numberRoll';
 export * from './NumberText';
 export * from './captionPages';
 export * from './Caption';
+export * from './format';

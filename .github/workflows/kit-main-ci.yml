@@ -1,0 +1,79 @@
+# Push-to-main gate. Job 1 always runs; heavy QA + visual run on workflow_dispatch or when the head commit message contains "[qa]".
+name: kit-main-ci
+on:
+  push:
+    branches: [main]
+    paths: ['src/**', 'scripts/**', 'package*.json', 'tests/**', '.github/workflows/kit-main-ci.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  fast:
+    name: Typecheck + unit
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 20, cache: npm }
+      - run: npm ci
+      - run: npx tsc --noEmit
+      - run: npm run test:unit
+  heavy:
+    name: QA (${{ matrix.suite }})
+    if: github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, '[qa]')
+    needs: fast
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      KIT_NO_DOWNLOAD: '1'
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { suite: tokens, entry: src/kit/demo/entry.tsx, comp: Kit-Tokens-Demo, times: '0.8,2,3.2' }
+          - { suite: transitions, entry: src/kit/demo/entry.tsx, comp: Kit-Transitions-Demo, times: '1.7,3.9,6.1,8.3,10.5,12.7' }
+          - { suite: ui, entry: src/kit/ui/entry.tsx, comp: 'Kit-Ui-Demo,Kit-Ui-Demo-Vertical,Kit-Ui-Demo-30fps', times: '2,4.5,7.5,8.5' }
+          - { suite: scenes, entry: src/kit/scenes/entry.tsx, comp: Kit-Scenes-Demo, times: '2,7,12,17,22,27' }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 20, cache: npm }
+      - run: npm ci
+      - uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cache/remotion
+            ~/.cache/ms-playwright
+            /tmp/chromium
+          key: ${{ runner.os }}-kit-chromium-123.0.1-${{ hashFiles('package-lock.json') }}
+      - run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg
+      - run: node scripts/kit_contrast_check.mjs --comp "${{ matrix.comp }}" --entry "${{ matrix.entry }}" --times "${{ matrix.times }}" --no-images --out "out/main-qa/${{ matrix.suite }}/contrast"
+      - run: node scripts/kit_safe_area_check.mjs --comp "${{ matrix.comp }}" --entry "${{ matrix.entry }}" --times "${{ matrix.times }}" --no-images --out "out/main-qa/${{ matrix.suite }}/safe-area"
+      - run: node scripts/kit_motion_audit.mjs --comp "${{ matrix.comp }}" --entry "${{ matrix.entry }}" --fps 5 --scale 0.15 --min-static 2 --out "out/main-qa/${{ matrix.suite }}/motion"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with: { name: 'main-qa-${{ matrix.suite }}', path: out/main-qa, retention-days: 7, if-no-files-found: ignore }
+  visual:
+    name: Visual regression
+    if: github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, '[qa]')
+    needs: fast
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      KIT_NO_DOWNLOAD: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 20, cache: npm }
+      - run: npm ci
+      - uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cache/remotion
+            ~/.cache/ms-playwright
+            /tmp/chromium
+          key: ${{ runner.os }}-kit-chromium-123.0.1-${{ hashFiles('package-lock.json') }}
+      - run: npm run test:visual
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with: { name: kit-visual-regression, path: out/kit-visual, retention-days: 14, if-no-files-found: ignore }
