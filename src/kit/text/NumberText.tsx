@@ -6,6 +6,7 @@ import {textStyle, tabularNums} from '../tokens/text';
 import type {Theme, TypeRole} from '../tokens/types';
 import {metricsForWeight, type FontMetrics} from './metrics';
 import {buildRollSegments, digitPresence, rollValueAt} from './numberRoll';
+import {formatNumber, resolveSpec, type FormatPresetName, type FormatSpec} from './format';
 
 /** Props for {@link NumberText}. */
 export interface NumberTextProps {
@@ -21,6 +22,8 @@ export interface NumberTextProps {
   duration?: number;
   /** Further updates after the first roll: each rolls on from the previous value. Times in seconds. */
   then?: ReadonlyArray<{at: number; to: number; duration?: number}>;
+  /** Preset name or spec (see format.ts). Explicit prefix/suffix/decimals/groupSep props still win. Compact and accounting specs render as formatted text (no per-digit odometer) at a fixed width. */
+  format?: FormatPresetName | FormatSpec;
   /** Digits after the decimal point. Default 0. */
   decimals?: number;
   /** Text before the number, e.g. '$'. */
@@ -113,9 +116,17 @@ const DigitColumn: React.FC<ColumnProps> = ({cont, prevCont, width, cellWidth = 
  * @example
  * <NumberText prefix="$" to={2480} suffix="/mo" frame={frame} start={1.0} role="number" />
  */
-export const NumberText: React.FC<NumberTextProps> = (props) => {
+export const NumberText: React.FC<NumberTextProps> = (raw) => {
   const ctx = useTheme();
-  const theme = props.theme ?? ctx;
+  const theme = raw.theme ?? ctx;
+  const spec = raw.format ? resolveSpec(raw.format) : null;
+  const text = spec && (spec.compact || spec.sign === 'accounting');
+  const k = spec?.scale ?? 1;
+  const plus = !!spec && !text && spec.sign === 'always';
+  const props: NumberTextProps = spec && !text
+    ? {...raw, from: (raw.from ?? 0) * k, to: raw.to * k, then: raw.then?.map((t) => ({...t, to: t.to * k})),
+       prefix: raw.prefix ?? spec.prefix, suffix: raw.suffix ?? spec.suffix, decimals: raw.decimals ?? spec.decimals ?? 0, groupSep: raw.groupSep ?? (spec.group === false ? '' : ',')}
+    : raw;
   const {frame, start = 0, duration = 0.9, from = 0, to, then, decimals = 0, prefix = '', suffix = '', groupSep = ',', decimalSep = '.', layout = 'collapse', motionBlur = true, blurCap = 14, role = 'number'} = props;
   const fps = props.fps ?? theme.canvas.fps;
   const base = textStyle(theme, role, {color: props.color, weight: props.weight, tabular: true});
@@ -126,6 +137,15 @@ export const NumberText: React.FC<NumberTextProps> = (props) => {
 
   const segs = buildRollSegments({from, to, start, duration, then});
   const valueAt = (f: number): number => rollValueAt(f / fps, segs);
+  if (spec && text) {
+    // Compact / accounting: formatted text, width reserved from the widest string the roll will show.
+    const chars = [0, ...segs.flatMap((g) => [g.from, g.to])].reduce((m, v) => Math.max(m, formatNumber(v, spec).length), 1);
+    return (
+      <span style={{...base, fontSize: fontPx, display: 'inline-block', minWidth: chars * colW, whiteSpace: 'nowrap', unicodeBidi: 'isolate', ...props.style}}>
+        {formatNumber(valueAt(frame), spec)}
+      </span>
+    );
+  }
   const cur = valueAt(frame);
   const prev = valueAt(frame - 1);
   const atRest = cur === prev;
@@ -179,6 +199,7 @@ export const NumberText: React.FC<NumberTextProps> = (props) => {
       }}
     >
       {prefix ? staticCell('pre', prefix, {marginRight: '0.04em'}) : null}
+      {plus && cur > 1e-9 ? staticCell('pos', '+', {marginRight: '0.02em'}) : null}
       {cur < -1e-9 ? staticCell('neg', '\u2212', {marginRight: '0.02em'}) : null}
       {nodes}
       {suffix ? staticCell('suf', suffix, {marginLeft: '0.08em'}) : null}

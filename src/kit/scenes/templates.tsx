@@ -4,6 +4,7 @@ import {Glass} from '../glass';
 import {ShortfallBars, Ticker, type ShortfallBarsData, type TickerStep} from '../dataviz';
 import {iosSpring} from '../motion';
 import {NumberText} from '../text';
+import type {FormatPresetName, FormatSpec} from '../text/format';
 import {radius, safeRect, space, textStyle, unit} from '../tokens';
 import type {Theme} from '../tokens';
 import {rgba} from '../tokens/color';
@@ -79,19 +80,20 @@ export interface StatCardProps extends SceneTemplateProps {
   label: string;
   value: number;
   from?: number;
+  format?: FormatPresetName | FormatSpec;
   prefix?: string;
   suffix?: string;
   decimals?: number;
   delta?: string;
 }
 
-export const StatCard: React.FC<StatCardProps> = ({frame, start, theme, label, value, from, prefix, suffix, decimals, delta}) => {
+export const StatCard: React.FC<StatCardProps> = ({frame, start, theme, label, value, from, format, prefix, suffix, decimals, delta}) => {
   const u = unit(theme);
   return (
     <SceneLayout frame={frame} start={start} theme={theme}>
       <Glass tier="card" theme={theme} style={{width: 'min(100%, 1120px)', boxSizing: 'border-box', padding: space(theme, 8), borderRadius: radius(theme, 'xxl'), textAlign: 'center'}}>
         <div style={{...textStyle(theme, 'body', {color: 'secondary', weight: 'bold'}), marginBottom: space(theme, 4)}}>{label}</div>
-        <NumberText frame={frame} start={start + 0.25} duration={0.9} theme={theme} to={value} from={from} prefix={prefix} suffix={suffix} decimals={decimals} fontSize={104 * u} />
+        <NumberText frame={frame} start={start + 0.25} duration={0.9} theme={theme} to={value} from={from} format={format} prefix={prefix} suffix={suffix} decimals={decimals} fontSize={104 * u} />
         {delta && <div style={{...textStyle(theme, 'caption', {color: 'accent', weight: 'bold'}), marginTop: space(theme, 4)}}>{delta}</div>}
       </Glass>
     </SceneLayout>
@@ -125,17 +127,18 @@ export interface ComparisonProps extends SceneTemplateProps {
   title: string;
   left: ComparisonValue;
   right: ComparisonValue;
+  format?: FormatPresetName | FormatSpec;
   prefix?: string;
   suffix?: string;
   decimals?: number;
 }
 
-export const Comparison: React.FC<ComparisonProps> = ({frame, start, theme, title, left, right, prefix, suffix, decimals}) => {
+export const Comparison: React.FC<ComparisonProps> = ({frame, start, theme, title, left, right, format, prefix, suffix, decimals}) => {
   const u = unit(theme);
   const card = (item: ComparisonValue, direction: 'left' | 'right') => (
     <Glass tier="card" theme={theme} style={{flex: '1 1 0', minWidth: 0, padding: space(theme, 8), borderRadius: radius(theme, 'xl'), textAlign: 'center', boxShadow: direction === 'right' ? `inset 0 0 0 1px ${rgba(theme.colors.accent, 0.38)}` : undefined}}>
       <div style={{...textStyle(theme, 'caption', {color: 'secondary', weight: 'bold'}), marginBottom: space(theme, 4)}}>{item.label}</div>
-      <NumberText frame={frame} start={start + 0.45} duration={0.9} theme={theme} to={item.value} prefix={prefix} suffix={suffix} decimals={decimals} fontSize={66 * u} />
+      <NumberText frame={frame} start={start + 0.45} duration={0.9} theme={theme} to={item.value} format={format} prefix={prefix} suffix={suffix} decimals={decimals} fontSize={66 * u} />
     </Glass>
   );
   return (

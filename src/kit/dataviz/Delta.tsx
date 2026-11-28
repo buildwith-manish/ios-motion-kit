@@ -6,6 +6,7 @@ import {unit} from '../tokens/helpers';
 import {textStyle} from '../tokens/text';
 import {useTheme} from '../tokens/ThemeProvider';
 import type {Theme} from '../tokens/types';
+import {resolveSpec} from '../text/format';
 import {clamp01, fitWidth, formatValue, onToneColor, pickFormat, resolveProgress, roleFontPx, textWidthPx, toneColor, type NumberFormat, type Timing, type Tone} from './common';
 
 /**
@@ -76,7 +77,7 @@ export const Delta: React.FC<DeltaProps> = (props) => {
   const p = resolveProgress(props, theme, props.response ?? SPRING.SNAPPY * 1.4);
   const r = resolveDelta(props.data);
   const fontPx = roleFontPx(theme, 'body', props.scale ?? 1);
-  const textOf = (v: number): string => `${props.showSign && r.direction !== 'flat' ? (r.direction === 'up' ? '+' : '−') : ''}${formatValue(Math.abs(v), r.format)}`;
+  const textOf = (v: number): string => `${props.showSign && r.direction !== 'flat' ? (r.direction === 'up' ? '+' : '−') : ''}${formatValue(Math.abs(v), r.format.format ? {...r.format, format: {...resolveSpec(r.format.format), sign: 'auto'}} : r.format)}`;
   const finalText = textOf(r.value);
   const textW = fitWidth(theme, textWidthPx(theme, 'body', finalText, {fontPx, weight: 'bold'}));
   const h = fontPx * 1.75;

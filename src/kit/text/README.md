@@ -58,3 +58,24 @@ elements would break shaping. Numbers inside `<NumberText>` stay left-to-right.
 
 `src/kit/demo/TextDemo.tsx`: `Kit-Text-Demo` (1920x1080@60), `-Vertical` (1080x1920@60), `-30fps`, `-RTL` (Hebrew).
 `npx remotion studio src/kit/demo/entry.tsx`. Stills: `KIT_CHROME=/path/to/chrome node scripts/kit-text-stills.mjs`.
+
+## formatNumber
+
+Rules: en-US, true minus (U+2212), round half away from zero, no sign on values that round to 0. `pct` takes a fraction; `pp` and `bps` take values already in points / bps. Compact picks the unit after rounding (K to M switch at 999,500 with default decimals; 999,950 -> $1.0M). Pass `{preset, ...overrides}` for e.g. `sign: "accounting"`, `consistentDecimals`, `decimals`. Components take `format` (preset or spec); legacy prefix/suffix/decimals still work and override it.
+
+| Preset | Input -> output |
+|---|---|
+| `usd` | 0 → $0, 1234.5 → $1,235, -1234.5 → −$1,235, 999999 → $999,999 |
+| `usdCompact` | 999 → $999, 12345 → $12.3K, 999950 → $1.0M, 2500000000 → $2.5B |
+| `pct` | 0 → 0.0%, 0.123 → 12.3%, -0.0456 → −4.6%, 1.5 → 150.0% |
+| `pp` | 0 → 0.0 pp, 1.2 → +1.2 pp, -1.2 → −1.2 pp, 12.34 → +12.3 pp |
+| `delta` | 0 → 0, 5 → +5, -5 → −5, 1234 → +1,234 |
+| `int` | 0 → 0, 1234 → 1,234, -1234 → −1,234, 1234567 → 1,234,567 |
+| `decimal1` | 0 → 0.0, 3 → 3.0, -3.14159 → −3.1, 1234.56 → 1,234.6 |
+| `decimal2` | 0 → 0.00, 3 → 3.00, -3.14159 → −3.14, 1234.567 → 1,234.57 |
+| `bps` | 0 → 0 bps, 25 → 25 bps, -25 → −25 bps, 150 → 150 bps |
+| `{preset:"usd", sign:"accounting"}` | -1234 → ($1,234) |
+
+Helpers: `quarter("2026-09-15")` → Q3 '26, `monthYear("2026-09-15")` → Sep 2026 (UTC).
+
+`NumberText` with a compact or accounting spec renders formatted text at a fixed width (no per-digit odometer); all other presets keep the odometer.

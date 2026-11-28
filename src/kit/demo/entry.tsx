@@ -18,6 +18,7 @@ import {KitTimingCompositions} from '../timing/TimingDemo';
 import {KitMapCompositions} from './MapDemo';
 import {KitMetroCompositions} from './MetroDemo';
 import {KitFlyCompositions} from './FlyDemo';
+import {KitFormatCompositions} from './FormatDemo';
 
 registerRoot(() => (
   <>
@@ -34,6 +35,7 @@ registerRoot(() => (
     <KitMapCompositions />
     <KitMetroCompositions />
     <KitFlyCompositions />
+    <KitFormatCompositions />
   </>
 ));
 export {KitNumberRollCompositions} from './NumberRollDemo';

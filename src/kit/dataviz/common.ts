@@ -1,3 +1,4 @@
+import {formatNumber, resolveSpec, type FormatPresetName, type FormatSpec} from '../text/format';
 /**
  * Shared plumbing for the dataviz primitives: timing, theme tones, number formatting, text measuring.
  * Pure functions of their arguments. Nothing here reads the Remotion frame, so it is safe in parallel renders.
@@ -99,6 +100,8 @@ export const resolveProgress = (t: Timing, theme: Theme, defaultResponse: number
 
 /** Number formatting options shared by every primitive that shows a number. Plain JSON-safe. */
 export interface NumberFormat {
+  /** Preset name or spec from kit/text/format. When set it replaces the legacy fields above; explicit prefix/suffix/decimals still override it. */
+  format?: FormatPresetName | FormatSpec;
   prefix?: string;
   suffix?: string;
   /** Digits after the decimal point. Default 0. */
@@ -113,6 +116,7 @@ export interface NumberFormat {
  * @example formatValue(-1234.5, {prefix: '$', decimals: 1}) // '−$1,234.5'
  */
 export const formatValue = (v: number, f: NumberFormat = {}): string => {
+  if (f.format) return formatNumber(v, {...resolveSpec(f.format), ...(f.prefix !== undefined && {prefix: f.prefix}), ...(f.suffix !== undefined && {suffix: f.suffix}), ...(f.decimals !== undefined && {decimals: f.decimals})});
   const {prefix = '', suffix = '', decimals = 0, groupSep = ',', decimalSep = '.'} = f;
   const abs = Math.abs(v);
   const neg = v < 0 && Math.round(abs * 10 ** decimals) > 0;
@@ -122,7 +126,7 @@ export const formatValue = (v: number, f: NumberFormat = {}): string => {
 };
 
 /** Picks the {@link NumberFormat} fields out of any object (so `data` can carry them inline). */
-export const pickFormat = (o: NumberFormat): NumberFormat => ({prefix: o.prefix, suffix: o.suffix, decimals: o.decimals, groupSep: o.groupSep, decimalSep: o.decimalSep});
+export const pickFormat = (o: NumberFormat): NumberFormat => ({prefix: o.prefix, suffix: o.suffix, decimals: o.decimals, groupSep: o.groupSep, decimalSep: o.decimalSep, ...(o.format !== undefined && {format: o.format})});
 
 /** Font size in canvas px for a type role. */
 export const roleFontPx = (theme: Theme, role: TypeRole, scale: number = 1): number => theme.type[role].size * scale * unit(theme);

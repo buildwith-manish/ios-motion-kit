@@ -1,3 +1,4 @@
+import type {FormatPresetName, FormatSpec} from '../text/format';
 import type {AtmospherePreset} from '../background';
 import type {ShortfallBarsData, TickerStep} from '../dataviz';
 import type {FinishLevel} from '../finish';
@@ -31,6 +32,8 @@ export interface StatSceneData extends SceneBase {
   label: string;
   value: number;
   from?: number;
+  /** Preset name or spec (kit/text/format). */
+  format?: FormatPresetName | FormatSpec;
   prefix?: string;
   suffix?: string;
   decimals?: number;
@@ -49,6 +52,8 @@ export interface ComparisonSceneData extends SceneBase {
   title: string;
   left: {label: string; value: number};
   right: {label: string; value: number};
+  /** Preset name or spec (kit/text/format). */
+  format?: FormatPresetName | FormatSpec;
   prefix?: string;
   suffix?: string;
   decimals?: number;

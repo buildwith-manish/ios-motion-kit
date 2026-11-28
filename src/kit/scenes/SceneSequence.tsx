@@ -29,11 +29,11 @@ const SceneTemplate: React.FC<{frame: number; theme: Theme; placement: ScenePlac
     case 'hook':
       return <Hook frame={frame} start={start} theme={theme} title={scene.title} eyebrow={scene.eyebrow} body={scene.body} />;
     case 'stat':
-      return <StatCard frame={frame} start={start} theme={theme} label={scene.label} value={scene.value} from={scene.from} prefix={scene.prefix} suffix={scene.suffix} decimals={scene.decimals} delta={scene.delta} />;
+      return <StatCard frame={frame} start={start} theme={theme} label={scene.label} value={scene.value} from={scene.from} format={scene.format} prefix={scene.prefix} suffix={scene.suffix} decimals={scene.decimals} delta={scene.delta} />;
     case 'ranking':
       return <Ranking frame={frame} start={start} theme={theme} title={scene.title} data={scene.data} highlight={scene.highlight} />;
     case 'comparison':
-      return <Comparison frame={frame} start={start} theme={theme} title={scene.title} left={scene.left} right={scene.right} prefix={scene.prefix} suffix={scene.suffix} decimals={scene.decimals} />;
+      return <Comparison frame={frame} start={start} theme={theme} title={scene.title} left={scene.left} right={scene.right} format={scene.format} prefix={scene.prefix} suffix={scene.suffix} decimals={scene.decimals} />;
     case 'neededVsEarned':
       return <NeededVsEarned frame={frame} start={start} theme={theme} title={scene.title} data={scene.data} />;
     case 'takeaway':
