@@ -74,6 +74,8 @@ cue('pop', 1.2, {note: noteForValue(bar.value, 0, maxValue)}); // bigger value, 
 cuesFromMotion(numberRollEvents({start: 2}), [{on: 'number-tick', play: 'number-tick', note: (e) => e.index}]); // rising roll
 ```
 
+The SFX report below measures only the variant files, not the pitched ones; listen to those separately.
+
 `note` is rounded and clamped to 0..11 and replaces the variant. A cue with `note` on a family without pitched files is
 dropped with reason `unknown-note`. The 120 ms rule applies per note.
 
