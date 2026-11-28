@@ -198,6 +198,7 @@ jobs:
         with: { name: audio-track, path: out/audio }
       - name: Join the pieces and mix in the soundtrack (two-pass loudnorm)
         run: |
+          trap 'echo "::error::concat failed at: $BASH_COMMAND"' ERR
           cd out
           WANT=$(python3 -c "import json; print(len(json.loads('''${{ needs.plan.outputs.chunks }}''')))")
           HAVE=$(ls clips/chunk-*.mp4 | wc -l)
