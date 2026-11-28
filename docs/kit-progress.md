@@ -433,10 +433,10 @@ The GitHub token was used for clone and push only (the camera session cloned wit
 - `scripts/kit-icon-audit.ts` confirms each of the 80 public icon names renders non-empty SVG geometry.
 - Contrast: an initial vertical-demo low-contrast label was fixed by using the theme's primary text token. Final contrast QA reports zero findings across all three compositions (`docs/progress/T4-icons-contrast-final.txt`).
 - Safe-area QA reports zero findings across all three compositions (`docs/progress/T4-icons-safe-area.txt`).
+- GitHub Actions run `46113866331` completed contrast, safe-area, and motion QA for all three icon compositions. Motion audit found an intentional 3 s static hold after draw-on completes (`2.90–5.90 s`); see `docs/progress/T4-icons-motion-audit.txt`.
 - The 1080p still and 4K detail crop were rendered and visually inspected.
 - `npx tsc --noEmit` passes.
 
 ### NOT verified
 
-- Motion audit remains pending; complete the kit QA workflow before moving to T7.
 - No full-motion playback review on alternate browsers.
