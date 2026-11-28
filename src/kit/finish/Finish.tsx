@@ -22,11 +22,17 @@ export const DITHER_PROFILES = {
   'banding-safe': {amount: 1.25, shape: 'triangular', highlightFalloff: 0.6, seed: 0x5eed},
 } as const satisfies Record<string, Required<DitherOptions>>;
 
-/** Resolves a dither setting; `undefined`, `false` and `'off'` mean no dither (the default). */
-export const resolveDither = (dither?: DitherSetting): Required<DitherOptions> | null => {
+export const BANDING_SAFE_4K_AMOUNT = 2.5;
+
+/**
+ * Resolves a dither setting; `undefined`, `false` and `'off'` mean no dither (the default). With the `'banding-safe'`
+ * string and the `final-4k` render preset (`kitRender.preset`) the amount is 2.5: measured in docs/export-quality.md.
+ */
+export const resolveDither = (dither?: DitherSetting, preset?: string): Required<DitherOptions> | null => {
   if (!dither || dither === 'off') return null;
   const base = DITHER_PROFILES['banding-safe'];
-  return typeof dither === 'string' ? {...DITHER_PROFILES[dither]} : {...base, ...dither};
+  if (typeof dither === 'string') return {...DITHER_PROFILES[dither], ...(preset === 'final-4k' ? {amount: BANDING_SAFE_4K_AMOUNT} : {})};
+  return {...base, ...dither};
 };
 
 /** feTurbulence seed for a frame: integer hash of seed and frame, 1..65000. Same inputs, same noise. */
@@ -47,7 +53,7 @@ export interface FinishProps {
   level?: FinishLevel;
   /** Apply bloom and grain only when the render script selected the final profile. */
   finalOnly?: boolean;
-  kitRender?: {profile?: string};
+  kitRender?: {profile?: string; preset?: string};
   /** Seeded noise added after the grade, vignette and grain, to break up 8-bit banding in dark gradients. Default off. */
   dither?: DitherSetting;
   /** Composition frame; varies the dither noise per frame (default 0 = the same noise every frame). */
@@ -166,7 +172,7 @@ const FinishBase: React.FC<Omit<FinishProps, 'dither' | 'frame'>> = ({
 
 /** Finish with optional dither: a final SVG filter over the whole finished image (so the vignette and grain are dithered too). */
 export const Finish: React.FC<FinishProps> = ({dither, frame = 0, className, style, ...rest}) => {
-  const cfg = resolveDither(dither);
+  const cfg = resolveDither(dither, rest.kitRender?.preset);
   const id = useId().replace(/:/g, '');
   if (!cfg) return <FinishBase {...rest} className={className} style={style} />;
   const v = ditherFilterValues(cfg, frame);

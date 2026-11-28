@@ -4,14 +4,14 @@
 //   node scripts/kit_banding_check.mjs [--out out/banding] [--enforce] [--max-run-pct <n>] [--min-levels <n>]
 import {renderStill, selectComposition} from '@remotion/renderer';
 import {spawnSync} from 'node:child_process';
-import {mkdtempSync, readFileSync, rmSync, writeFileSync} from 'node:fs';
+import {mkdtempSync, readFileSync, rmSync, statSync, writeFileSync} from 'node:fs';
 import {tmpdir} from 'node:os';
 import path from 'node:path';
 import {ensureDir, fail, getBundle, openRemotionBrowser, parseArgs, remotionBrowserOptions} from './kit_qa_common.mjs';
 
-// Thresholds apply to dither-ON rows only (longest identical-luma run as % of width; distinct levels on the row).
+// Thresholds apply to the final-4k banding-safe row only (longest identical-luma run as % of width; distinct levels).
 // Set from measured values: see docs/export-quality.md.
-const THRESHOLDS = {maxRunPct: null, minLevels: null};
+const THRESHOLDS = {maxRunPct: null, minLevels: null}; // enforced on final-4k / banding-safe only
 
 const usage = 'usage: node scripts/kit_banding_check.mjs [--out <dir>] [--enforce] [--max-run-pct <n>] [--min-levels <n>] [--frame <n>]';
 const args = parseArgs({out: 'string', enforce: 'flag', 'max-run-pct': 'number', 'min-levels': 'number', frame: 'number'}, usage);
@@ -39,13 +39,17 @@ const tmp = mkdtempSync(path.join(tmpdir(), 'kit-banding-'));
 const rows = [];
 try {
   for (const [name, p] of Object.entries(presets)) {
-    for (const [dither, ditherValue] of [['off', 'off'], ['banding-safe', 'banding-safe'], ['amount-2.5', {amount: 2.5}]]) {
-      const inputProps = {dither: ditherValue};
+    // final-4k is the tuned export: extra dither amounts and x264 -tune grain. Other presets: report only, off vs banding-safe.
+    const variants = name === 'final-4k'
+      ? [['off', 'off', []], ['banding-safe', 'banding-safe', []], ['amount-2.0', {amount: 2}, []], ['amount-3.0', {amount: 3}, []], ['safe+tune-grain', 'banding-safe', ['-tune', 'grain']]]
+      : [['off', 'off', []], ['banding-safe', 'banding-safe', []]];
+    for (const [dither, ditherValue, extra] of variants) {
+      const inputProps = {dither: ditherValue, kitRender: {profile: p.profile, preset: name}};
       const comp = await selectComposition({serveUrl, id: 'Kit-Banding-Gradient', inputProps, puppeteerInstance, ...(await remotionBrowserOptions())});
       const png = path.join(tmp, `${name}-${dither}.png`);
       await renderStill({composition: comp, serveUrl, inputProps, frame: args.frame ?? 0, output: png, scale: p.scale, imageFormat: 'png', puppeteerInstance, ...(await remotionBrowserOptions())});
       const mp4 = path.join(tmp, `${name}-${dither}.mp4`);
-      run('ffmpeg', ['-v', 'error', '-y', '-i', png, '-vf', 'scale=in_range=full:out_range=tv:out_color_matrix=bt709,format=yuv420p', '-c:v', 'libx264', '-crf', String(p.crf), '-preset', p.x264Preset,
+      run('ffmpeg', ['-v', 'error', '-y', '-i', png, '-vf', 'scale=in_range=full:out_range=tv:out_color_matrix=bt709,format=yuv420p', '-c:v', 'libx264', '-crf', String(p.crf), '-preset', p.x264Preset, ...extra,
         '-colorspace', 'bt709', '-color_primaries', 'bt709', '-color_trc', 'bt709', '-color_range', 'tv', '-frames:v', '1', mp4]);
       const w = Math.round(comp.width * p.scale), h = Math.round(comp.height * p.scale);
       const y = run('ffmpeg', ['-v', 'error', '-i', mp4, '-vf', 'extractplanes=y', '-f', 'rawvideo', '-pix_fmt', 'gray', '-frames:v', '1', '-']);
@@ -55,7 +59,7 @@ try {
       const srcStats = rowStats(src.subarray(Math.floor(h * 0.5) * w, Math.floor(h * 0.5) * w + w));
       const stats = [0.4, 0.5, 0.6].map((f) => rowStats(y.subarray(Math.floor(h * f) * w, Math.floor(h * f) * w + w)));
       const longest = Math.max(...stats.map((s) => s.longest));
-      rows.push({preset: name, dither, width: w, height: h, crf: p.crf, x264Preset: p.x264Preset, lumaLevels: Math.min(...stats.map((s) => s.levels)), longestRunPx: longest, longestRunPct: Number(((100 * longest) / w).toFixed(2)), sourceLevels: srcStats.levels, sourceRunPct: Number(((100 * srcStats.longest) / w).toFixed(2))});
+      rows.push({preset: name, dither, width: w, height: h, crf: p.crf, x264Preset: p.x264Preset, lumaLevels: Math.min(...stats.map((s) => s.levels)), longestRunPx: longest, bytes: statSync(mp4).size, longestRunPct: Number(((100 * longest) / w).toFixed(2)), sourceLevels: srcStats.levels, sourceRunPct: Number(((100 * srcStats.longest) / w).toFixed(2))});
     }
   }
 } catch (e) {
@@ -68,8 +72,8 @@ try {
 }
 
 if (process.exitCode) process.exit(process.exitCode);
-const header = ['preset', 'dither', 'size', 'luma levels', 'longest run px', 'run % width', 'src levels', 'src run %'];
-const cells = rows.map((r) => [r.preset, r.dither, `${r.width}x${r.height}`, String(r.lumaLevels), String(r.longestRunPx), r.longestRunPct.toFixed(2), String(r.sourceLevels), r.sourceRunPct.toFixed(2)]);
+const header = ['preset', 'dither', 'size', 'luma levels', 'longest run px', 'run % width', 'src levels', 'src run %', 'frame KB'];
+const cells = rows.map((r) => [r.preset, r.dither, `${r.width}x${r.height}`, String(r.lumaLevels), String(r.longestRunPx), r.longestRunPct.toFixed(2), String(r.sourceLevels), r.sourceRunPct.toFixed(2), (r.bytes / 1024).toFixed(0)]);
 const widths = header.map((h, i) => Math.max(h.length, ...cells.map((c) => c[i].length)));
 const line = (c) => c.map((v, i) => v.padEnd(widths[i])).join('  ');
 console.log(`\nBanding (dark gradient + vignette, one frame, luma along x)\n${line(header)}\n${cells.map(line).join('\n')}`);
@@ -78,6 +82,6 @@ writeFileSync(reportPath, JSON.stringify({note: 'Luma = decoded Y plane (tv rang
 console.log(`\nJSON: ${path.relative(process.cwd(), reportPath)}`);
 
 if (args.enforce) {
-  const bad = rows.filter((r) => r.dither === 'banding-safe' && ((maxRunPct != null && r.longestRunPct > maxRunPct) || (minLevels != null && r.lumaLevels < minLevels)));
+  const bad = rows.filter((r) => r.preset === 'final-4k' && r.dither === 'banding-safe' && ((maxRunPct != null && r.longestRunPct > maxRunPct) || (minLevels != null && r.lumaLevels < minLevels)));
   if (bad.length) fail(`banding above threshold with dither on: ${bad.map((r) => `${r.preset} run ${r.longestRunPct}% levels ${r.lumaLevels}`).join('; ')}`);
 }

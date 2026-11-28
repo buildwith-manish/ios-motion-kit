@@ -11,6 +11,11 @@ describe('Finish dither', () => {
     expect(resolveDither('banding-safe')).toEqual(DITHER_PROFILES['banding-safe']);
     expect(resolveDither({amount: 1})).toEqual({...DITHER_PROFILES['banding-safe'], amount: 1});
   });
+  it('banding-safe uses amount 2.5 for the final-4k preset only', () => {
+    expect(resolveDither('banding-safe', 'final-4k')?.amount).toBe(2.5);
+    expect(resolveDither('banding-safe', 'final-1080')?.amount).toBe(1.25);
+    expect(resolveDither({amount: 1}, 'final-4k')?.amount).toBe(1);
+  });
   it('seed is deterministic, per frame, in range', () => {
     expect(ditherSeed(7, 12)).toBe(ditherSeed(7, 12));
     expect(ditherSeed(7, 12)).not.toBe(ditherSeed(7, 13));

@@ -18,7 +18,7 @@ const FinalFrame = ({frame, fps, kitRender, children}) => (
 | --- | --- | --- |
 | `Finish.level` | `'off' \| 'light' \| 'full'`, `'light'` | Grade strength |
 | `Finish.finalOnly` | `boolean`, `false` | Restrict bloom and grain to final renders |
-| `Finish.dither` | `false \| 'off' \| 'banding-safe' \| {amount, shape, highlightFalloff, seed}`, off | Seeded noise after grade, vignette and grain. `banding-safe` = triangular, 1.25 LSB nominal peak, 0.6 highlight falloff |
+| `Finish.dither` | `false \| 'off' \| 'banding-safe' \| {amount, shape, highlightFalloff, seed}`, off | Seeded noise after grade, vignette and grain. `banding-safe` = triangular, 1.25 LSB nominal peak, 0.6 highlight falloff; amount 2.5 when `kitRender.preset === 'final-4k'` |
 | `Finish.frame` | `number`, `0` | Frame number; varies the dither noise per frame (deterministic) |
 | `Finish.kitRender` | `{profile?: string}` | Render profile supplied by the composition |
 | `ChromaSplit.frame` | `number` | Current composition frame |

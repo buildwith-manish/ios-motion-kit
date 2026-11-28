@@ -25,7 +25,7 @@ const profileName = args.profile ?? preset.profile;
 if (!Object.hasOwn(qa.RENDER_PROFILES, profileName ?? '')) fail(`--profile must be one of: ${Object.keys(qa.RENDER_PROFILES).join(', ')}`);
 const {profile: _p, ...presetOverrides} = preset;
 const profile = {...qa.RENDER_PROFILES[profileName], ...presetOverrides, ...(args.scale ? {scale: args.scale} : {})};
-const inputProps = {...parseProps(args.props), kitRender: {profile: profileName, motionBlurSamples: profile.motionBlurSamples}};
+const inputProps = {...parseProps(args.props), kitRender: {profile: profileName, preset: args.preset, motionBlurSamples: profile.motionBlurSamples}};
 const serveUrl = await getBundle({entry: args.entry, serveUrl: args['serve-url']});
 const browserInfo = await resolveBrowser();
 console.log(`browser: ${browserInfo.source}`);
