@@ -11,6 +11,7 @@ const out = ensureDir(args.out ?? 'out/fonts');
 const serveUrl = await getBundle({entry: args.entry ?? DEFAULT_ENTRY});
 const puppeteerInstance = await openRemotionBrowser();
 const comps = await pickCompositions({serveUrl, comp: args.comp ?? 'Kit-Text-Demo,Kit-Tokens-Demo', puppeteerInstance});
+await puppeteerInstance.close({silent: true});
 const server = await serveDir(serveUrl);
 const browser = await launchPlaywright();
 const report = [];
@@ -34,3 +35,4 @@ try {
 }
 writeFileSync(path.join(out, 'fonts-report.json'), JSON.stringify(report, null, 1));
 if (bad) fail(`${bad} font problem(s); see ${out}/fonts-report.json`);
+process.exit(0);
