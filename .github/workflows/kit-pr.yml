@@ -37,7 +37,7 @@ jobs:
           - suite: tokens
             entry: src/kit/demo/entry.tsx
             comp: Kit-Tokens-Demo
-            times: 1,4,8
+            times: 0.8,2,3.2
           - suite: transitions
             entry: src/kit/demo/entry.tsx
             comp: Kit-Transitions-Demo
