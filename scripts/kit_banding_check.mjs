@@ -51,8 +51,7 @@ try {
       const y = run('ffmpeg', ['-v', 'error', '-i', mp4, '-vf', 'extractplanes=y', '-f', 'rawvideo', '-pix_fmt', 'gray', '-frames:v', '1', '-']);
       if (y.length !== w * h) throw new Error(`${name}: expected ${w * h} luma bytes, got ${y.length}`);
       // Rows at 40 / 50 / 60 % of the height; the worst run and the fewest levels are reported.
-      const lumaOf = (file) => run('ffmpeg', ['-v', 'error', '-i', file, '-vf', 'extractplanes=y', '-f', 'rawvideo', '-pix_fmt', 'gray', '-frames:v', '1', '-']);
-      const src = lumaOf(png); // before x264: separates "noise not applied" from "noise removed by the encoder"
+      const src = run('ffmpeg', ['-v', 'error', '-i', png, '-vf', 'scale=in_range=full:out_range=tv:out_color_matrix=bt709,format=yuv420p,extractplanes=y', '-f', 'rawvideo', '-pix_fmt', 'gray', '-frames:v', '1', '-']); // before x264: separates "noise not applied" from "noise removed by the encoder"
       const srcStats = rowStats(src.subarray(Math.floor(h * 0.5) * w, Math.floor(h * 0.5) * w + w));
       const stats = [0.4, 0.5, 0.6].map((f) => rowStats(y.subarray(Math.floor(h * f) * w, Math.floor(h * f) * w + w)));
       const longest = Math.max(...stats.map((s) => s.longest));
