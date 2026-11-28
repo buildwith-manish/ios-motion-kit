@@ -3,7 +3,7 @@ name: kit-main-ci
 on:
   push:
     branches: [main]
-    paths: ['src/**', 'scripts/**', 'package*.json', 'tests/**', '.github/workflows/kit-main-ci.yml']
+    paths: ['src/**', 'scripts/**', 'package*.json', 'tests/**', '.github/workflows/kit-main-ci.yml', '.github/workflows/reusable-*.yml']
   workflow_dispatch:
 permissions:
   contents: read
