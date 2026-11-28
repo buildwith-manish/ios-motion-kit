@@ -17,6 +17,7 @@ jobs:
         with: { node-version: 20, cache: npm }
       - run: npm ci
       - run: npx tsc --noEmit
+      - run: pip install numpy
       - run: npm run test:unit
   heavy:
     name: QA (${{ matrix.suite }})

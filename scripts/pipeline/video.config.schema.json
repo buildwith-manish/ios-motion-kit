@@ -1,0 +1,504 @@
+{
+ "type": "object",
+ "properties": {
+  "script": {
+   "type": "string"
+  },
+  "clipsDir": {
+   "type": "string"
+  },
+  "clipNamePattern": {
+   "type": "string"
+  },
+  "wordsFile": {
+   "type": "string"
+  },
+  "dataFile": {
+   "type": "string"
+  },
+  "fps": {
+   "type": "integer",
+   "minimum": 1
+  },
+  "canvas": {
+   "type": "object",
+   "properties": {
+    "width": {
+     "type": "integer",
+     "minimum": 1
+    },
+    "height": {
+     "type": "integer",
+     "minimum": 1
+    },
+    "fps": {
+     "type": "integer",
+     "minimum": 1
+    }
+   },
+   "required": [],
+   "additionalProperties": false
+  },
+  "shot": {
+   "type": "object",
+   "properties": {
+    "onset": {
+     "type": "number",
+     "minimum": 0
+    },
+    "tail": {
+     "type": "number",
+     "minimum": 0
+    },
+    "maxShot": {
+     "type": "number",
+     "minimum": 1
+    }
+   },
+   "required": [],
+   "additionalProperties": false
+  },
+  "silenceLimit": {
+   "type": "number",
+   "minimum": 0
+  },
+  "sections": {
+   "type": "array",
+   "items": {
+    "type": "object",
+    "properties": {
+     "id": {
+      "type": "string",
+      "minLength": 1
+     },
+     "idPrefixes": {
+      "type": "array",
+      "items": {
+       "type": "string"
+      }
+     },
+     "default": {
+      "type": "boolean"
+     }
+    },
+    "required": [
+     "id"
+    ],
+    "additionalProperties": false
+   }
+  },
+  "intro": {
+   "type": [
+    "object",
+    "null"
+   ],
+   "properties": {
+    "seconds": {
+     "type": "number",
+     "minimum": 0
+    },
+    "after": {
+     "type": "string"
+    }
+   },
+   "required": [
+    "seconds",
+    "after"
+   ],
+   "additionalProperties": false
+  },
+  "chapters": {
+   "type": "array",
+   "items": {
+    "type": "object",
+    "properties": {
+     "section": {
+      "type": "string",
+      "minLength": 1
+     },
+     "title": {
+      "type": "string",
+      "minLength": 1
+     },
+     "card": {
+      "type": "boolean"
+     }
+    },
+    "required": [
+     "section",
+     "title"
+    ],
+    "additionalProperties": false
+   }
+  },
+  "chapterCardSeconds": {
+   "type": "number",
+   "minimum": 0
+  },
+  "endScreenSeconds": {
+   "type": "number",
+   "minimum": 0
+  },
+  "youtubeIntroTitle": {
+   "type": "string"
+  },
+  "paceLimit": {
+   "type": "number",
+   "minimum": 0
+  },
+  "truncation": {
+   "type": "object",
+   "properties": {
+    "minWords": {
+     "type": "integer",
+     "minimum": 1
+    },
+    "maxWps": {
+     "type": "number",
+     "minimum": 0
+    },
+    "absMaxWps": {
+     "type": "number",
+     "minimum": 0
+    }
+   },
+   "required": [],
+   "additionalProperties": false
+  },
+  "normalize": {
+   "type": "object",
+   "properties": {
+    "vo": {
+     "type": "object",
+     "properties": {
+      "lufs": {
+       "type": "number"
+      },
+      "ceilingDb": {
+       "type": "number"
+      },
+      "maxGain": {
+       "type": "number",
+       "minimum": 0
+      }
+     },
+     "required": [],
+     "additionalProperties": false
+    },
+    "final": {
+     "type": "object",
+     "properties": {
+      "lufs": {
+       "type": "number"
+      },
+      "truePeak": {
+       "type": "number"
+      },
+      "lra": {
+       "type": "number",
+       "minimum": 0
+      },
+      "audioBitrate": {
+       "type": "string"
+      }
+     },
+     "required": [],
+     "additionalProperties": false
+    }
+   },
+   "required": [],
+   "additionalProperties": false
+  },
+  "envelope": {
+   "type": "object",
+   "properties": {
+    "source": {
+     "type": "string",
+     "enum": [
+      "clips",
+      "file"
+     ]
+    },
+    "file": {
+     "type": "string"
+    },
+    "sampleRate": {
+     "type": "integer",
+     "minimum": 8000
+    },
+    "gateBelowPeakDb": {
+     "type": "number",
+     "minimum": 0
+    },
+    "floorDb": {
+     "type": "number"
+    },
+    "hysteresisDb": {
+     "type": "number",
+     "minimum": 0
+    },
+    "holdFrames": {
+     "type": "integer",
+     "minimum": 0
+    },
+    "lookAheadFrames": {
+     "type": "integer",
+     "minimum": 0
+    },
+    "attackFrames": {
+     "type": "number",
+     "minimum": 0.1
+    },
+    "releaseFrames": {
+     "type": "number",
+     "minimum": 0.1
+    }
+   },
+   "required": [],
+   "additionalProperties": false
+  },
+  "mix": {
+   "type": "object",
+   "properties": {
+    "voLevel": {
+     "type": "number",
+     "minimum": 0
+    },
+    "sfxLevel": {
+     "type": "number",
+     "minimum": 0
+    },
+    "sfxDuck": {
+     "type": "number",
+     "minimum": 0
+    },
+    "heroDuck": {
+     "type": "number",
+     "minimum": 0
+    },
+    "sampleRate": {
+     "type": "integer",
+     "minimum": 8000
+    },
+    "cues": {
+     "type": "string"
+    },
+    "sfxDir": {
+     "type": "string"
+    },
+    "sfxManifest": {
+     "type": "string"
+    }
+   },
+   "required": [],
+   "additionalProperties": false
+  },
+  "figures": {
+   "type": "object",
+   "properties": {
+    "entities": {
+     "type": [
+      "string",
+      "null"
+     ]
+    },
+    "nameField": {
+     "type": "string"
+    },
+    "allowList": {
+     "type": "string"
+    }
+   },
+   "required": [],
+   "additionalProperties": false
+  },
+  "render": {
+   "type": "object",
+   "properties": {
+    "entry": {
+     "type": "string"
+    },
+    "composition": {
+     "type": "string"
+    },
+    "scale": {
+     "type": "number",
+     "minimum": 0.1
+    },
+    "contactSheet": {
+     "type": "object",
+     "properties": {
+      "framesDir": {
+       "type": "string"
+      },
+      "sheets": {
+       "type": "array",
+       "items": {
+        "type": "object",
+        "properties": {
+         "file": {
+          "type": "string"
+         },
+         "tileWidth": {
+          "type": "integer",
+          "minimum": 40
+         },
+         "columns": {
+          "type": "integer",
+          "minimum": 1
+         }
+        },
+        "required": [
+         "file",
+         "tileWidth",
+         "columns"
+        ],
+        "additionalProperties": false
+       }
+      }
+     },
+     "required": [],
+     "additionalProperties": false
+    }
+   },
+   "required": [],
+   "additionalProperties": false
+  },
+  "stills": {
+   "type": "object",
+   "properties": {
+    "outDir": {
+     "type": "string"
+    },
+    "sheet": {
+     "type": "string"
+    },
+    "scale": {
+     "type": "number",
+     "minimum": 0.1
+    },
+    "workers": {
+     "type": "integer",
+     "minimum": 1
+    },
+    "scenes": {
+     "type": "array",
+     "items": {
+      "type": "object",
+      "properties": {
+       "id": {
+        "type": "string",
+        "minLength": 1
+       },
+       "shot": {
+        "type": "string",
+        "minLength": 1
+       },
+       "moments": {
+        "type": "array",
+        "items": {
+         "type": "object",
+         "properties": {
+          "name": {
+           "type": "string",
+           "minLength": 1
+          },
+          "word": {
+           "type": "string"
+          },
+          "offsetSeconds": {
+           "type": "number"
+          }
+         },
+         "required": [
+          "name"
+         ],
+         "additionalProperties": false
+        },
+        "minItems": 1
+       }
+      },
+      "required": [
+       "id",
+       "shot",
+       "moments"
+      ],
+      "additionalProperties": false
+     }
+    }
+   },
+   "required": [],
+   "additionalProperties": false
+  },
+  "cues": {
+   "type": "object",
+   "properties": {
+    "module": {
+     "type": [
+      "string",
+      "null"
+     ]
+    },
+    "export": {
+     "type": "string"
+    },
+    "atField": {
+     "type": "string"
+    },
+    "atUnit": {
+     "type": "string",
+     "enum": [
+      "frames",
+      "seconds"
+     ]
+    },
+    "sfxField": {
+     "type": "string"
+    },
+    "gainField": {
+     "type": "string"
+    },
+    "heroField": {
+     "type": "string"
+    },
+    "fps": {
+     "type": [
+      "integer",
+      "null"
+     ]
+    },
+    "out": {
+     "type": "string"
+    }
+   },
+   "required": [],
+   "additionalProperties": false
+  },
+  "output": {
+   "type": "object",
+   "properties": {
+    "manifest": {
+     "type": "string"
+    },
+    "layout": {
+     "type": "string"
+    },
+    "envelope": {
+     "type": "string"
+    },
+    "chaptersTxt": {
+     "type": "string"
+    },
+    "ttsDir": {
+     "type": "string"
+    }
+   },
+   "required": [],
+   "additionalProperties": false
+  }
+ },
+ "required": [],
+ "additionalProperties": false,
+ "$schema": "http://json-schema.org/draft-07/schema#",
+ "title": "video.config.json"
+}

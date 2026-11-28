@@ -17,7 +17,13 @@
     "test:unit": "vitest run",
     "test:visual": "node scripts/kit-visual-regression.mjs",
     "test:visual:update": "node scripts/kit-visual-regression.mjs --update",
-    "kit:sfx-report": "python3 scripts/sfx_report.py && python3 scripts/sfx_build_page.py"
+    "kit:sfx-report": "python3 scripts/sfx_report.py && python3 scripts/sfx_build_page.py",
+    "kit:vo-layout": "python3 scripts/pipeline/vo_layout.py",
+    "kit:vo-words": "python3 scripts/pipeline/vo_words.py",
+    "kit:vo-envelope": "python3 scripts/pipeline/vo_envelope.py",
+    "kit:vo-normalize": "python3 scripts/pipeline/normalize_vo.py",
+    "kit:pace-audit": "python3 scripts/pipeline/pace_audit.py",
+    "kit:tts-prep": "python3 scripts/pipeline/tts_prep.py"
   },
   "dependencies": {
     "@fontsource/inter": "5.3.0",

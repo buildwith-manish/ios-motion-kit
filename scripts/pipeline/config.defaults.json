@@ -1,0 +1,33 @@
+{
+  "script": "scripts/lines.csv",
+  "clipsDir": "public/voiceover/clips_wav",
+  "clipNamePattern": "{n:03d}_{id}.wav",
+  "wordsFile": "scripts/vo-words.json",
+  "dataFile": "src/data.json",
+  "fps": 30,
+  "canvas": {"width": 1920, "height": 1080, "fps": 60},
+  "shot": {"onset": 0.1, "tail": 0.3, "maxShot": 20},
+  "silenceLimit": 0.6,
+  "sections": [],
+  "intro": null,
+  "chapters": [],
+  "chapterCardSeconds": 2.5,
+  "endScreenSeconds": 6,
+  "youtubeIntroTitle": "Intro",
+  "paceLimit": 4.5,
+  "truncation": {"minWords": 8, "maxWps": 4.5, "absMaxWps": 6.5},
+  "normalize": {
+    "vo": {"lufs": -15, "ceilingDb": -1.5, "maxGain": 20},
+    "final": {"lufs": -14, "truePeak": -1, "lra": 11, "audioBitrate": "320k"}
+  },
+  "envelope": {"source": "clips", "file": "public/voiceover/voiceover.wav", "sampleRate": 16000, "gateBelowPeakDb": 22, "floorDb": -55, "hysteresisDb": 4, "holdFrames": 9, "lookAheadFrames": 3, "attackFrames": 3, "releaseFrames": 11},
+  "mix": {"voLevel": 0.9, "sfxLevel": 0.26, "sfxDuck": 0.55, "heroDuck": 0.45, "sampleRate": 24000, "cues": "scripts/cues.json", "sfxDir": "public/sfx", "sfxManifest": "src/audio/manifest.json"},
+  "figures": {"entities": null, "nameField": "name", "allowList": "scripts/figures-allow.json"},
+  "render": {
+    "entry": "src/index.ts", "composition": "Main", "scale": 1,
+    "contactSheet": {"framesDir": "out/contact/frames", "sheets": [{"file": "docs/contact-sheet.png", "tileWidth": 360, "columns": 5}, {"file": "docs/contact-sheet-full.png", "tileWidth": 640, "columns": 4}]}
+  },
+  "stills": {"outDir": "docs/previews/scenes", "sheet": "docs/previews/scenes-sheet.png", "scale": 0.5, "workers": 2, "scenes": []},
+  "cues": {"module": null, "export": "CUES", "atField": "at", "atUnit": "frames", "sfxField": "sfx", "gainField": "gain", "heroField": "hero", "fps": null, "out": "scripts/cues.json"},
+  "output": {"manifest": "src/audio/voiceover-manifest.json", "layout": "src/audio/vo-layout.json", "envelope": "src/audio/vo-envelope.json", "chaptersTxt": "docs/youtube-chapters.txt", "ttsDir": "docs/tts"}
+}
