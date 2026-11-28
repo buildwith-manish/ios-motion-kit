@@ -5,6 +5,7 @@
 import {existsSync, readFileSync, writeFileSync} from 'node:fs';
 import path from 'node:path';
 import {spawnSync} from 'node:child_process';
+import {createRequire} from 'node:module';
 import {fileURLToPath} from 'node:url';
 import {renderStill, selectComposition} from '@remotion/renderer';
 import {DEFAULT_ENTRY, ensureDir, fail, getBundle, openRemotionBrowser, parseArgs} from './kit_qa_common.mjs';
@@ -41,7 +42,11 @@ for (const t of times) {
 }
 await puppeteerInstance.close({silent: true});
 
-// 2. Contact sheet.
+// 2. Contact sheet. sharp is installed up front: tile.mjs's own lazy install fails because Node caches the first failed import.
+try { createRequire(path.join(process.cwd(), 'x.js')).resolve('sharp'); } catch {
+  const r = spawnSync('npm', ['install', '--no-save', '--no-audit', '--no-fund', 'sharp'], {stdio: 'inherit'});
+  if (r.status !== 0) fail('could not install sharp (needed for the contact sheet)');
+}
 const portrait = comp.height > comp.width;
 await tileSheet({cwd: process.cwd(), items: stills.map((file, i) => ({file, label: `${times[i]}s`})), tileW: portrait ? 270 : 480, cols: portrait ? 5 : 3, out: path.join(out, 'contact-sheet.png'), aspect: comp.height / comp.width});
 
