@@ -5,7 +5,8 @@ import {formatNumber} from '../text/format';
 import {nudge1D} from '../dataviz/layout';
 import {isMissing} from './stack';
 import {barPath, barRects, endLabelText, growRect, lineSegments, prefixSamples, seriesPoints, type LineSegment} from './geometry';
-import {chartReveal, useChart} from './Chart';
+import {chartReveal, markOpacity, useChart} from './Chart';
+import type {ChartEmphasis} from './emphasis';
 import {seriesColor} from './palette';
 
 const pathOf = (pts: ReadonlyArray<{x: number; y: number}>): string => pts.map((q, k) => `${k === 0 ? 'M' : 'L'}${q.x.toFixed(2)} ${q.y.toFixed(2)}`).join('');
@@ -37,10 +38,12 @@ export interface LineMarkProps {
   stagger?: number;
   /** Which series to draw. Default all. */
   only?: readonly number[];
+  /** Overrides the chart's emphasis for this mark. */
+  emphasis?: ChartEmphasis;
 }
 
 /** Multi-series line, drawn on along its arc with a head dot. Missing values break the line. */
-export const LineMark: React.FC<LineMarkProps> = ({curve = 'smooth', stroke = 5, dots = false, endLabels = false, stagger = 0.12, only}) => {
+export const LineMark: React.FC<LineMarkProps> = ({curve = 'smooth', stroke = 5, dots = false, endLabels = false, stagger = 0.12, only, emphasis}) => {
   const c = useChart();
   const {theme, spec, layout} = c;
   const u = unit(theme);
@@ -58,10 +61,11 @@ export const LineMark: React.FC<LineMarkProps> = ({curve = 'smooth', stroke = 5,
     const fade = clamp01(p * 8);
     if (endLabels) {
       const last = pts.length ? [...pts].reverse().find((q) => q) : undefined;
-      if (last) labels.push({k, x: last.x + 10 * u, y: last.y, color, o: clamp01((p - 0.6) / 0.4)});
+      if (last) labels.push({k, x: last.x + 10 * u, y: last.y, color, o: clamp01((p - 0.6) / 0.4) * markOpacity(c, {series: k, seriesName: s.name}, emphasis)});
     }
+    const mo = markOpacity(c, {series: k, seriesName: s.name}, emphasis);
     return (
-      <g key={`l${k}`}>
+      <g key={`l${k}`} opacity={mo}>
         {d ? <path d={d} fill="none" stroke={color} strokeWidth={sw} strokeLinecap="round" strokeLinejoin="round" /> : null}
         {dots ? segs.flatMap((g, gi) => g.points.map((q, qi) => <circle key={`d${gi}-${qi}`} cx={q.x} cy={q.y} r={sw * 0.7} fill={color} opacity={head && p >= 1 ? 1 : 0} />)) : null}
         {head ? <circle cx={head.x} cy={head.y} r={sw * 1.1 * fade} fill={color} stroke={theme.colors.background.base} strokeWidth={Math.max(2, sw * 0.45) * fade} /> : null}
@@ -90,10 +94,12 @@ export interface AreaMarkProps {
   /** Also stroke the top edge. Default true. */
   outline?: boolean;
   stagger?: number;
+  /** Overrides the chart's emphasis for this mark. */
+  emphasis?: ChartEmphasis;
 }
 
 /** Area fill under each series; with `stacked` on <Chart>, bands between stacked edges. Reveals left to right. Gaps break the fill. */
-export const AreaMark: React.FC<AreaMarkProps> = ({curve = 'smooth', opacity = 0.35, outline = true, stagger = 0.12}) => {
+export const AreaMark: React.FC<AreaMarkProps> = ({curve = 'smooth', opacity = 0.35, outline = true, stagger = 0.12, emphasis}) => {
   const c = useChart();
   const {theme, spec, layout} = c;
   const u = unit(theme);
@@ -116,7 +122,7 @@ export const AreaMark: React.FC<AreaMarkProps> = ({curve = 'smooth', opacity = 0
       <clipPath key={cid} id={cid}><rect x={plot.x - 1} y={plot.y - 4 * u} width={(plot.w + 2) * p} height={plot.h + 8 * u} /></clipPath>,
     );
     return (
-      <g key={`a${k}`} clipPath={`url(#${cid})`}>
+      <g key={`a${k}`} clipPath={`url(#${cid})`} opacity={markOpacity(c, {series: k, seriesName: s.name}, emphasis)}>
         {topSegs.map((g, gi) => {
           const b = botSegs[gi];
           if (!b || g.samples.length < 2) return null;
@@ -141,10 +147,12 @@ export interface BarMarkProps {
   stagger?: number;
   /** Seconds between series within a category. Default 0.03. */
   seriesStagger?: number;
+  /** Overrides the chart's emphasis for this mark. */
+  emphasis?: ChartEmphasis;
 }
 
 /** Grouped or stacked bars (vertical or horizontal), growing from the baseline with rounded caps. Missing values draw nothing. */
-export const BarMark: React.FC<BarMarkProps> = ({radius = 10, stagger = 0.04, seriesStagger = 0.03}) => {
+export const BarMark: React.FC<BarMarkProps> = ({radius = 10, stagger = 0.04, seriesStagger = 0.03, emphasis}) => {
   const c = useChart();
   const {theme, spec, layout} = c;
   const u = unit(theme);
@@ -157,7 +165,7 @@ export const BarMark: React.FC<BarMarkProps> = ({radius = 10, stagger = 0.04, se
         if (p <= 0) return null;
         const g = growRect(r, p);
         const color = seriesColor(theme, k, spec.series[k].tone);
-        return <path key={`b${k}-${i}`} d={barPath(g, r.cap, radius * u)} fill={color} />;
+        return <path key={`b${k}-${i}`} d={barPath(g, r.cap, radius * u)} fill={color} opacity={markOpacity(c, {id: String(spec.x[i]), index: i, series: k, seriesName: spec.series[k].name}, emphasis)} />;
       }))}
     </g>
   );
@@ -176,10 +184,12 @@ export interface PointMarkProps {
   /** Stem width, design px. Default 3. */
   stemWidth?: number;
   only?: readonly number[];
+  /** Overrides the chart's emphasis for this mark. */
+  emphasis?: ChartEmphasis;
 }
 
 /** Dots at every data point (scatter / dot plot); with `stem` a lollipop. Works vertical and horizontal. Gaps draw nothing. */
-export const PointMark: React.FC<PointMarkProps> = ({radius = 7, stagger = 0.05, seriesStagger = 0.1, stem = false, stemWidth = 3, only}) => {
+export const PointMark: React.FC<PointMarkProps> = ({radius = 7, stagger = 0.05, seriesStagger = 0.1, stem = false, stemWidth = 3, only, emphasis}) => {
   const c = useChart();
   const {theme, spec, layout} = c;
   const u = unit(theme);
@@ -197,7 +207,7 @@ export const PointMark: React.FC<PointMarkProps> = ({radius = 7, stagger = 0.05,
           const base = layout.point(i, zero);
           const end = {x: base.x + (pt.x - base.x) * p, y: base.y + (pt.y - base.y) * p};
           return (
-            <g key={`p${k}-${i}`}>
+            <g key={`p${k}-${i}`} opacity={markOpacity(c, {id: String(spec.x[i]), index: i, series: k, seriesName: s.name}, emphasis)}>
               {stem ? <line x1={base.x} y1={base.y} x2={end.x} y2={end.y} stroke={color} strokeWidth={stemWidth * u} strokeLinecap="round" /> : null}
               <circle cx={stem ? end.x : pt.x} cy={stem ? end.y : pt.y} r={radius * u * (stem ? 1 : p)} fill={color} />
             </g>

@@ -8,6 +8,7 @@ import type {Theme} from '../tokens/types';
 import {clamp01, roleFontPx, springProgress, textWidthPx} from '../dataviz/common';
 import {chartLayout, type ChartLayout, type ChartSpec} from './geometry';
 import {seriesColor} from './palette';
+import {emphasisOpacity, emphasisTime, type ChartEmphasis, type EmphasisItem} from './emphasis';
 
 export interface ChartContextValue {
   theme: Theme;
@@ -20,6 +21,8 @@ export interface ChartContextValue {
   fps: number;
   response: number;
   idPrefix: string;
+  /** Optional emphasis: marks dim everything but the focused items (see ./emphasis). */
+  emphasis?: ChartEmphasis;
 }
 
 const ChartContext = createContext<ChartContextValue | null>(null);
@@ -34,7 +37,13 @@ export const useChart = (): ChartContextValue => {
 export const chartReveal = (c: Pick<ChartContextValue, 'frame' | 'start' | 'fps' | 'response'>, delay: number = 0): number =>
   c.frame === undefined ? 1 : springProgress(c.frame / c.fps - c.start - delay, c.response);
 
+/** Opacity of one mark item under the chart's emphasis (or the mark's own `own`); 1 when there is none. */
+export const markOpacity = (c: Pick<ChartContextValue, 'theme' | 'frame' | 'fps' | 'emphasis'>, item: EmphasisItem, own?: ChartEmphasis): number =>
+  emphasisOpacity(c.theme, own ?? c.emphasis, emphasisTime(c.frame, c.fps), item);
+
 export interface ChartProps extends ChartSpec {
+  /** Focus steps that dim all but the item being talked about. Additive; marks also take their own `emphasis`. */
+  emphasis?: ChartEmphasis;
   /** Canvas px. Default 1000 x 520. */
   width?: number;
   height?: number;
@@ -66,7 +75,7 @@ export const Chart: React.FC<ChartProps> = (props) => {
   const spec: ChartSpec = props;
   const layout = chartLayout(theme, spec, W, H);
   const fps = props.fps ?? theme.canvas.fps;
-  const value: ChartContextValue = {theme, spec, layout, frame: props.frame, start: props.start ?? 0, fps, response: props.response ?? SPRING.GENTLE, idPrefix: props.idPrefix ?? 'kc'};
+  const value: ChartContextValue = {theme, spec, layout, frame: props.frame, start: props.start ?? 0, fps, response: props.response ?? SPRING.GENTLE, idPrefix: props.idPrefix ?? 'kc', emphasis: props.emphasis};
   const p = chartReveal(value, 0);
   const fade = clamp01(p * 3);
   const col = theme.colors;

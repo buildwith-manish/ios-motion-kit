@@ -7,6 +7,7 @@ import {rgba} from '../tokens/color';
 import type {Theme} from '../tokens/types';
 import {springProgress, type DvPoint, type Tone} from '../dataviz/common';
 import {seriesColor} from './palette';
+import {emphasisOpacity, emphasisTime, type ChartEmphasis} from './emphasis';
 import {arcPath, polar, sectorAngles, type SectorAngle} from './recipeGeometry';
 
 export interface SectorDatum {
@@ -32,6 +33,8 @@ export interface SectorMarkProps {
   fps?: number;
   /** Content centred in the hole (e.g. a NumberText total). */
   center?: React.ReactNode;
+  /** Focus steps; sectors are matched by `label` (or index). */
+  emphasis?: ChartEmphasis;
   theme?: Theme;
   style?: CSSProperties;
 }
@@ -62,7 +65,8 @@ export const SectorMark: React.FC<SectorMarkProps> = (props) => {
           const a0 = start0 + (a.start - start0) * p;
           const a1 = start0 + (a.end - start0) * p;
           if (a1 - a0 < 0.01) return null;
-          return <path key={a.index} d={arcPath(r, r, r, r - thick, a0, a1)} fill={seriesColor(theme, a.index, props.data[a.index].tone)} />;
+          const mo = emphasisOpacity(theme, props.emphasis, emphasisTime(props.frame, fps), {id: props.data[a.index].label, index: a.index});
+          return <path key={a.index} d={arcPath(r, r, r, r - thick, a0, a1)} fill={seriesColor(theme, a.index, props.data[a.index].tone)} opacity={mo} />;
         })}
       </svg>
       {props.center ? <div style={{position: 'absolute', left: thick, top: thick, width: size - 2 * thick, height: size - 2 * thick, display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column'}}>{props.center}</div> : null}

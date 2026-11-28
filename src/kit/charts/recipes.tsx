@@ -7,13 +7,14 @@ import {SPRING} from '../motion';
 import {clamp01, roleFontPx, springProgress, textWidthPx, toneColor, type Tone} from '../dataviz/common';
 import {nudge1D} from '../dataviz/layout';
 import {formatNumber, resolveSpec} from '../text/format';
-import {Chart, chartReveal, useChart, type ChartProps} from './Chart';
+import {Chart, chartReveal, markOpacity, useChart, type ChartProps} from './Chart';
+import {emphasisOpacity, emphasisTime, type ChartEmphasis} from './emphasis';
 import {PointMark, type PointMarkProps} from './marks';
 import {barPath, growRect, type BarRect} from './geometry';
 import {seriesColor} from './palette';
 import {candleGeometry, slopeLayout, waterfallSteps, type Candle, type SlopeItem, type WaterfallItem, type WaterfallStep} from './recipeGeometry';
 
-type Frame = Pick<ChartProps, 'frame' | 'start' | 'response' | 'fps' | 'theme' | 'style' | 'width' | 'height' | 'idPrefix'>;
+type Frame = Pick<ChartProps, 'frame' | 'start' | 'response' | 'fps' | 'theme' | 'style' | 'width' | 'height' | 'idPrefix' | 'emphasis'>;
 
 /* ---------- waterfall ---------- */
 export interface WaterfallMarkProps {
@@ -24,10 +25,12 @@ export interface WaterfallMarkProps {
   /** Value labels above/below bars. Default true. */
   labels?: boolean;
   connectors?: boolean;
+  /** Overrides the chart's emphasis for this mark. */
+  emphasis?: ChartEmphasis;
 }
 
 /** Floating bars for a running total; place inside a <Chart> whose series cover every start/end. */
-export const WaterfallMark: React.FC<WaterfallMarkProps> = ({steps, radius = 8, stagger = 0.08, labels = true, connectors = true}) => {
+export const WaterfallMark: React.FC<WaterfallMarkProps> = ({steps, radius = 8, stagger = 0.08, labels = true, connectors = true, emphasis}) => {
   const c = useChart();
   const {theme, spec, layout} = c;
   const u = unit(theme);
@@ -49,7 +52,7 @@ export const WaterfallMark: React.FC<WaterfallMarkProps> = ({steps, radius = 8, 
         const text = formatNumber(s.kind === 'total' ? s.end : s.value, s.kind === 'total' ? yFmt : {...yFmt, sign: 'always'});
         const above = dir === 'up';
         return (
-          <g key={`w${i}`}>
+          <g key={`w${i}`} opacity={markOpacity(c, {id: s.label, index: i}, emphasis)}>
             {connectors && next ? <line x1={x + bw} x2={layout.band.start(i + 1)} y1={b} y2={b} stroke={rgba(theme.colors.text.primary, 0.25)} strokeWidth={Math.max(1, 1.5 * u)} opacity={clamp01(chartReveal(c, (i + 1) * stagger))} /> : null}
             {p > 0 ? <path d={barPath(g, dir, radius * u)} fill={toneColor(theme, tone)} /> : null}
             {labels ? (
@@ -87,10 +90,12 @@ export interface CandleMarkProps {
   /** 'candle' (filled bodies) or 'ohlc' (open/close ticks). Default 'candle'. */
   variant?: 'candle' | 'ohlc';
   stagger?: number;
+  /** Overrides the chart's emphasis for this mark. */
+  emphasis?: ChartEmphasis;
 }
 
 /** Candles or OHLC bars; up = positive, down = negative. Each grows out from its open price. */
-export const CandleMark: React.FC<CandleMarkProps> = ({candles, variant = 'candle', stagger = 0.03}) => {
+export const CandleMark: React.FC<CandleMarkProps> = ({candles, variant = 'candle', stagger = 0.03, emphasis}) => {
   const c = useChart();
   const {theme, layout} = c;
   const u = unit(theme);
@@ -103,11 +108,12 @@ export const CandleMark: React.FC<CandleMarkProps> = ({candles, variant = 'candl
         const p = chartReveal(c, i * stagger);
         if (p <= 0) return null;
         const col = toneColor(theme, g.up ? 'positive' : 'negative');
+        const mo = markOpacity(c, {id: String(c.spec.x[i]), index: i}, emphasis);
         const at = (y: number) => g.openY + (y - g.openY) * p;
         if (variant === 'ohlc') {
           const tick = g.w / 2;
           return (
-            <g key={`c${i}`} stroke={col} strokeWidth={wick} strokeLinecap="round">
+            <g key={`c${i}`} stroke={col} strokeWidth={wick} strokeLinecap="round" opacity={mo}>
               <line x1={g.x} x2={g.x} y1={at(g.wickTop)} y2={at(g.wickBottom)} />
               <line x1={g.x - tick} x2={g.x} y1={g.openY} y2={g.openY} />
               <line x1={g.x} x2={g.x + tick} y1={at(g.closeY)} y2={at(g.closeY)} />
@@ -117,7 +123,7 @@ export const CandleMark: React.FC<CandleMarkProps> = ({candles, variant = 'candl
         const top = Math.min(at(g.openY), at(g.closeY));
         const h = Math.max(1, Math.abs(at(g.closeY) - at(g.openY)));
         return (
-          <g key={`c${i}`}>
+          <g key={`c${i}`} opacity={mo}>
             <line x1={g.x} x2={g.x} y1={at(g.wickTop)} y2={at(g.wickBottom)} stroke={col} strokeWidth={wick} strokeLinecap="round" />
             <rect x={g.x - g.w / 2} y={top} width={g.w} height={h} rx={Math.min(3 * u, g.w / 2, h / 2)} fill={col} />
           </g>
@@ -172,6 +178,8 @@ export interface SlopeChartProps {
   start?: number;
   response?: number;
   fps?: number;
+  /** Focus steps; items are matched by `name` (or index). */
+  emphasis?: ChartEmphasis;
   theme?: ChartProps['theme'];
   style?: ChartProps['style'];
 }
@@ -206,11 +214,12 @@ export const SlopeChart: React.FC<SlopeChartProps> = (props) => {
         {props.items.map((it, i) => {
           const p = props.frame === undefined ? 1 : springProgress(props.frame / fps - (props.start ?? 0) - i * 0.08, props.response ?? SPRING.GENTLE);
           const color = seriesColor(theme, i, it.tone);
+          const mo = emphasisOpacity(theme, props.emphasis, emphasisTime(props.frame, fps), {id: it.name, index: i});
           const a = g.from[i];
           const b = g.to[i];
           const e = {x: a.x + (b.x - a.x) * p, y: a.y + (b.y - a.y) * p};
           return (
-            <g key={`s${i}`}>
+            <g key={`s${i}`} opacity={mo}>
               <line x1={a.x} y1={a.y} x2={e.x} y2={e.y} stroke={color} strokeWidth={Math.max(2, 4 * u)} strokeLinecap="round" />
               <circle cx={a.x} cy={a.y} r={6 * u * clamp01(p * 6)} fill={color} />
               <circle cx={e.x} cy={e.y} r={6 * u * clamp01(p * 6)} fill={color} />

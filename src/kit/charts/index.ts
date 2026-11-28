@@ -3,9 +3,12 @@ export {linearScale, bandScale, timeScale, niceStep, niceDomain, linearTicks, ti
 export {stackValues, stackExtent, isMissing, type StackedValue} from './stack';
 export {SERIES_TONES, seriesTone, seriesColor} from './palette';
 export {chartLayout, seriesPoints, lineSegments, prefixSamples, barRects, growRect, barPath, endLabelText, formatTimeTick, type ChartSpec, type ChartLayout, type SeriesData, type LineSegment, type BarRect, type CapDir, type TimeLabel} from './geometry';
-export {Chart, useChart, chartReveal, type ChartProps, type ChartContextValue} from './Chart';
+export {Chart, useChart, chartReveal, markOpacity, type ChartProps, type ChartContextValue} from './Chart';
 export {LineMark, AreaMark, BarMark, type LineMarkProps, type AreaMarkProps, type BarMarkProps} from './marks';
 export {PointMark, RuleMark, type PointMarkProps, type RuleMarkProps} from './marks';
 export {SectorMark, sectorMidpoints, type SectorMarkProps, type SectorDatum} from './SectorMark';
 export {sectorAngles, polar, arcPath, waterfallSteps, candleGeometry, slopeLayout, type SectorAngle, type WaterfallItem, type WaterfallStep, type Candle, type CandleGeom, type SlopeItem, type SlopeLayout} from './recipeGeometry';
 export {Waterfall, WaterfallMark, Candlestick, CandleMark, LollipopChart, SlopeChart, type WaterfallProps, type WaterfallMarkProps, type CandlestickProps, type CandleMarkProps, type LollipopChartProps, type SlopeChartProps} from './recipes';
+export {focusMatches, emphasisFloor, emphasisTime, emphasisStepProgress, emphasisDimAt, emphasisFocusAt, emphasisOpacity, dimmedOpacity, activeStepAt, stepTargets, EMPHASIS_DIM_TO, type EmphasisFocus, type EmphasisStep, type EmphasisItem, type ChartEmphasis} from './emphasis';
+export {DirectLabel, directLabelLayout, type DirectLabelProps, type DirectLabelItem, type LabelBox, type PlacedLabel, type LabelSide} from './DirectLabel';
+export {CompareMarker, compareText, bracketGeometry, type CompareMarkerProps, type CompareEnd, type CompareMode, type BracketGeometry} from './CompareMarker';
