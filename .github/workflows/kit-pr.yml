@@ -22,6 +22,7 @@ jobs:
       - run: npm ci
       - run: npx tsc --noEmit
       - run: pip install numpy
+      - run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg
       - run: npm run test:unit
       - run: node scripts/kit_no_device_chrome.mjs
       - run: node scripts/kit_contrast_tokens.mjs

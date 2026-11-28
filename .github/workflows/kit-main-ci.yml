@@ -18,6 +18,7 @@ jobs:
       - run: npm ci
       - run: npx tsc --noEmit
       - run: pip install numpy
+      - run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg
       - run: npm run test:unit
   heavy:
     name: QA (${{ matrix.suite }})

@@ -3,7 +3,7 @@ import {describe, expect, it, vi} from 'vitest';
 vi.setConfig({testTimeout: 60_000});
 import {hasFfmpeg, hasNumpy, json, makeProject, py} from './pipelineFixture';
 
-describe.skipIf(!hasNumpy)('pipeline core (python)', () => {
+describe.skipIf(!hasNumpy || !hasFfmpeg)('pipeline core (python)', () => {
   it('vo_layout: shot = onset + speech + tail on whole frames, intro and chapter cards inserted, no overlaps', () => {
     const root = makeProject();
     const r = py('vo_layout.py', root);
