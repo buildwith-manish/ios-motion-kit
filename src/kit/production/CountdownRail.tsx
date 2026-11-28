@@ -46,7 +46,7 @@ export const CountdownRail: React.FC<CountdownRailProps> = ({frame, theme, curre
   const place = (m: number, sz: number): React.CSSProperties => (horizontal ? {left: m, top: (active - sz) / 2, width: sz, height: sz} : {top: m, left: (active - sz) / 2, width: sz, height: sz});
   const pinned: React.CSSProperties = corner ? {position: 'absolute', top: safe.top, right: safe.right} : {position: 'relative'};
   return (
-    <div style={{...pinned, width: horizontal ? lay.span : active, height: horizontal ? active : lay.span, opacity: enter * (1 - exit), ...style}}>
+    <div data-kit-role="rail" style={{...pinned, width: horizontal ? lay.span : active, height: horizontal ? active : lay.span, opacity: enter * (1 - exit), ...style}}>
       {numbers.slice(0, -1).map((v, k) => {
         const m = lay.starts[k] + lay.sizes[k];
         const fill = clampUnit(pos - k);

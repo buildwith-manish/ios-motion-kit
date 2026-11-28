@@ -104,7 +104,7 @@ export const StatCard: React.FC<StatCardProps> = ({frame, start, theme, label, v
   const c = choreo ? enterStack(3, {start: start + 0.05, stagger: 0.1}) : [];
   return (
     <SceneLayout frame={frame} start={start} theme={theme}>
-      <Glass tier="card" theme={theme} style={{width: 'min(100%, 1120px)', boxSizing: 'border-box', padding: space(theme, 8), borderRadius: radius(theme, 'xxl'), textAlign: 'center'}}>
+      <Glass tier="card" theme={theme} kitRole="hero" style={{width: 'min(100%, 1120px)', boxSizing: 'border-box', padding: space(theme, 8), borderRadius: radius(theme, 'xxl'), textAlign: 'center'}}>
         <div style={{...textStyle(theme, 'body', {color: 'secondary', weight: 'bold'}), marginBottom: space(theme, 4), ...choreoStyle(c[0], time)}}>{label}</div>
         <div style={choreoStyle(c[1], time)}>
           <NumberText frame={frame} start={start + 0.25} duration={0.9} theme={theme} to={value} from={from} format={format} prefix={prefix} suffix={suffix} decimals={decimals} fontSize={104 * u} />

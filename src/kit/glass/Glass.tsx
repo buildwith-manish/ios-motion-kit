@@ -23,6 +23,8 @@ export interface GlassProps {
   /** Extra style, merged last. */
   style?: CSSProperties;
   className?: string;
+  /** Optional layout-lint role, rendered as data-kit-role. */
+  kitRole?: 'hero' | 'secondary' | 'rail' | 'footer';
   children?: ReactNode;
 }
 
@@ -43,7 +45,7 @@ export interface GlassProps {
  *   </Glass>
  * </ThemeProvider>
  */
-export const Glass: React.FC<GlassProps> = ({tier = 'card', frame, shimmerAt, shimmerDuration = 0.3, radius, width, height, theme, style, className, children}) => {
+export const Glass: React.FC<GlassProps> = ({tier = 'card', frame, shimmerAt, shimmerDuration = 0.3, radius, width, height, theme, style, className, kitRole, children}) => {
   const ctx = useTheme();
   const th = theme ?? ctx;
   const g = glassStyle(th, tier, radius);
@@ -52,7 +54,7 @@ export const Glass: React.FC<GlassProps> = ({tier = 'card', frame, shimmerAt, sh
   const sh = frame !== undefined && shimmerAt !== undefined ? shimmerState(frame / th.canvas.fps, shimmerAt, shimmerDuration) : null;
 
   return (
-    <div className={className} style={{position: 'relative', width, height, overflow: 'hidden', ...g.surface, ...style}}>
+    <div className={className} data-kit-role={kitRole} style={{position: 'relative', width, height, overflow: 'hidden', ...g.surface, ...style}}>
       {children}
       {sh && sh.opacity > 0.001 ? (
         <div

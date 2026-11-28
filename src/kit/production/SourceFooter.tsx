@@ -26,7 +26,7 @@ export const SourceFooter: React.FC<SourceFooterProps> = ({frame, theme, items, 
     ) : null;
   if (!state.current) return null;
   return (
-    <div style={{position: 'absolute', left: safe.left, width: safe.width, bottom: safe.bottom, height: space(theme, 8), pointerEvents: 'none'}}>
+    <div data-kit-role="footer" style={{position: 'absolute', left: safe.left, width: safe.width, bottom: safe.bottom, height: space(theme, 8), pointerEvents: 'none'}}>
       {line(state.previous, 1 - state.mix)}
       {line(state.current, state.mix)}
     </div>

@@ -42,7 +42,7 @@ export const ChapterCard: React.FC<ChapterCardProps> = ({frame, start, theme, ch
   const fillEnd = chapterFillEnd(centers, current - 1, springAt(t, 0.3, 0.6));
   const step = chapters.length > 1 ? centers[1] - centers[0] : safe.width * 0.76;
   return (
-    <div style={{position: 'absolute', left: safe.left, top: safe.top, width: safe.width, height: safe.height, color: theme.colors.text.primary, opacity: 1 - out, transform: `translateX(${-out * 120 * u}px)`}}>
+    <div data-kit-role="hero" style={{position: 'absolute', left: safe.left, top: safe.top, width: safe.width, height: safe.height, color: theme.colors.text.primary, opacity: 1 - out, transform: `translateX(${-out * 120 * u}px)`}}>
       <div style={{position: 'absolute', left: '10%', width: '80%', top: '12%', height: '48%', borderRadius: '50%', background: `radial-gradient(closest-side, ${rgba(theme.colors.accent, 0.18)}, transparent)`, opacity: rise(0.1)}} />
       <div style={{position: 'absolute', left: 0, width: '100%', top: '2%', textAlign: 'center', fontFamily: theme.fonts.display, fontWeight: theme.weights.bold, fontSize: 560 * u, lineHeight: 1, color: 'transparent', WebkitTextStroke: `${2 * u}px ${theme.colors.accent}`, opacity: 0.18 * rise(0.0), transform: `scale(${1.08 - 0.08 * rise(0.05)})`, whiteSpace: 'nowrap'}}>{nn}</div>
       <div style={{position: 'absolute', left: 0, width: '100%', top: '33%', textAlign: 'center', ...textStyle(theme, 'caption', {weight: 'bold', color: 'secondary'}), letterSpacing: 8 * u, textTransform: 'uppercase', opacity: rise(0.2)}}>

@@ -53,7 +53,7 @@ export const Callout: React.FC<CalloutProps> = (props) => {
   };
 
   return (
-    <div style={{position: 'absolute', left: 0, top: 0, width: L.width, height: L.height, pointerEvents: 'none', ...props.style}}>
+    <div data-kit-role="secondary" style={{position: 'absolute', left: 0, top: 0, width: L.width, height: L.height, pointerEvents: 'none', ...props.style}}>
       <svg width={L.width} height={L.height} viewBox={`0 0 ${L.width} ${L.height}`} style={{position: 'absolute', left: 0, top: 0, overflow: 'visible'}}>
         {L.items.map((it, k) => {
           const p = progressFor(list[k].delay ?? 0);

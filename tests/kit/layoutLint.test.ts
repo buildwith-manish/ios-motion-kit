@@ -22,3 +22,19 @@ describe('layout lint rules', () => {
   });
   it('chips one at a time', async () => expect(await rules({items: [it1('chip', box(100, 400, 200, 80), 40, 'c1'), it1('chip', box(500, 400, 200, 80), 40, 'c2')]})).toEqual(['chips-one-at-a-time']));
 });
+
+describe('maxSimultaneous', () => {
+  const sim = async (items: unknown[], c: unknown = cfg) => ((await import(/* @vite-ignore */ rulesPath)) as {checkMaxSimultaneous: (i: unknown[], c: unknown) => {skipped: boolean; findings: Array<{rule: string}>}}).checkMaxSimultaneous(items, c);
+  const sec = (i: number, opacity = 1, role = 'secondary') => ({...it1(role, box(0, 0, 10, 10), 40, `s${i}`), opacity});
+  it('default config key is 3', () => expect(cfg.maxSimultaneous).toBe(3));
+  it('3 secondary is fine, 4 flags', async () => {
+    expect((await sim([0, 1, 2].map((i) => sec(i)))).findings).toEqual([]);
+    expect((await sim([0, 1, 2, 3].map((i) => sec(i)))).findings.map((f) => f.rule)).toEqual(['max-simultaneous']);
+  });
+  it('faint (opacity <= 0.5), hero, rail and footer do not count', async () => {
+    const items = [sec(0), sec(1), sec(2), sec(3, 0.5), sec(4, 1, 'hero'), sec(5, 1, 'rail'), sec(6, 1, 'footer')];
+    expect((await sim(items)).findings).toEqual([]);
+  });
+  it('honours a lower configured max', async () => expect((await sim([sec(0), sec(1)], {...cfg, maxSimultaneous: 1})).findings).toHaveLength(1));
+  it('no roles: skipped with no findings', async () => expect(await sim([])).toEqual({skipped: true, findings: []}));
+});

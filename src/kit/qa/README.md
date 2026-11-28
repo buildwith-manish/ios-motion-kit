@@ -137,5 +137,5 @@ labels >= 36 px, hero number 120-200 px inside the hero zone (zone >= 60 % of th
 the rail / footer strips, no overlapping elements, delta chips one at a time. Sizes are normalised to the 1920 (landscape) / 1080
 (portrait) design width. Tag elements in the scene: `data-qa-role="hero|label|support|secondary|chip|rail|footer"`
 (untagged text is only held to the 28 px floor; `data-qa-ignore` skips an element). Thresholds live in
-`scripts/kit_layout_lint.config.json` (the old video 3 values); `--config my.json` overrides single keys. Rules are pure in
+`scripts/kit_layout_lint.config.json` (the old video 3 values); `--config my.json` overrides single keys. Kit components also carry `data-kit-role="hero|secondary|rail|footer"` (Callout, Delta, Pill, Chip, LowerThird, ChapterCard, DisclaimerCard, CountdownRail, SourceFooter, stat card); the `max-simultaneous` rule (config `maxSimultaneous`, default 3) counts secondary elements with opacity > 0.5 per sampled frame, excludes hero/rail/footer, and warns and skips a composition with no roles. Rules are pure in
 `scripts/kit_layout_lint_rules.mjs` (unit tests in `tests/kit/layoutLint.test.ts`). `reusable-qa.yml` runs it (`layout_fail: false` = report only).

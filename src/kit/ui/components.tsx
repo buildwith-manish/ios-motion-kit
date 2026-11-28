@@ -23,7 +23,7 @@ export const Pill: React.FC<PillProps> = ({label, expandedContent, compactWidth 
   const expansion = expandAt === undefined ? (expanded ? 1 : 0) : springProgress(motion.time, expandAt, props.response ?? theme.motion.spring.SNAPPY);
   const width = (compactWidth + (expandedWidth - compactWidth) * expansion) * u;
   return (
-    <Glass tier="pill" theme={theme} className={props.className} style={{...uiMotionStyle(motion), width, padding: `${space(theme, 3)}px ${space(theme, 5)}px`, borderRadius: radius(theme, 'pill'), boxSizing: 'border-box', ...props.style}}>
+    <Glass tier="pill" theme={theme} kitRole="secondary" className={props.className} style={{...uiMotionStyle(motion), width, padding: `${space(theme, 3)}px ${space(theme, 5)}px`, borderRadius: radius(theme, 'pill'), boxSizing: 'border-box', ...props.style}}>
       <div style={{display: 'flex', alignItems: 'center', gap: space(theme, 3), whiteSpace: 'nowrap', overflow: 'hidden'}}>
         <span style={{...textStyle(theme, 'body', {weight: 'bold'}), flex: 'none'}}>{label}</span>
         {expandedContent !== undefined && <span style={{...textStyle(theme, 'caption', {color: 'secondary'}), opacity: expansion, overflow: 'hidden', textOverflow: 'ellipsis'}}>{expandedContent}</span>}
@@ -41,7 +41,7 @@ export const Chip: React.FC<ChipProps> = ({label, icon, ...props}) => {
   const {theme, motion} = useUIMotion(props);
   const u = unit(theme);
   return (
-    <Glass tier="chip" theme={theme} className={props.className} style={{...uiMotionStyle(motion), display: 'inline-flex', alignItems: 'center', gap: space(theme, 2), padding: `${space(theme, 2)}px ${space(theme, 4)}px`, borderRadius: radius(theme, 'pill'), ...props.style}}>
+    <Glass tier="chip" theme={theme} kitRole="secondary" className={props.className} style={{...uiMotionStyle(motion), display: 'inline-flex', alignItems: 'center', gap: space(theme, 2), padding: `${space(theme, 2)}px ${space(theme, 4)}px`, borderRadius: radius(theme, 'pill'), ...props.style}}>
       {icon && <IconTile name={icon} size={20 * u} iconSize={14 * u} fill="tinted" theme={theme} />}
       <span style={textStyle(theme, 'caption', {weight: 'bold'})}>{label}</span>
     </Glass>

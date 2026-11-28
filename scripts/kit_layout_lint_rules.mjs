@@ -49,3 +49,17 @@ export const lintFrame = ({texts, items}, cfg) => {
   }
   return out;
 };
+
+/**
+ * maxSimultaneous: at one sampled frame, at most cfg.maxSimultaneous (default 3) secondary elements may be visible
+ * with opacity > 0.5; hero, rail and footer are excluded. items: [{role,path,label,opacity,ignored}] from data-kit-role.
+ * Returns {skipped, findings}; a frame with no role-tagged items is skipped (caller warns).
+ */
+export const checkMaxSimultaneous = (items, cfg) => {
+  const max = cfg.maxSimultaneous ?? 3;
+  const tagged = items.filter((o) => !o.ignored && ROLES.includes(o.role));
+  if (tagged.length === 0) return {skipped: true, findings: []};
+  const sec = tagged.filter((o) => o.role === 'secondary' && o.opacity > 0.5);
+  const findings = sec.length > max ? [hit('max-simultaneous', {label: 'secondary', path: 'simultaneous'}, `${sec.length} secondary elements visible together (opacity > 0.5), max ${max}`, sec.length - max)] : [];
+  return {skipped: false, findings};
+};

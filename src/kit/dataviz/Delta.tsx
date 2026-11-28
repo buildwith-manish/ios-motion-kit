@@ -93,7 +93,7 @@ export const Delta: React.FC<DeltaProps> = (props) => {
   const s = icon;
 
   return (
-    <div style={{display: 'inline-flex', alignItems: 'center', width: w, height: h, boxSizing: 'border-box', paddingLeft: padX, paddingRight: padX, gap, borderRadius: h / 2, background: props.solid ? color : rgba(color, 0.18), opacity: clamp01(p * 3), transform: `scale(${0.94 + 0.06 * p})`, direction: 'ltr', ...props.style}}>
+    <div data-kit-role="secondary" style={{display: 'inline-flex', alignItems: 'center', width: w, height: h, boxSizing: 'border-box', paddingLeft: padX, paddingRight: padX, gap, borderRadius: h / 2, background: props.solid ? color : rgba(color, 0.18), opacity: clamp01(p * 3), transform: `scale(${0.94 + 0.06 * p})`, direction: 'ltr', ...props.style}}>
       <svg width={s} height={s} viewBox="0 0 24 24" style={{flex: 'none', overflow: 'visible', transform: `translateY(${slide}px)`}} fill="none" stroke={ink} strokeWidth={(sw / s) * 24} strokeLinecap="round" strokeLinejoin="round">
         {r.direction === 'flat' ? <path d="M5 12 H19" /> : r.direction === 'up' ? <path d="M12 20 V5 M5.5 11.5 L12 5 L18.5 11.5" /> : <path d="M12 4 V19 M5.5 12.5 L12 19 L18.5 12.5" />}
       </svg>
