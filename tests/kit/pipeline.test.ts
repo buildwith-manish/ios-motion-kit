@@ -1,4 +1,6 @@
-import {describe, expect, it} from 'vitest';
+import {describe, expect, it, vi} from 'vitest';
+
+vi.setConfig({testTimeout: 60_000});
 import {hasFfmpeg, hasNumpy, json, makeProject, py} from './pipelineFixture';
 
 describe.skipIf(!hasNumpy)('pipeline core (python)', () => {

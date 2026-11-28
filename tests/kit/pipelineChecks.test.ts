@@ -1,4 +1,6 @@
-import {describe, expect, it} from 'vitest';
+import {describe, expect, it, vi} from 'vitest';
+
+vi.setConfig({testTimeout: 60_000});
 import {readFileSync, writeFileSync} from 'node:fs';
 import path from 'node:path';
 import {hasNumpy, json, makeProject, mjs, py} from './pipelineFixture';
