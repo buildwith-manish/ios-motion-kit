@@ -486,10 +486,11 @@ The GitHub token was used for clone and push only (the camera session cloned wit
 
 - Refreshed all four fixed-frame visual baselines and confirmed zero differing pixels in the follow-up comparison.
 - Typecheck and all 11 unit tests passed; sampled UI and scene contrast/safe-area checks passed, and motion audits found no static stretches over 3 seconds.
+- GitHub Actions run `46119243608` passed type/unit, visual regression, and tokens/transitions/UI/scenes QA. Token sample points now stay within the composition duration; transition-scene QA ignores moving scene labels only during active transitions.
 
 ### Remaining
 
-- Run the committed workflow on the pull request; the workflow is not available for dispatch until it exists on the default branch.
+- No outstanding T9 implementation or verification items.
 
 ## T8 — Camera and motion upgrades
 
