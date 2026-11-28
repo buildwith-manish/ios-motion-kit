@@ -1,5 +1,6 @@
 // Render with a profile and record how long it took.
 //   node scripts/kit_render.mjs --profile draft --comp Kit-Text-Demo
+//   node scripts/kit_render.mjs --preset final-4k --comp Kit-Text-Demo   (render-presets.json)
 import {renderFrames, renderMedia} from '@remotion/renderer';
 import {spawnSync} from 'node:child_process';
 import {existsSync, mkdtempSync, readFileSync, rmSync, statSync, writeFileSync} from 'node:fs';
@@ -8,17 +9,23 @@ import path from 'node:path';
 import {DEFAULT_OUT, ensureDir, fail, getBundle, loadKit, openRemotionBrowser, parseArgs, parseProps, pickCompositions, progress, progressDone, remotionBrowserOptions, resolveBrowser} from './kit_qa_common.mjs';
 
 const usage = `usage: node scripts/kit_render.mjs --profile <draft|review|final> (--comp <id[,id]> | --all) [options]
+  --preset <name>         preview | final-1080 | final-4k (render-presets.json): scale, crf, x264 preset, audio bitrate; --profile optional
   --start <s> --end <s>   render only this range (useful for timing a long video)
   --scale <n>             override the profile's scale (2 = 4K from a 1080p composition)
   --concurrency <n>
   --out <dir>             videos and timing-report.json (default ${DEFAULT_OUT})
   --entry <file>  --serve-url <dir>  --props <json>`;
-const args = parseArgs({profile: 'string', comp: 'string', all: 'flag', start: 'number', end: 'number', scale: 'number', concurrency: 'number', out: 'string', entry: 'string', 'serve-url': 'string', props: 'string'}, usage);
+const args = parseArgs({profile: 'string', preset: 'string', comp: 'string', all: 'flag', start: 'number', end: 'number', scale: 'number', concurrency: 'number', out: 'string', entry: 'string', 'serve-url': 'string', props: 'string'}, usage);
 
 const qa = await loadKit();
-if (!Object.hasOwn(qa.RENDER_PROFILES, args.profile ?? '')) fail(`--profile must be one of: ${Object.keys(qa.RENDER_PROFILES).join(', ')}`);
-const profile = {...qa.RENDER_PROFILES[args.profile], ...(args.scale ? {scale: args.scale} : {})};
-const inputProps = {...parseProps(args.props), kitRender: {profile: args.profile, motionBlurSamples: profile.motionBlurSamples}};
+const presets = JSON.parse(readFileSync(new URL('../render-presets.json', import.meta.url), 'utf8')).presets;
+if (args.preset && !Object.hasOwn(presets, args.preset)) fail(`--preset must be one of: ${Object.keys(presets).join(', ')}`);
+const preset = args.preset ? presets[args.preset] : {};
+const profileName = args.profile ?? preset.profile;
+if (!Object.hasOwn(qa.RENDER_PROFILES, profileName ?? '')) fail(`--profile must be one of: ${Object.keys(qa.RENDER_PROFILES).join(', ')}`);
+const {profile: _p, ...presetOverrides} = preset;
+const profile = {...qa.RENDER_PROFILES[profileName], ...presetOverrides, ...(args.scale ? {scale: args.scale} : {})};
+const inputProps = {...parseProps(args.props), kitRender: {profile: profileName, motionBlurSamples: profile.motionBlurSamples}};
 const serveUrl = await getBundle({entry: args.entry, serveUrl: args['serve-url']});
 const browserInfo = await resolveBrowser();
 console.log(`browser: ${browserInfo.source}`);
@@ -36,7 +43,7 @@ try {
   for (const comp of comps) {
     let plan;
     try { plan = qa.planRender(profile, comp, {start: args.start, end: args.end}); } catch (e) { fail(`${comp.id}: ${e.message}`); }
-    const output = path.join(outDir, `${comp.id}-${args.profile}.mp4`);
+    const output = path.join(outDir, `${comp.id}-${profileName}.mp4`);
     const common = {composition: comp, serveUrl, inputProps, puppeteerInstance, concurrency: args.concurrency ?? null, ...(await remotionBrowserOptions())};
     const frameRange = [plan.firstFrame, plan.lastFrame];
     const started = Date.now();
@@ -81,7 +88,7 @@ try {
       }
     }
     const seconds = (Date.now() - started) / 1000;
-    runs.push({composition: comp.id, profile: args.profile, width: plan.width, height: plan.height, outputFps: plan.outputFps, frames: plan.frames, range: [plan.firstFrame, plan.lastFrame], totalSeconds: Number(seconds.toFixed(2)), secondsPerFrame: Number((seconds / plan.frames).toFixed(4)), frameStageSeconds: framesSeconds && Number(framesSeconds.toFixed(2)), megabytes: Number((statSync(output).size / 1e6).toFixed(2)), concurrency: args.concurrency ?? 'auto', cpus: cpus().length, browser: browserInfo.source, output: path.relative(process.cwd(), output), at: new Date().toISOString()});
+    runs.push({composition: comp.id, profile: profileName, width: plan.width, height: plan.height, outputFps: plan.outputFps, frames: plan.frames, range: [plan.firstFrame, plan.lastFrame], totalSeconds: Number(seconds.toFixed(2)), secondsPerFrame: Number((seconds / plan.frames).toFixed(4)), frameStageSeconds: framesSeconds && Number(framesSeconds.toFixed(2)), megabytes: Number((statSync(output).size / 1e6).toFixed(2)), concurrency: args.concurrency ?? 'auto', cpus: cpus().length, browser: browserInfo.source, output: path.relative(process.cwd(), output), at: new Date().toISOString()});
     progressDone(`${comp.id}: ${plan.frames} frames in ${seconds.toFixed(1)} s -> ${path.relative(process.cwd(), output)}`);
   }
 } finally {

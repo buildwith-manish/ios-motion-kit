@@ -7,11 +7,12 @@ prints the setup steps.
 | workflow | does | main inputs |
 |---|---|---|
 | `reusable-preview.yml` | low-res MP4 + contact sheet + QA report artifacts, optional GitHub Pages | `comps`, `scale`, `fps`, `publish_pages` |
-| `reusable-render.yml` | final render in pieces + soundtrack + concat + loudnorm (-14 LUFS, -1.5 dBTP) | `comp`, `quality` (1080p/4K), `chunk_frames`, `force_rerender`, `resume_from_run`, `data_tags` (kit:fetch-data tags) |
+| `reusable-render.yml` | final render in pieces + soundtrack + concat + loudnorm (-14 LUFS, -1.5 dBTP) | `comp`, `quality` (1080p/4K), `chunk_frames`, `force_rerender`, `resume_from_run`, `data_tags` (kit:fetch-data tags), `preset` (see below) |
 | `reusable-shorts.yml` | matrix of vertical compositions, h264 crf 16 / slow / aac 320k | `comps` (JSON array), `quality` |
 | `reusable-qa.yml` | contrast, safe area, motion, layout lint, loudness gate; fails on violations | `comps`, `times`, `layout_fail`, `loudness_comp` |
 
 All take `entry` (default `src/index.ts`) and `kit_dir` (default `kit`), and require the secret `KIT_TOKEN`.
+Render presets (`render-presets.json`, also `node scripts/kit_render.mjs --preset <name>`): `preview` (scale 0.5, crf 28, veryfast, aac 160k), `final-1080` (crf 16, slow, aac 320k), `final-4k` (scale 2, crf 17, slow, aac 320k). `reusable-render.yml` input `preset` (default empty = unchanged: crf 16, x264 `fast`, aac 320k, scale from `quality`); a preset overrides `quality`. Pair with `<Finish dither="banding-safe" frame={frame}>` for dark gradients (docs/export-quality.md).
 Pieces are cached per source hash (`force_rerender: true` skips the cache; `resume_from_run` reuses artifacts of an earlier run).
 
 ## Caller example (`.github/workflows/qa.yml` in the video repo)

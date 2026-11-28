@@ -1,0 +1,26 @@
+{
+  "note": "Used by scripts/kit_render.mjs --preset and reusable-render.yml `preset`. profile = kit render profile (draft/review/final) that sets kitRender.profile.",
+  "presets": {
+    "preview": {
+      "profile": "draft",
+      "scale": 0.5,
+      "crf": 28,
+      "x264Preset": "veryfast",
+      "audioBitrate": "160k"
+    },
+    "final-1080": {
+      "profile": "final",
+      "scale": 1,
+      "crf": 16,
+      "x264Preset": "slow",
+      "audioBitrate": "320k"
+    },
+    "final-4k": {
+      "profile": "final",
+      "scale": 2,
+      "crf": 17,
+      "x264Preset": "slow",
+      "audioBitrate": "320k"
+    }
+  }
+}

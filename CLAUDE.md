@@ -20,6 +20,7 @@ Reusable, video-agnostic iOS-style motion kit for Remotion 4.0.250 / React 18.3.
 | `npm run test:visual` / `test:visual:update` | fixed-frame visual regression vs tests/visual/baselines | CI only (Chromium) |
 | `node scripts/kit_contrast_check.mjs`, `kit_safe_area_check.mjs`, `kit_motion_audit.mjs` | per-composition QA (`--comp --entry --times`) | CI only (Chromium) |
 | `npm run kit:new-video -- <dir> --name <n>` | scaffold a video repo from templates/video | local ok (no network) |
+| `node scripts/kit_render.mjs --preset <preview\|final-1080\|final-4k>` | render with render-presets.json (also workflow input `preset`; `kit_preset_env.mjs` feeds it) | CI only (Chromium) |
 | `npm run kit:init` | scripts/kit_init.mjs | see script |
 | `npm run kit:audio` / `kit:sfx-report` / `kit:shrink-previews` | music / SFX report / shrink previews | needs python3, numpy, scipy / bash |
 | `npm run kit:tts-prep, vo-normalize, vo-words, vo-layout, vo-envelope, pace-audit, config-check, figures-check, chapters, chapters-check, dump-cues, mix-check, normalize, contact-sheet, scene-stills` | the 8-step video pipeline (docs/pipeline.md) | tools run in video repos; contact-sheet and scene-stills need Chromium: CI only |

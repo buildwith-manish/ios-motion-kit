@@ -16,6 +16,7 @@ on:
       true_peak: { description: 'True peak limit (dBTP)', required: false, type: string, default: '-1.5' }
       output_name: { description: 'File / artifact name (without extension)', required: false, type: string, default: 'video' }
       data_tags: { description: 'kit:fetch-data --only tags to download before rendering (empty = none), e.g. audio', required: false, type: string, default: '' }
+      preset: { description: 'Optional render preset from render-presets.json: preview, final-1080 or final-4k (empty = the flags below, unchanged). A preset overrides `quality`.', required: false, type: string, default: '' }
       kit_dir: { description: 'Where the kit lives in the caller', required: false, type: string, default: 'kit' }
     secrets:
       KIT_TOKEN:
@@ -34,6 +35,10 @@ jobs:
       total: ${{ steps.plan.outputs.total }}
       fps: ${{ steps.plan.outputs.fps }}
       chunks: ${{ steps.plan.outputs.chunks }}
+      preset_scale: ${{ steps.preset.outputs.preset_scale }}
+      preset_crf: ${{ steps.preset.outputs.preset_crf }}
+      preset_xp: ${{ steps.preset.outputs.preset_xp }}
+      preset_ab: ${{ steps.preset.outputs.preset_ab }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -51,6 +56,8 @@ jobs:
             ~/.cache/ms-playwright
             /tmp/chromium
           key: ${{ runner.os }}-kit-chromium-123.0.1-${{ hashFiles('package-lock.json') }}
+      - id: preset
+        run: node "$KIT/scripts/kit_preset_env.mjs" "${{ inputs.preset }}" >> "$GITHUB_OUTPUT"
       - id: plan
         run: node "$KIT/scripts/kit_ci_plan.mjs" --comp "${{ inputs.comp }}" --entry "${{ inputs.entry }}" --chunk-frames ${{ inputs.chunk_frames }} --frames "${{ inputs.frames }}"
 
@@ -119,9 +126,11 @@ jobs:
         run: |
           mkdir -p out/clips
           SCALE=1; if [ "${{ inputs.quality }}" = "4K" ]; then SCALE=2; fi
+          PS='${{ needs.plan.outputs.preset_scale }}'; [ -n "$PS" ] && SCALE=$PS
+          CRF='${{ needs.plan.outputs.preset_crf }}'; CRF=${CRF:-16}; XP='${{ needs.plan.outputs.preset_xp }}'; XP=${XP:-fast}
           ID=${{ matrix.id }}; START=${{ matrix.start }}; END=${{ matrix.end }}
           npx remotion render "${{ inputs.entry }}" "${{ inputs.comp }}" "out/clips/chunk-$ID.mp4" \
-            --frames=$START-$END --codec=h264 --crf=16 --x264-preset=fast --color-space=bt709 --muted \
+            --frames=$START-$END --codec=h264 --crf=$CRF --x264-preset=$XP --color-space=bt709 --muted \
             --concurrency=$(nproc) --scale=$SCALE --log=error > render.log 2>&1 || { echo "::error::remotion render failed: $(tail -c 600 render.log | tr '\n' ' ')"; exit 1; }
           FRAMES=$(( END - START + 1 ))
           EXPECTED=$(python3 -c "print(round($FRAMES / ${{ needs.plan.outputs.fps }}.0, 3))")
@@ -212,7 +221,7 @@ jobs:
           get() { echo "$stats" | python3 -c "import sys,json; print(json.load(sys.stdin)['$1'])"; }
           AF="loudnorm=I=$I:TP=$TP:LRA=11:measured_I=$(get input_i):measured_TP=$(get input_tp):measured_LRA=$(get input_lra):measured_thresh=$(get input_thresh):offset=$(get target_offset):linear=true"
           case "$(get input_i)" in *inf*) echo "soundtrack is silent: loudnorm skipped"; AF="anull";; esac
-          ffmpeg -y -v error -i video_only.mp4 -i audio/audio.wav -map 0:v -map 1:a -c:v copy -c:a aac -b:a 320k -ar 48000 \
+          ffmpeg -y -v error -i video_only.mp4 -i audio/audio.wav -map 0:v -map 1:a -c:v copy -c:a aac -b:a ${{ needs.plan.outputs.preset_ab || '320k' }} -ar 48000 \
             -af "$AF" \
             -shortest -movflags +faststart "${{ inputs.output_name }}.mp4"
           ls -l "${{ inputs.output_name }}.mp4"
