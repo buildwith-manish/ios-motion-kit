@@ -42,16 +42,17 @@ const heroRects = (w: number, h: number): [Rect, Rect] => {
 };
 
 /** A labelled demo scene: gradient background, big "Scene N", optional matched hero card. */
-export const DemoScene: React.FC<{index: number; theme: Theme}> = ({index, theme}) => {
+export const DemoScene: React.FC<{index: number; theme: Theme; transitioning?: boolean}> = ({index, theme, transitioning = false}) => {
   const {width: w, height: h} = theme.canvas;
   const m = Math.min(w, h);
   const hue = HUES[index % HUES.length];
   const [ra, rb] = heroRects(w, h);
   const hero = index === 4 ? ra : index === 5 ? rb : null;
+  // Scene labels leave the safe area during motion, so QA ignores them only while a transition is active.
   return (
-    <div style={{position: 'absolute', inset: 0, background: `linear-gradient(145deg, hsl(${hue} 70% 34%), hsl(${(hue + 40) % 360} 75% 16%))`, color: theme.colors.text.primary, fontFamily: theme.fonts.body}}>
-      <div style={{position: 'absolute', left: 0, right: 0, top: h * 0.62, textAlign: 'center', fontSize: m * 0.13, fontWeight: 700, letterSpacing: -2}}>Scene {index + 1}</div>
-      <div style={{position: 'absolute', left: 0, right: 0, top: h * 0.62 + m * 0.17, textAlign: 'center', fontSize: m * 0.035, opacity: 0.7}}>{index === 6 ? 'last' : `of 7`}</div>
+    <div data-qa-ignore={transitioning ? 'moving-transition-scene' : undefined} style={{position: 'absolute', inset: 0, background: `linear-gradient(145deg, hsl(${hue} 70% 34%), hsl(${(hue + 40) % 360} 75% 16%))`, color: theme.colors.text.primary, fontFamily: theme.fonts.body}}>
+      <div style={{position: 'absolute', left: 0, right: 0, top: h * 0.59, textAlign: 'center', fontSize: m * 0.13, fontWeight: 700, letterSpacing: -2}}>Scene {index + 1}</div>
+      <div style={{position: 'absolute', left: 0, right: 0, top: h * 0.59 + m * 0.14, textAlign: 'center', fontSize: m * 0.035, opacity: 0.7}}>{index === 6 ? 'last' : `of 7`}</div>
       {/* a few static shapes so motion/parallax is readable */}
       {[0, 1, 2, 3].map((n) => (
         <div key={n} style={{position: 'absolute', left: w * (0.12 + n * 0.22), top: h * (0.08 + (n % 2) * 0.05), width: m * 0.07, height: m * 0.07, borderRadius: '50%', background: `hsl(${hue + n * 20} 90% 70% / 0.5)`}} />
@@ -96,8 +97,8 @@ export const TransitionsDemoFrame: React.FC<TransitionsDemoProps & {frame: numbe
           kind={kind}
           start={demoStart(Math.max(0, k), {hold, duration})}
           duration={dur}
-          outgoing={<DemoScene index={Math.max(0, k)} theme={theme} />}
-          incoming={<DemoScene index={Math.max(0, k) + 1} theme={theme} />}
+          outgoing={<DemoScene index={Math.max(0, k)} theme={theme} transitioning={inWindow} />}
+          incoming={<DemoScene index={Math.max(0, k) + 1} theme={theme} transitioning={inWindow} />}
           motionBlur={motionBlur}
         />
       ) : (
