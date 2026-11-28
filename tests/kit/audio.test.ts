@@ -17,8 +17,8 @@ describe('sfx files', () => {
     for (const family of PITCHED_FAMILIES) {
       const midi = Array.from({length: PITCHED_NOTES}, (_, i) => pitchedInfo(family, i).midi);
       expect(midi.every((m, i) => i === 0 || m > midi[i - 1])).toBe(true);
-      // C major pentatonic pitch classes
-      expect(midi.every((m) => [0, 2, 4, 7, 9].includes(m % 12))).toBe(true);
+      // D major pentatonic pitch classes
+      expect(midi.every((m) => [2, 4, 6, 9, 11].includes(m % 12))).toBe(true);
     }
     expect(allPitchedSfx()).toHaveLength(PITCHED_FAMILIES.length * PITCHED_NOTES);
   });
