@@ -1,4 +1,5 @@
 import {describe, expect, it} from 'vitest';
+import {TILE_GRID_CELLS, TILE_GRID_COLS, TILE_GRID_ROWS, tileGridLayout, inkOn} from '../../src/kit/map/tileGridLayout';
 import {
   BAKED_CITIES, US_STATES, canonicalRegionData, flyTiming, highlightSteps, layoutSceneSequence, normalizeStateId, parseRegionNumber,
   planHighlights, regionsFromCsv, regionsFromRows, validateMapScene, type SceneDefinition,
@@ -115,5 +116,40 @@ describe('scene validation', () => {
     expect(() => validateMapScene({...f, pins: [{lat: 42.5, lng: -87.6}]})).toThrow(/baked street box/);
     expect(() => validateMapScene({...f, duration: 6})).toThrow(/at least 6\.4 s/);
     expect(() => validateMapScene({...f, arc: {from: BAKED_CITIES['los-angeles'], to: BAKED_CITIES['new-york']}})).toThrow(/at least 11\.4 s/);
+  });
+});
+
+describe('tileGrid', () => {
+  it('has every state and DC exactly once, on unique in-bounds cells', () => {
+    const ids = Object.keys(TILE_GRID_CELLS).sort();
+    expect(ids).toEqual(US_STATES.map((s) => s.usps).sort());
+    const cells = Object.values(TILE_GRID_CELLS).map(([c, r]) => `${c},${r}`);
+    expect(new Set(cells).size).toBe(51);
+    for (const [c, r] of Object.values(TILE_GRID_CELLS)) { expect(c).toBeGreaterThanOrEqual(0); expect(c).toBeLessThan(TILE_GRID_COLS); expect(r).toBeGreaterThanOrEqual(0); expect(r).toBeLessThan(TILE_GRID_ROWS); }
+  });
+  it('lays tiles out square, non-overlapping, centred inside the box', () => {
+    for (const box of [{x0: 96, y0: 240, x1: 1200, y1: 1000}, {x0: 65, y0: 400, x1: 1015, y1: 1100}]) {
+      const l = tileGridLayout(box);
+      expect(l.tiles).toHaveLength(51);
+      for (const t of l.tiles) {
+        expect(t.x).toBeGreaterThanOrEqual(box.x0 - 1e-6); expect(t.y).toBeGreaterThanOrEqual(box.y0 - 1e-6);
+        expect(t.x + t.size).toBeLessThanOrEqual(box.x1 + 1e-6); expect(t.y + t.size).toBeLessThanOrEqual(box.y1 + 1e-6);
+      }
+      for (let i = 0; i < l.tiles.length; i++) for (let j = i + 1; j < l.tiles.length; j++) {
+        const a = l.tiles[i], b = l.tiles[j];
+        const overlap = a.x < b.x + b.size - 1e-6 && b.x < a.x + a.size - 1e-6 && a.y < b.y + b.size - 1e-6 && b.y < a.y + a.size - 1e-6;
+        expect(overlap).toBe(false);
+      }
+      expect(l.x0 - box.x0).toBeCloseTo(box.x1 - (l.x0 + l.width) , 6);
+    }
+    expect(() => tileGridLayout({x0: 0, y0: 0, x1: 0, y1: 10})).toThrow(/positive size/);
+  });
+  it('picks readable ink', () => { expect(inkOn('#ffffff')).toBe('#0b0f14'); expect(inkOn('#000000')).toBe('#ffffff'); });
+  it('validates scenes and lays them in a sequence', () => {
+    const ok: SceneDefinition = {id: 't', type: 'tileGrid', duration: 6, title: 'T', data: {CO: 1, Texas: 2, DC: null}};
+    expect(() => validateMapScene(ok)).not.toThrow();
+    expect(() => validateMapScene({...ok, data: {Narnia: 1}} as SceneDefinition)).toThrow(/Scene "t"/);
+    expect(() => validateMapScene({...ok, domain: [3, 1]} as SceneDefinition)).toThrow(/domain/);
+    expect(() => layoutSceneSequence([ok])).not.toThrow();
   });
 });

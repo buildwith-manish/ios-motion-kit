@@ -121,6 +121,23 @@ export interface ChoroplethSceneData extends SceneBase {
   camera?: {to?: number};
 }
 
+export interface TileGridSceneData extends SceneBase {
+  type: 'tileGrid';
+  title: string;
+  subtitle?: string;
+  /** {state: value}; keys may be FIPS, USPS code or name (DC included); null marks a missing value (hatched). */
+  data: Record<string, number | null>;
+  scale?: 'sequential' | 'diverging';
+  domain?: number[];
+  format?: FormatPresetName | FormatSpec;
+  legendTitle?: string;
+  source?: string;
+  /** Print the value on each tile when tiles are large enough. Default true. */
+  values?: boolean;
+  /** Fill-in timing in seconds from the scene start. */
+  reveal?: {start?: number; spread?: number; order?: ChoroplethOrder};
+}
+
 export interface RegionHighlightSceneData extends SceneBase {
   type: 'regionHighlight';
   title: string;
@@ -177,6 +194,7 @@ export type SceneDefinition =
   | MapHeroSceneData
   | ChoroplethSceneData
   | RegionHighlightSceneData
+  | TileGridSceneData
   | FlyToCitySceneData;
 
 export interface SceneTransitionWindow extends SceneTransition {

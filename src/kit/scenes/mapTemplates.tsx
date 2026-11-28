@@ -10,7 +10,7 @@ import {formatNumber} from '../text/format';
 import type {FormatPresetName, FormatSpec} from '../text/format';
 import {
   allFeatures, Arc, Choropleth, featureById, fitExtent, flightPlan, FlyMap, HighlightStage, highlightProgress, makeColorScale,
-  MapCallouts, MapCanvas, MapLegend, MapPin, MapSourceLine, RegionLayer, RouteDraw, topoFeatures, useBakedTopo, useCity,
+  MapCallouts, MapCanvas, MapLegend, TileGridMap, MapPin, MapSourceLine, RegionLayer, RouteDraw, topoFeatures, useBakedTopo, useCity,
   useCityAlignment, useRegionShapes, regionFile, useUsProjection,
   type RegionKind,
 } from '../map';
@@ -18,7 +18,7 @@ import {
   BAKED_CITIES, US_STATES, canonicalRegionData, canonicalRegionId, flyTiming, highlightSteps, normalizeStateId, planHighlights,
   type MapLevel, type RegionRecord,
 } from './regionData';
-import type {ChoroplethSceneData, FlyToCitySceneData, RegionHighlightSceneData} from './types';
+import type {ChoroplethSceneData, FlyToCitySceneData, RegionHighlightSceneData, TileGridSceneData} from './types';
 import type {SceneTemplateProps} from './templates';
 
 const KIND: Record<MapLevel, RegionKind> = {states: 'state', counties: 'county', cbsa: 'cbsa', zcta: 'zcta'};
@@ -308,6 +308,32 @@ export const FlyToCityScene: React.FC<FlyToCitySceneProps> = ({frame, start, the
         ) : null}
       </FlyMap>
       <Heading theme={theme} title={scene.title} subtitle={scene.subtitle} left={safe.left} top={safe.top} />
+      {scene.source ? <MapSourceLine text={scene.source} style={{position: 'absolute', left: safe.left, bottom: bottomInset - 8 * u}} /> : null}
+    </div>
+  );
+};
+
+export interface TileGridSceneProps extends SceneTemplateProps {scene: TileGridSceneData}
+
+/** tileGrid: one square per US state (DC included) coloured from plain JSON, with legend and source line. Needs no baked data. */
+export const TileGridScene: React.FC<TileGridSceneProps> = ({frame, start, theme, scene}) => {
+  const {u, safe, portrait, top, right, bottom, rightInset, bottomInset} = useLayout(theme, Boolean(scene.subtitle));
+  const format = scene.format ?? 'int';
+  const byFips = useMemo(() => canonicalRegionData(scene.id, 'states', scene.data), [scene.id, scene.data]);
+  const data = useMemo(() => Object.fromEntries(US_STATES.filter((s) => byFips[s.fips] !== undefined).map((s) => [s.usps, byFips[s.fips]])), [byFips]);
+  const scale = makeColorScale(theme, {type: scene.scale ?? 'sequential', domain: scene.domain}, data);
+  const box = portrait
+    ? {x0: safe.left, y0: top, x1: right, y1: top + safe.width * 0.8}
+    : {x0: safe.left, y0: top, x1: right - 520 * u, y1: bottom - 40 * u};
+  const legendStyle: React.CSSProperties = portrait
+    ? {position: 'absolute', left: safe.left, top: box.y1 + 36 * u}
+    : {position: 'absolute', right: rightInset, bottom: bottomInset};
+  const fmt = (v: number) => formatNumber(v, format);
+  return (
+    <div style={{position: 'absolute', inset: 0}}>
+      <TileGridMap theme={theme} frame={frame - start * theme.canvas.fps} start={scene.reveal?.start ?? 0.6} spread={scene.reveal?.spread ?? 1.4} order={scene.reveal?.order ?? 'value'} data={data} scale={scale} box={box} showValues={scene.values ?? true} format={fmt} />
+      <Heading theme={theme} title={scene.title} subtitle={scene.subtitle} left={safe.left} top={safe.top} />
+      <MapLegend scale={scale} title={scene.legendTitle} format={fmt} style={legendStyle} />
       {scene.source ? <MapSourceLine text={scene.source} style={{position: 'absolute', left: safe.left, bottom: bottomInset - 8 * u}} /> : null}
     </div>
   );

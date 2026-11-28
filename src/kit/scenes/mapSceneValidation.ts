@@ -52,6 +52,21 @@ export const validateMapScene = (scene: SceneDefinition): void => {
       }
       return;
     }
+    case 'tileGrid': {
+      canonicalRegionData(scene.id, 'states', scene.data);
+      const need = scene.scale === 'diverging' ? 3 : 2;
+      if (scene.domain !== undefined) {
+        const d = scene.domain;
+        if (d.length !== need || !d.every(finite) || d.some((v, i) => i > 0 && v <= d[i - 1])) {
+          throw new RangeError(`Scene "${scene.id}": domain must be ${need} increasing numbers for a ${scene.scale ?? 'sequential'} scale`);
+        }
+      }
+      const r = scene.reveal;
+      if (r && ((r.start !== undefined && !(finite(r.start) && r.start >= 0 && r.start < scene.duration)) || (r.spread !== undefined && !(finite(r.spread) && r.spread >= 0)))) {
+        throw new RangeError(`Scene "${scene.id}": reveal.start must be inside the scene and reveal.spread must be zero or more (seconds)`);
+      }
+      return;
+    }
     case 'regionHighlight': {
       const level = scene.level ?? 'states';
       if (level === 'states' && scene.scope !== undefined) throw new RangeError(`Scene "${scene.id}": scope is only supported for level "counties".`);

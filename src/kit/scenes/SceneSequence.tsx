@@ -14,7 +14,7 @@ import {
   StatCard,
   Takeaway,
 } from './templates';
-import {ChoroplethScene, FlyToCityScene, RegionHighlightScene} from './mapTemplates';
+import {ChoroplethScene, FlyToCityScene, RegionHighlightScene, TileGridScene} from './mapTemplates';
 import {layoutSceneSequence} from './sequence';
 import type {SceneDefinition, ScenePlacement, SceneSequenceOptions, SceneSequenceRenderOptions} from './types';
 
@@ -47,6 +47,8 @@ const SceneTemplate: React.FC<{frame: number; theme: Theme; placement: ScenePlac
       return <ChoroplethScene frame={frame} start={start} theme={theme} scene={scene} />;
     case 'regionHighlight':
       return <RegionHighlightScene frame={frame} start={start} theme={theme} scene={scene} />;
+    case 'tileGrid':
+      return <TileGridScene frame={frame} start={start} theme={theme} scene={scene} />;
     case 'flyToCity':
       return <FlyToCityScene frame={frame} start={start} theme={theme} scene={scene} />;
   }

@@ -29,3 +29,5 @@ export {MapPin, pinHeadLift, PIN, type MapPinProps} from './MapPin';
 export {MapCallout, MapCallouts, calloutSize, type MapCalloutProps, type MapCalloutsProps, type CalloutSpec} from './MapCallout';
 export {Arc, type ArcProps} from './Arc';
 export {RouteDraw, type RouteDrawProps} from './RouteDraw';
+export {TILE_GRID_CELLS, TILE_GRID_COLS, TILE_GRID_ROWS, tileGridLayout, inkOn, type TileRect, type TileGridLayout} from './tileGridLayout';
+export {TileGridMap, type TileGridMapProps} from './TileGridMap';
