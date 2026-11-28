@@ -21,6 +21,7 @@ import {KitMetroCompositions} from './MetroDemo';
 import {KitFlyCompositions} from './FlyDemo';
 import {KitFormatCompositions} from './FormatDemo';
 import {KitChartsCompositions} from './ChartsDemo';
+import {KitLiquidCompositions} from './LiquidDemo';
 
 registerRoot(withKitFonts(() => (
   <>
@@ -39,6 +40,7 @@ registerRoot(withKitFonts(() => (
     <KitFlyCompositions />
     <KitFormatCompositions />
     <KitChartsCompositions />
+    <KitLiquidCompositions />
     <KitMapSceneRoot />
   </>
 )));

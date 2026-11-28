@@ -21,6 +21,7 @@ Reusable, video-agnostic iOS-style motion kit for Remotion 4.0.250 / React 18.3.
 | `node scripts/kit_contrast_check.mjs`, `kit_safe_area_check.mjs`, `kit_motion_audit.mjs` | per-composition QA (`--comp --entry --times`) | CI only (Chromium) |
 | `npm run kit:new-video -- <dir> --name <n>` | scaffold a video repo from templates/video | local ok (no network) |
 | `node scripts/kit_render.mjs --preset <preview\|final-1080\|final-4k>` | render with render-presets.json (also workflow input `preset`; `kit_preset_env.mjs` feeds it) | CI only (Chromium) |
+| `node scripts/kit_glass_perf.mjs` | ms/frame for no glass, card, liquid (Kit-Liquid-Perf-*); CI job `Glass perf`, `[qa]` | CI only (Chromium) |
 | `node scripts/kit_banding_check.mjs` | banding vs presets and Finish dither (Kit-Banding-Gradient); report in out/banding | CI only, `[qa]` (Chromium + ffmpeg) |
 | `node scripts/kit_font_still.mjs` | fails if a demo frame uses a fallback font; rules in scripts/kit_font_check.mjs; fonts/licenses in docs/fonts.md | CI only, `[qa]` (Chromium) |
 | `npm run kit:init` | scripts/kit_init.mjs | see script |
@@ -29,7 +30,7 @@ Reusable, video-agnostic iOS-style motion kit for Remotion 4.0.250 / React 18.3.
 
 ## Directory map
 - `src/kit/index.ts`: re-exports every module below.
-- `motion`: iOS springs and easings; `choreo.ts` choreography presets + velocity-keeping springs. `tokens`: themes (midnight/light/mono), canvases, contrast engine. `glass`: `Glass` primitive.
+- `motion`: iOS springs and easings; `choreo.ts` choreography presets + velocity-keeping springs. `tokens`: themes (midnight/light/mono), canvases, contrast engine. `glass`: `Glass` primitive (tiers card/pill/chip/sheet + opt-in `liquid`, `glass/liquid.ts`).
 - `text`: RevealText, Emphasis, NumberText, Caption. `dataviz`: SpringBar, Ring, Ticker, LineDraw, Delta, Callout. `charts`: scales, marks, Chart.
 - `transitions`: TransitionScene. `camera`: CameraRig, Tilt3D, DepthLayers, RackFocus. `timing`: word-timing parsers and timeline builder.
 - `audio`: cues, CueTrack, MusicBed, ducking; `families.ts` lists SFX families, `sfx-manifest.json` is generated.

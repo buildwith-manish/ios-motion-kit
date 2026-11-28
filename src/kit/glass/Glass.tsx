@@ -1,13 +1,14 @@
 import React from 'react';
 import type {CSSProperties, ReactNode} from 'react';
 import {useTheme} from '../tokens/ThemeProvider';
-import type {GlassTierName, RadiusKey, Theme} from '../tokens/types';
+import type {GlassTierProp, RadiusKey, Theme} from '../tokens/types';
 import {glassStyle, shimmerState} from './glassStyle';
+import {liquidStyle, type GlassPosition} from './liquid';
 
 /** Props for <Glass>. */
 export interface GlassProps {
   /** Which tier to draw. Default 'card'. */
-  tier?: GlassTierName;
+  tier?: GlassTierProp;
   /** Current frame number. Only needed with `shimmerAt`. Passed in, never read from a hook. */
   frame?: number;
   /** Second at which a one-shot shimmer sweeps across the surface. Omit for none. */
@@ -23,6 +24,10 @@ export interface GlassProps {
   /** Extra style, merged last. */
   style?: CSSProperties;
   className?: string;
+  /** 'liquid' only: compass angle (deg, 0 = up, clockwise) the light comes from. Default 315. May animate per frame. */
+  lightAngle?: number;
+  /** 'liquid' only: glass centre on the canvas (0-1) for the adaptive tint. Omit for no tint. */
+  position?: GlassPosition;
   /** Optional layout-lint role, rendered as data-kit-role. */
   kitRole?: 'hero' | 'secondary' | 'rail' | 'footer';
   children?: ReactNode;
@@ -33,6 +38,9 @@ export interface GlassProps {
  * backdrop blur + saturate, gradient specular rim (bright top-left fading to ~0 bottom-right), inset top highlight,
  * tight + wide layered shadows, and an optional one-shot shimmer. Pure presentational: no Remotion hooks, so it is
  * safe in the parallel renderer.
+ *
+ * Tier 'liquid' (opt-in, hero cards only) is the card plus a light-angle specular rim, inner highlight/shadow and a
+ * chroma-shifted edge refraction; see glass/README.md.
  *
  * NOTE: backdrop-filter only samples what is behind the element inside the nearest "backdrop root". An ancestor
  * with opacity < 1 or a CSS filter (e.g. enterStyle() mid-entrance) is a backdrop root, so the glass shows its
@@ -45,16 +53,19 @@ export interface GlassProps {
  *   </Glass>
  * </ThemeProvider>
  */
-export const Glass: React.FC<GlassProps> = ({tier = 'card', frame, shimmerAt, shimmerDuration = 0.3, radius, width, height, theme, style, className, kitRole, children}) => {
+export const Glass: React.FC<GlassProps> = ({tier = 'card', frame, shimmerAt, shimmerDuration = 0.3, radius, width, height, theme, style, className, kitRole, lightAngle, position, children}) => {
   const ctx = useTheme();
   const th = theme ?? ctx;
-  const g = glassStyle(th, tier, radius);
-  const spec = th.glass[tier];
+  const liquid = tier === 'liquid' ? liquidStyle(th, radius, {lightAngle, position}) : null;
+  const base = tier === 'liquid' ? 'card' : tier;
+  const g = liquid ? {surface: liquid.surface, rim: liquid.rim} : glassStyle(th, base, radius);
+  const spec = th.glass[base];
 
   const sh = frame !== undefined && shimmerAt !== undefined ? shimmerState(frame / th.canvas.fps, shimmerAt, shimmerDuration) : null;
 
   return (
     <div className={className} data-kit-role={kitRole} style={{position: 'relative', width, height, overflow: 'hidden', ...g.surface, ...style}}>
+      {liquid ? liquid.under.map((st, i) => <div key={i} aria-hidden style={st} />) : null}
       {children}
       {sh && sh.opacity > 0.001 ? (
         <div

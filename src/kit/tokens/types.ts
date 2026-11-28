@@ -56,6 +56,8 @@ export interface ThemeColors {
 }
 
 export type GlassTierName = 'card' | 'pill' | 'chip' | 'sheet';
+/** Tiers <Glass> accepts: the four theme tiers plus the opt-in 'liquid' tier (derived from `card`, not stored in the theme). */
+export type GlassTierProp = GlassTierName | 'liquid';
 export type RadiusKey = 'xs' | 'sm' | 'md' | 'lg' | 'xl' | 'xxl' | 'pill';
 export type SpacingKey = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 8 | 10 | 12 | 16 | 20;
 export type TypeRole = 'display' | 'title' | 'body' | 'caption' | 'number';

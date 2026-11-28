@@ -39,6 +39,7 @@ jobs:
           - { suite: scenes, entry: src/kit/scenes/entry.tsx, comp: Kit-Scenes-Demo, times: '2,7,12,17,22,27' }
           - { suite: chart-headline, entry: src/kit/scenes/entry.tsx, comp: 'Kit-ChartHeadline-Demo,Kit-ChartHeadline-Demo-Vertical', times: '1.5,3,5.5,10,12,14,17' }
           - { suite: production, entry: src/kit/production/entry.tsx, comp: 'Kit-Production-Demo,Kit-Production-Demo-Vertical', times: '1.5,4,8,13,18' }
+          - { suite: liquid, entry: src/kit/demo/entry.tsx, comp: 'Kit-Liquid-Demo,Kit-Liquid-Demo-Vertical,Kit-Liquid-Demo-30fps', times: '0.8,1.8,3.2,4.3,5.6,6.8' }
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -62,6 +63,30 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: always()
         with: { name: 'main-qa-${{ matrix.suite }}', path: out/main-qa, retention-days: 7, if-no-files-found: ignore }
+  glass-perf:
+    name: Glass perf (card vs liquid)
+    if: github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, '[qa]')
+    needs: fast
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      KIT_NO_DOWNLOAD: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 20, cache: npm }
+      - run: npm ci
+      - uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cache/remotion
+            ~/.cache/ms-playwright
+            /tmp/chromium
+          key: ${{ runner.os }}-kit-chromium-123.0.1-${{ hashFiles('package-lock.json') }}
+      - run: node scripts/kit_glass_perf.mjs --out out/glass-perf
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with: { name: glass-perf, path: out/glass-perf, retention-days: 7, if-no-files-found: ignore }
   banding:
     name: Banding check (dither x presets)
     if: github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, '[qa]')
