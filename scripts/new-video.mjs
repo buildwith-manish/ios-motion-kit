@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // Scaffolds a new video repo that uses this kit as the `kit/` git submodule. No network, no git: it only writes files.
 //   node scripts/new-video.mjs <dir> --name <name> [--tag reuse-v1] [--kit-url https://github.com/buildwith-manish/ios-motion-kit.git]
-import {existsSync, mkdirSync, readFileSync, readdirSync, statSync, writeFileSync} from 'node:fs';
+import {copyFileSync, existsSync, mkdirSync, readFileSync, readdirSync, statSync, writeFileSync} from 'node:fs';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 
@@ -37,6 +37,18 @@ const write = (rel, content) => {
 
 // Every template file (workflows, config, src, docs, public/.gitkeep). Fonts and brand assets are never templates.
 for (const f of walk(src)) write(path.relative(src, f), fill(readFileSync(f, 'utf8')));
+
+// Kit fonts (SIL OFL, see docs/fonts.md): staticFile('kit/fonts/...') reads the video's own public/, so the scaffold gets a copy.
+const fontsSrc = path.join(kitRoot, 'public', 'kit', 'fonts');
+if (existsSync(fontsSrc)) {
+  for (const f of readdirSync(fontsSrc)) {
+    const rel = path.join('public', 'kit', 'fonts', f);
+    if (existsSync(path.join(dest, rel))) { console.log(`kept     ${rel}`); continue; }
+    mkdirSync(path.dirname(path.join(dest, rel)), {recursive: true});
+    copyFileSync(path.join(fontsSrc, f), path.join(dest, rel)); written++;
+    console.log(`created  ${rel}`);
+  }
+}
 
 // package.json: Remotion and everything the kit imports, pinned to the kit's own versions; kit tools run from kit/scripts.
 const kitPkg = JSON.parse(readFileSync(path.join(kitRoot, 'package.json'), 'utf8'));

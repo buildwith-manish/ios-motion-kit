@@ -40,7 +40,7 @@ export const kitFontLabel = (f: KitFontFile): string => `${f.family} ${f.weight}
 
 /** Pure: the error thrown when a kit font cannot load; always names the font and its file. */
 export const kitFontError = (f: KitFontFile, cause: unknown): Error =>
-  new Error(`Kit font "${kitFontLabel(f)}" (${f.file}) failed to load: ${cause instanceof Error ? cause.message : String(cause)}`);
+  new Error(`Kit font "${kitFontLabel(f)}" (${f.file}) failed to load: ${cause instanceof Error ? cause.message : String(cause)}. The file is read from your public/ folder (staticFile): copy kit/public/kit/fonts to public/kit/fonts.`);
 
 /** Pure: `document.fonts.check()` specs for the bundled faces, one per weight. */
 export const kitFontCheckSpecs = (): string[] => [...new Set(KIT_FONT_FILES.map((f) => `${f.weight} 16px "${f.family}"`))];

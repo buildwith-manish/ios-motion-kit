@@ -8,7 +8,7 @@ A video built with the [ios-motion-kit](__KIT_URL__) (private; added as the `kit
 3. `npm run dev` (Remotion Studio, composition `__COMP__`)
 
 CI needs the private-kit setup once: see `kit/docs/ci-reuse.md`, "Private kit setup" (repo Access setting, a read-only fine-grained token, the `KIT_TOKEN` secret).
-No fonts or brand assets are included: put your own in `public/`.
+No brand assets are included: put your own in `public/`. The kit's Inter files (SIL OFL) are copied to `public/kit/fonts/` and must stay there: renders fail with an error naming the font if they are missing.
 
 ## The 8-step flow (details: `kit/docs/pipeline.md`)
 1. Script: write `docs/script.md`; `npm run kit:tts-prep` spells numbers out for a TTS voice.
