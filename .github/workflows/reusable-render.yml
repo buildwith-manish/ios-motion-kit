@@ -116,7 +116,7 @@ jobs:
           ID=${{ matrix.id }}; START=${{ matrix.start }}; END=${{ matrix.end }}
           npx remotion render "${{ inputs.entry }}" "${{ inputs.comp }}" "out/clips/chunk-$ID.mp4" \
             --frames=$START-$END --codec=h264 --crf=16 --x264-preset=fast --color-space=bt709 --muted \
-            --concurrency=$(nproc) --scale=$SCALE --log=error
+            --concurrency=$(nproc) --scale=$SCALE --log=error > render.log 2>&1 || { echo "::error::remotion render failed: $(tail -c 600 render.log | tr '\n' ' ')"; exit 1; }
           FRAMES=$(( END - START + 1 ))
           EXPECTED=$(python3 -c "print(round($FRAMES / ${{ needs.plan.outputs.fps }}.0, 3))")
           ACTUAL=$(ffprobe -v error -show_entries format=duration -of csv=p=0 "out/clips/chunk-$ID.mp4" 2>/dev/null || echo 0)
@@ -166,7 +166,7 @@ jobs:
           mkdir -p out/audio
           AC="${{ inputs.audio_comp }}"; [ -n "$AC" ] || AC="${{ inputs.comp }}"
           FR=""; if [ -n "${{ inputs.frames }}" ]; then FR="--frames=${{ inputs.frames }}"; fi
-          npx remotion render "${{ inputs.entry }}" "$AC" out/audio/audio.wav --codec=wav --log=error $FR
+          npx remotion render "${{ inputs.entry }}" "$AC" out/audio/audio.wav --codec=wav --log=error $FR > audio.log 2>&1 || { echo "::error::remotion audio render failed: $(tail -c 600 audio.log | tr '\n' ' ')"; exit 1; }
       - name: Check the soundtrack length
         run: |
           D=$(ffprobe -v error -show_entries format=duration -of csv=p=0 out/audio/audio.wav)
