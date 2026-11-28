@@ -5,7 +5,8 @@ import {Glass, tintFor} from '../glass';
 import {NumberText} from '../text';
 import {CANVAS, createTheme, safeRect, space, textStyle, ThemeProvider, unit} from '../tokens';
 import {safeText} from '../tokens/contrast';
-import type {Canvas, GlassTierProp, Theme, ThemeName} from '../tokens/types';
+import type {ThemeName} from '../tokens';
+import type {Canvas, GlassTierProp, Theme} from '../tokens/types';
 
 const THEMES: ThemeName[] = ['midnight', 'light', 'mono'];
 const PRESETS: Record<ThemeName, AtmospherePreset> = {midnight: 'midnight-aurora', light: 'soft-light', mono: 'graphite'};
