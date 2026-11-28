@@ -40,6 +40,7 @@ Reusable, video-agnostic iOS-style motion kit for Remotion 4.0.250 / React 18.3.
 - `background`, `finish`, `icons`, `production`: exported from index.ts; see each folder. `demo`: demo compositions and entry.tsx.
 - `scripts/`: `kit-*.mjs` / `kit_*.mjs` stills, audits, QA, data; `map_*` map bake/verify; `sfx_*`; `new-video.mjs`. `scripts/pipeline/`: 8-step pipeline tools + `video.config.schema.json`, `config.defaults.json`.
 - `templates/video/`: scaffold copied by new-video.mjs (all files; placeholders __NAME__ __SLUG__ __COMP__ __KIT_TAG__ __KIT_URL__).
+- `CHANGELOG.md`: per-tag summary and "Migrating a video repo" notes (add one section per new tag).
 - `docs/`: ci-reuse.md, pipeline.md, how-to-build-a-video.md, repo-rules.md, progress/ (task checklists), previews/ (small JPGs).
 - `tests/kit` unit tests, `tests/visual` baselines (480 px, in git).
 - `.github/workflows/`: `kit-main-ci.yml` (push gate), `kit-pr.yml`, `kit-qa.yml`, `reusable-{preview,render,shorts,qa}.yml` (called by video repos), `map-*.yml`, `sfx-*.yml`, `kit-data-release.yml`, `typecheck.yml`.
@@ -52,7 +53,7 @@ Reusable, video-agnostic iOS-style motion kit for Remotion 4.0.250 / React 18.3.
 - Size (docs/repo-rules.md, enforced by `scripts/kit_size_guard.mjs`): 1 MB per tracked file; docs/previews JPG only, max 960 px wide, 5 MB total; baked map data and the music loop live in Release assets, never in git; no Git LFS.
 - Do not loosen QA thresholds; fix the cause. Releases are never overwritten.
 - Add or rename a command or directory: update this file (one line) in the same push.
-- Tags: one annotated tag per feature, `<feature>-v1` (existing: pipeline-v1, reuse-v1, sfx-system-v1, v0.1.0).
+- Tags: one annotated tag per feature, `<feature>-v1` (existing: see `git tag -l`; the release is v0.2.0, per-tag summaries and migration notes in CHANGELOG.md).
 
 ## CI-first workflow
 - No local Chromium, renders, stills, visual or QA scripts, full tsc. Push to main and let kit-main-ci run.

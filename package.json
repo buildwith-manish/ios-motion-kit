@@ -1,6 +1,6 @@
 {
   "name": "ios-motion-kit",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "description": "Reusable iOS-style motion kit for Remotion: tokens, glass, text, dataviz, transitions, camera, audio, qa.",
   "scripts": {
