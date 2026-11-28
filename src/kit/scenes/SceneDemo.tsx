@@ -5,6 +5,7 @@ import type {Canvas} from '../tokens/types';
 import {SceneSequence} from './SceneSequence';
 import {sceneSequenceFrames} from './sequence';
 import type {SceneDefinition} from './types';
+import {KitChartHeadlineCompositions} from './ChartHeadlineDemo';
 
 export const SCENE_DEMO_SCENES: readonly SceneDefinition[] = [
   {
@@ -86,6 +87,7 @@ const SceneDemoFrame: React.FC<{canvas: Canvas}> = ({canvas}) => {
 };
 
 export const KitSceneCompositions: React.FC = () => (
+  <>
   <Composition
     id="Kit-Scenes-Demo"
     component={SceneDemoFrame}
@@ -95,4 +97,6 @@ export const KitSceneCompositions: React.FC = () => (
     height={CANVAS.landscape30.height}
     fps={CANVAS.landscape30.fps}
   />
+  <KitChartHeadlineCompositions />
+  </>
 );

@@ -49,3 +49,15 @@ const scenes = [
 
 `regionsFromRows(rows, {...})` / `regionsFromCsv(text, {...})` turn rows with a state name, USPS code or FIPS into `data`.
 Timings (`reveal`, `at`, `hold`) are seconds from the scene start.
+
+## `chartHeadline`: a chart that makes one claim
+
+```ts
+{id: 'rent', type: 'chartHeadline', duration: 8, title: 'Housing costs twice as much as food', subtitle: 'Monthly spending',
+ chart: {kind: 'bar', format: 'usd', data: [{label: 'Housing', value: 1800}, {label: 'Food', value: 900}]},
+ emphasis: {steps: [{at: 2, focus: 'Food', label: 'Food: the baseline'}, {at: 3.6, focus: ['Housing', 'Food']}]},
+ labels: [{item: 'Food', at: 2.2}], compare: [{from: 'Food', to: 'Housing', mode: 'ratio', at: 4}],
+ sourceIds: ['spending'], manifest}   // or source: 'Source: ...'
+```
+
+`chart.kind` is `bar`, `line`, `slope`, `waterfall` or `sector`; focus, labels and markers use the item ids (bar/sector `label`, slope `name`, waterfall `label`, line x value or series name). All times are seconds from the scene start; `reveal.start` (default 0.6) is when the chart begins. `labels` and `compare` work on bar and line charts. The title is the claim and is required; it shrinks to fit 2 lines (landscape) or 4 (portrait) inside the title-safe area. Validation runs in `layoutSceneSequence` with errors that name the scene and list the known ids. Demo: `Kit-ChartHeadline-Demo` (and `-Vertical`): a bar with a 2x marker, then a slope chart that hands focus city by city.

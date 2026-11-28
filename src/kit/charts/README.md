@@ -29,3 +29,27 @@ const x = ['2024-01-01', '2024-07-01', '2025-01-01'];
 ```
 
 Demo: `Kit-Charts-Demo` (+ `-Vertical`, `-30fps`), sample data is illustrative.
+
+## Emphasis: one claim, pointed at
+
+Give `<Chart emphasis={...}>` (or `SectorMark`, `SlopeChart`, or one mark's own `emphasis` prop) a list of steps. Each step names what to focus; everything else dims, and focus hands from one step to the next on an iOS spring (the same pattern as `regionHighlight`).
+
+```tsx
+<Chart x={['Housing', 'Food', 'Care']} series={[{name: 'Spend', values: [1800, 900, 520]}]} yFormat="usd" frame={frame}
+  emphasis={{steps: [{at: 2, focus: 'Food'}, {at: 3.6, focus: ['Housing', 'Food']}]}}>
+  <BarMark />
+  <DirectLabel labels={[{index: 1, at: 2.2}, {index: 0, at: 3.8}]} />
+  <CompareMarker from={{index: 1}} to={{index: 0}} at={4} />   {/* "2.0x" */}
+</Chart>
+```
+
+| Export | What |
+| --- | --- |
+| `ChartEmphasis {steps, dimTo?, response?}` | `steps[]`: `{at (s), focus, label?, response?}`. `focus` is an item id (category label / name), an index, a series name, `{id, index, series, range: [from, to]}`, or a list of these. `at` is on the same clock as `frame / fps`. |
+| `emphasisOpacity(theme, emphasis, time, item)` | 0..1 opacity of one item (pure). 1 before the first step. |
+| `emphasisFloor(theme, dimTo)` | Dimmed items never go below `max(dimTo, karaokeInactiveOpacity(theme))`, so they stay readable (default `dimTo` 0.28, so the theme token usually sets the floor). |
+| `emphasisDimAt`, `emphasisFocusAt`, `emphasisStepProgress`, `activeStepAt`, `stepTargets` | Timing pieces; the dim is the sum of step progress capped at 1, so it holds through a handoff. |
+| `<DirectLabel labels>` | Value or name labels attached to mark points; overlaps are separated with `nudgeRects` and the points are fixed obstacles (`directLabelLayout`). |
+| `<CompareMarker from to mode>` | Bracket or arrow between two items: `ratio` ("2.1x") or `diff` ("+$2,300", in the chart format). `compareText`, `bracketGeometry` are the pure parts. |
+
+Series-level marks (a line) have no index, so index and range focus do not dim lines; focus a line by series name. Marks without `emphasis` draw exactly as before.

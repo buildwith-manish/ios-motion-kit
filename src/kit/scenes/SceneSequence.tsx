@@ -15,6 +15,7 @@ import {
   Takeaway,
 } from './templates';
 import {ChoroplethScene, FlyToCityScene, RegionHighlightScene, TileGridScene} from './mapTemplates';
+import {ChartHeadlineScene} from './chartTemplates';
 import {ChapterCard} from '../production/ChapterCard';
 import {DisclaimerCard} from '../production/DisclaimerCard';
 import {layoutSceneSequence} from './sequence';
@@ -57,6 +58,8 @@ const SceneTemplate: React.FC<{frame: number; theme: Theme; placement: ScenePlac
       return <TileGridScene frame={frame} start={start} theme={theme} scene={scene} />;
     case 'flyToCity':
       return <FlyToCityScene frame={frame} start={start} theme={theme} scene={scene} />;
+    case 'chartHeadline':
+      return <ChartHeadlineScene frame={frame} start={start} theme={theme} scene={scene} />;
   }
 };
 

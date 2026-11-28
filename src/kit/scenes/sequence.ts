@@ -1,6 +1,7 @@
 import type {SceneDefinition, ScenePlacement, SceneSequenceLayout, SceneSequenceOptions, SceneTransitionWindow} from './types';
 import type {TransitionKind} from '../transitions';
 import {validateMapScene} from './mapSceneValidation';
+import {validateChartScene} from './chartSceneValidation';
 
 const TRANSITION_KINDS: readonly TransitionKind[] = ['push', 'blurDissolve', 'sheet', 'zoomThrough', 'matchedGeometry', 'wipeMask'];
 
@@ -25,6 +26,7 @@ export const layoutSceneSequence = (
     ids.add(scene.id);
     finitePositive(scene.duration, `Scene "${scene.id}" duration`);
     validateMapScene(scene);
+    validateChartScene(scene);
     return scene.duration;
   });
 

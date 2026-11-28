@@ -57,6 +57,10 @@ jobs:
             entry: src/kit/scenes/entry.tsx
             comp: Kit-Scenes-Demo
             times: 2,7,12,17,22,27
+          - suite: chart-headline
+            entry: src/kit/scenes/entry.tsx
+            comp: Kit-ChartHeadline-Demo,Kit-ChartHeadline-Demo-Vertical
+            times: 1.5,3,5.5,10,12,14,17
     name: QA (${{ matrix.suite }})
     steps:
       - uses: actions/checkout@v4

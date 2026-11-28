@@ -4,6 +4,8 @@ import type {ShortfallBarsData, TickerStep} from '../dataviz';
 import type {FinishLevel} from '../finish';
 import type {TransitionKind, MotionBlurOption} from '../transitions';
 import type {ChoroplethOrder} from '../map/choroplethTiming';
+import type {DataManifest} from '../data/manifest';
+import type {EmphasisFocus} from '../charts/emphasis';
 import type {BakedCityId, HighlightRegionInput, MapLevel} from './regionData';
 
 export interface SceneTransition {
@@ -207,6 +209,65 @@ export interface FlyToCitySceneData extends SceneBase {
   source?: string;
 }
 
+/** What a chartHeadline scene draws. Ids for focus, labels and markers are the bar/sector `label`, slope `name`, waterfall `label`, or line x value (and series `name`). */
+export type ChartHeadlineChart =
+  | {kind: 'bar'; data: readonly {label: string; value: number}[]; format?: FormatPresetName | FormatSpec; orientation?: 'vertical' | 'horizontal'}
+  | {kind: 'line'; x: readonly (string | number)[]; series: readonly {name: string; values: readonly (number | null)[]}[]; format?: FormatPresetName | FormatSpec}
+  | {kind: 'slope'; items: readonly {name: string; from: number; to: number}[]; leftLabel: string; rightLabel: string; format?: FormatPresetName | FormatSpec}
+  | {kind: 'waterfall'; items: readonly {label: string; value: number; total?: boolean}[]; opening?: number; format?: FormatPresetName | FormatSpec}
+  | {kind: 'sector'; data: readonly {label: string; value: number}[]; format?: FormatPresetName | FormatSpec};
+
+export interface ChartHeadlineStep {
+  /** Seconds from the scene start. Each step hands focus to the next. */
+  at: number;
+  focus: EmphasisFocus | readonly EmphasisFocus[];
+  /** Caption shown while this step is in charge. */
+  label?: string;
+}
+
+export interface ChartHeadlineLabel {
+  /** Item id or index (bar / line only). */
+  item: string | number;
+  /** Series index (line / grouped charts). Default 0. */
+  series?: number;
+  /** Default: the value in the chart format. */
+  text?: string;
+  side?: 'auto' | 'top' | 'bottom' | 'left' | 'right';
+  /** Seconds from the scene start. Default: shortly after the chart reveals. */
+  at?: number;
+}
+
+export interface ChartHeadlineCompare {
+  from: string | number;
+  to: string | number;
+  series?: number;
+  mode?: 'ratio' | 'diff';
+  /** Replaces the computed "2.1x" / "+$2,300". */
+  text?: string;
+  shape?: 'bracket' | 'arrow';
+  /** Seconds from the scene start. */
+  at?: number;
+}
+
+/** One claim, one chart: the title states the claim, emphasis steps point at the evidence. */
+export interface ChartHeadlineSceneData extends SceneBase {
+  type: 'chartHeadline';
+  /** The claim, written as an action title ("Rent grew twice as fast as pay"). Required. */
+  title: string;
+  subtitle?: string;
+  chart: ChartHeadlineChart;
+  emphasis?: {steps: readonly ChartHeadlineStep[]; dimTo?: number};
+  labels?: readonly ChartHeadlineLabel[];
+  compare?: readonly ChartHeadlineCompare[];
+  /** Plain source text. Wins over sourceIds. */
+  source?: string;
+  /** Dataset ids for sourceLine(); needs `manifest` (the video repo's data.manifest.json). */
+  sourceIds?: readonly string[];
+  manifest?: DataManifest;
+  /** Seconds from the scene start the chart begins to reveal. Default 0.6. */
+  reveal?: {start?: number};
+}
+
 export type SceneDefinition =
   | HookSceneData
   | StatSceneData
@@ -221,7 +282,8 @@ export type SceneDefinition =
   | ChoroplethSceneData
   | RegionHighlightSceneData
   | TileGridSceneData
-  | FlyToCitySceneData;
+  | FlyToCitySceneData
+  | ChartHeadlineSceneData;
 
 export interface SceneTransitionWindow extends SceneTransition {
   kind: TransitionKind;
