@@ -34,6 +34,7 @@
     "kit:chapters-check": "node scripts/pipeline/chapters_check.mjs",
     "kit:mix-check": "python3 scripts/pipeline/mix_check.py",
     "kit:normalize": "python3 scripts/pipeline/normalize_final.py",
+    "kit:review": "node scripts/kit_review.mjs",
     "kit:contact-sheet": "node scripts/pipeline/contact_sheet.mjs",
     "kit:scene-stills": "node scripts/pipeline/scene_stills.mjs",
     "kit:dump-cues": "node scripts/pipeline/dump_cues.mjs"

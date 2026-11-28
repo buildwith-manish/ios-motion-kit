@@ -87,6 +87,35 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: always()
         with: { name: glass-perf, path: out/glass-perf, retention-days: 7, if-no-files-found: ignore }
+  review-pack:
+    name: Review pack (kit:review on Kit-Liquid-Demo)
+    if: github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, '[qa]')
+    needs: fast
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      KIT_NO_DOWNLOAD: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 20, cache: npm }
+      - run: npm ci
+      - uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cache/remotion
+            ~/.cache/ms-playwright
+            /tmp/chromium
+          key: ${{ runner.os }}-kit-chromium-123.0.1-${{ hashFiles('package-lock.json') }}
+      - run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg
+      - run: npm run kit:review -- --comp Kit-Liquid-Demo --times 1,4.3,6.8
+      - run: npm run kit:review -- --comp Kit-Liquid-Demo --portrait --times 1,4.3
+      - name: Review summary as notice annotation
+        run: for f in dist/review/*/review.md; do echo "::notice title=review $(basename $(dirname $f))::$(sed -n 3p $f)"; done
+      - run: test -s dist/review/Kit-Liquid-Demo/contact-sheet.png && test -s dist/review/Kit-Liquid-Demo-Vertical/review.md
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with: { name: review-pack, path: dist/review, retention-days: 7, if-no-files-found: ignore }
   banding:
     name: Banding check (dither x presets)
     if: github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, '[qa]')

@@ -10,6 +10,7 @@ on:
       every: { description: 'Seconds between contact-sheet stills', required: false, type: number, default: 2 }
       kit_dir: { description: 'Where the kit lives in the caller', required: false, type: string, default: 'kit' }
       publish_pages: { description: 'Publish the previews to GitHub Pages (caller needs pages: write + id-token: write)', required: false, type: boolean, default: false }
+      review: { description: 'Also write a review pack per composition (stills, contact sheet, review.md) and upload it as an artifact', required: false, type: boolean, default: false }
       artifact: { description: 'Artifact name', required: false, type: string, default: 'preview' }
     secrets:
       KIT_TOKEN:
@@ -57,6 +58,14 @@ jobs:
         run: |
           for c in contrast_check safe_area_check; do node "$KIT/scripts/kit_$c.mjs" --comp "${{ inputs.comps }}" --entry "${{ inputs.entry }}" --every 2 --no-images --no-fail --out out/preview/qa/$c || true; done
           node "$KIT/scripts/kit_layout_lint.mjs" --comp "${{ inputs.comps }}" --entry "${{ inputs.entry }}" --every 2 --no-images --no-fail --out out/preview/qa/layout || true
+      - name: Review pack (opt-in, report only)
+        if: ${{ inputs.review }}
+        run: |
+          IFS=',' read -ra COMPS <<< "${{ inputs.comps }}"
+          for c in "${COMPS[@]}"; do node "$KIT/scripts/kit_review.mjs" --comp "$c" --entry "${{ inputs.entry }}" --out dist/review || true; done
+      - uses: actions/upload-artifact@v4
+        if: ${{ inputs.review && always() }}
+        with: { name: '${{ inputs.artifact }}-review', path: dist/review, retention-days: 7, if-no-files-found: ignore }
       - name: Index page
         run: |
           cd out/preview
