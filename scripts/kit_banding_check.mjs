@@ -69,7 +69,7 @@ try {
 
 if (process.exitCode) process.exit(process.exitCode);
 const header = ['preset', 'dither', 'size', 'luma levels', 'longest run px', 'run % width', 'src levels', 'src run %'];
-const cells = rows.map((r) => [r.preset, r.dither, `${r.width}x${r.height}`, String(r.lumaLevels), String(r.longestRunPx), r.longestRunPct.toFixed(2)]);
+const cells = rows.map((r) => [r.preset, r.dither, `${r.width}x${r.height}`, String(r.lumaLevels), String(r.longestRunPx), r.longestRunPct.toFixed(2), String(r.sourceLevels), r.sourceRunPct.toFixed(2)]);
 const widths = header.map((h, i) => Math.max(h.length, ...cells.map((c) => c[i].length)));
 const line = (c) => c.map((v, i) => v.padEnd(widths[i])).join('  ');
 console.log(`\nBanding (dark gradient + vignette, one frame, luma along x)\n${line(header)}\n${cells.map(line).join('\n')}`);
