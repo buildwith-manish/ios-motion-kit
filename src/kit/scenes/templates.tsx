@@ -192,7 +192,7 @@ export const EndCard: React.FC<EndCardProps> = ({frame, start, theme, title, sub
       <Glass tier="card" theme={theme} style={{width: 'min(100%, 1180px)', boxSizing: 'border-box', padding: space(theme, 8), borderRadius: radius(theme, 'xxl'), textAlign: 'center'}}>
         <div style={{...textStyle(theme, 'title', {weight: 'bold'}), fontSize: fitSceneTitle(title, safeRect(theme, 'title').width, theme.type.title.size * u * 1.15), lineHeight: 1.08}}>{title}</div>
         {subtitle && <div style={{...textStyle(theme, 'body', {color: 'secondary'}), marginTop: space(theme, 4)}}>{subtitle}</div>}
-        {actionLabel && <div style={{display: 'inline-flex', marginTop: space(theme, 6), padding: `${space(theme, 3)}px ${space(theme, 6)}px`, borderRadius: radius(theme, 'pill'), background: theme.colors.accent, color: theme.colors.onAccent, ...textStyle(theme, 'caption', {weight: 'bold'})}}>{actionLabel}</div>}
+        {actionLabel && <div style={{display: 'inline-flex', marginTop: space(theme, 6), padding: `${space(theme, 3)}px ${space(theme, 6)}px`, borderRadius: radius(theme, 'pill'), background: theme.colors.accent, ...textStyle(theme, 'caption', {weight: 'bold'}), color: theme.colors.onAccent}}>{actionLabel}</div>}
       </Glass>
     </SceneLayout>
   );

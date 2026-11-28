@@ -88,7 +88,7 @@ export const Button: React.FC<ButtonProps> = ({label, icon, variant = 'primary',
         style={{...uiMotionStyle(motion), display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: space(theme, 3), padding: `${space(theme, 3)}px ${space(theme, 6)}px`, borderRadius: radius(theme, 'pill'), transform: `translate3d(0, ${motion.y}px, 0) scale(${motion.scale * (1 - pressed * 0.04)})`, background: primary ? theme.colors.accent : undefined, color: primary ? theme.colors.onAccent : theme.colors.text.primary, boxShadow: primary ? `0 8px 24px ${rgba(theme.colors.accent, 0.24)}` : undefined, ...props.style}}
       >
         {icon && <IconTile name={icon} size={22 * u} iconSize={15 * u} tone={primary ? 'onAccent' : 'accent'} fill={primary ? 'glass' : 'tinted'} theme={theme} />}
-        <span style={{...textStyle(theme, 'body', {weight: 'bold', color: primary ? 'onAccent' : 'primary'}), position: 'relative', zIndex: 1}}>{label}</span>
+        <span style={{...textStyle(theme, 'body', {weight: 'bold'}), color: primary ? theme.colors.onAccent : theme.colors.text.primary, position: 'relative', zIndex: 1}}>{label}</span>
         {pressed > 0.01 && <span aria-hidden style={{position: 'absolute', inset: 0, pointerEvents: 'none', background: `linear-gradient(180deg, ${rgba(theme.colors.onAccent, 0.2 * pressed)}, transparent 70%)`}} />}
       </Glass>
     </div>

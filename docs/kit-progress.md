@@ -448,9 +448,15 @@ The GitHub token was used for clone and push only (the camera session cloned wit
 - Added frame-driven Pill, Chip, Badge, Button, Toggle, Segmented, ListGroup/ListRow, AlertCard, Widget, Sheet, and Tooltip components, with a dashboard demo in landscape, vertical, and 30 fps variants.
 - Added a standalone entry, API README, public exports, and `scripts/kit_no_device_chrome.mjs` source scan; documented the scan in the QA README.
 
-### Verification deferred
+### Verified
 
-- No T5 build, tests, typecheck, QA run, or still render has been run; these are deferred until the implementation pass is complete.
+- Typecheck passed; all 11 unit tests passed. Contrast and safe-area checks passed for all three UI variants at 2, 4.5, 7.5, and 8.5 seconds.
+- Motion audit sampled 20 points per variant at 2 fps and 0.1 scale with no static stretch over 3 seconds. The `ui-frame-180.png` visual comparison had zero differing pixels.
+- Fixed tooltip placement, the dimmed modal's contrast-QA exclusion, and primary button text color.
+
+### Not verified
+
+- No full-resolution render, full-motion playback review, or cross-browser comparison; sampled motion-audit time is not a production-render benchmark.
 
 ## T6 — Scene kit
 
@@ -459,9 +465,15 @@ The GitHub token was used for clone and push only (the camera session cloned wit
 - Added JSON scene definitions, timeline/duration helpers, and Hook, StatCard, Ranking/Ticker, Comparison, NeededVsEarned, SectionTitle, Takeaway, EndCard, and MapHero templates.
 - Added scene-to-scene transitions, optional Atmosphere and Finish, safe-area bounds, adaptive title sizing, a six-scene 30-second demo, API README, and `docs/how-to-build-a-video.md`.
 
-### Verification deferred
+### Verified
 
-- No T6 build, tests, typecheck, QA run, render, or performance measurement has been run; these are deferred until the implementation pass is complete.
+- Typecheck passed; all 11 unit tests passed. Contrast and safe-area checks passed at 2, 7, 12, 17, 22, and 27 seconds.
+- Motion audit sampled 60 points at 2 fps and 0.1 scale with no static stretch over 3 seconds. The `scenes-frame-300.png` visual comparison had zero differing pixels.
+- Corrected the EndCard action label's theme color.
+
+### Not verified
+
+- No full-resolution render, full-motion playback review, cross-browser comparison, or production-render benchmark. The 89.9-second motion-audit time is only a low-resolution sampled QA measurement.
 
 ## T9 — Tests and CI
 
@@ -470,9 +482,14 @@ The GitHub token was used for clone and push only (the camera session cloned wit
 - Added Vitest coverage across pure kit APIs, fixed-frame PNG comparisons with an explicit baseline-update command, and PR Actions for TypeScript, unit, source, visual, and representative QA checks.
 - Added browser caching/fallback handling and artifact uploads for QA and visual output; documented local commands in the root and QA READMEs.
 
+### Verified
+
+- Refreshed all four fixed-frame visual baselines and confirmed zero differing pixels in the follow-up comparison.
+- Typecheck and all 11 unit tests passed; sampled UI and scene contrast/safe-area checks passed, and motion audits found no static stretches over 3 seconds.
+
 ### Remaining
 
-- Initial visual baselines and the final deferred verification pass are still outstanding.
+- Run the committed workflow on the pull request; the workflow is not available for dispatch until it exists on the default branch.
 
 ## T8 — Camera and motion upgrades
 

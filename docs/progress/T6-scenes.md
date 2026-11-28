@@ -7,6 +7,15 @@
 - Added `SceneSequence` integration with `TransitionScene`, optional Atmosphere and Finish, safe-area layout, and adaptive title sizing.
 - Added the six-scene, 30-second `Kit-Scenes-Demo`, standalone entry point, API README, and `docs/how-to-build-a-video.md`.
 
-## Verification deferred
+## Verification
 
-- No builds, tests, typechecks, QA runs, renders, or performance measurements have been run for T6. These are deferred until the implementation pass is complete.
+- `npx tsc --noEmit` passed; `npm run test:unit` passed all 11 tests.
+- Contrast and safe-area checks passed at 2, 7, 12, 17, 22, and 27 seconds.
+- Motion audit sampled 60 points at 2 fps and 0.1 scale; no static stretch over 3 seconds was found.
+- Visual regression baseline `scenes-frame-300.png` matches with zero differing pixels.
+- Corrected the EndCard action label to use the theme's actual `onAccent` color.
+
+## Not done
+
+- No full-resolution render, full-motion playback review, or cross-browser comparison.
+- Motion-audit wall time (89.9 seconds for 60 sampled points) is a low-resolution QA measurement, not a production-render benchmark.

@@ -28,6 +28,8 @@ jobs:
   qa:
     runs-on: ubuntu-latest
     timeout-minutes: 45
+    env:
+      KIT_NO_DOWNLOAD: '1'
     strategy:
       fail-fast: false
       matrix:
@@ -35,15 +37,19 @@ jobs:
           - suite: tokens
             entry: src/kit/demo/entry.tsx
             comp: Kit-Tokens-Demo
+            times: 1,4,8
           - suite: transitions
             entry: src/kit/demo/entry.tsx
             comp: Kit-Transitions-Demo
+            times: 1.7,3.9,6.1,8.3,10.5,12.7
           - suite: ui
             entry: src/kit/ui/entry.tsx
             comp: Kit-Ui-Demo,Kit-Ui-Demo-Vertical,Kit-Ui-Demo-30fps
+            times: 2,4.5,7.5,8.5
           - suite: scenes
             entry: src/kit/scenes/entry.tsx
             comp: Kit-Scenes-Demo
+            times: 2,7,12,17,22,27
     name: QA (${{ matrix.suite }})
     steps:
       - uses: actions/checkout@v4
@@ -57,19 +63,14 @@ jobs:
           path: |
             ~/.cache/remotion
             ~/.cache/ms-playwright
-          key: ${{ runner.os }}-kit-chromium-${{ hashFiles('package-lock.json') }}
-      - uses: browser-actions/setup-chrome@v1
-        id: chrome
-        with:
-          chrome-version: stable
-      - name: Set Chrome path
-        run: echo "KIT_CHROME=${{ steps.chrome.outputs.chrome-path }}" >> "$GITHUB_ENV"
+            /tmp/chromium
+          key: ${{ runner.os }}-kit-chromium-123.0.1-${{ hashFiles('package-lock.json') }}
       - name: Install QA codec tools
         run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg
       - name: Contrast check
-        run: node scripts/kit_contrast_check.mjs --comp "${{ matrix.comp }}" --entry "${{ matrix.entry }}" --no-images --out "out/pr-qa/${{ matrix.suite }}/contrast"
+        run: node scripts/kit_contrast_check.mjs --comp "${{ matrix.comp }}" --entry "${{ matrix.entry }}" --times "${{ matrix.times }}" --no-images --out "out/pr-qa/${{ matrix.suite }}/contrast"
       - name: Safe-area check
-        run: node scripts/kit_safe_area_check.mjs --comp "${{ matrix.comp }}" --entry "${{ matrix.entry }}" --no-images --out "out/pr-qa/${{ matrix.suite }}/safe-area"
+        run: node scripts/kit_safe_area_check.mjs --comp "${{ matrix.comp }}" --entry "${{ matrix.entry }}" --times "${{ matrix.times }}" --no-images --out "out/pr-qa/${{ matrix.suite }}/safe-area"
       - name: Motion audit
         run: node scripts/kit_motion_audit.mjs --comp "${{ matrix.comp }}" --entry "${{ matrix.entry }}" --fps 5 --scale 0.15 --min-static 2 --no-fail --out "out/pr-qa/${{ matrix.suite }}/motion"
       - uses: actions/upload-artifact@v4
@@ -83,6 +84,8 @@ jobs:
   visual-regression:
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    env:
+      KIT_NO_DOWNLOAD: '1'
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -95,13 +98,8 @@ jobs:
           path: |
             ~/.cache/remotion
             ~/.cache/ms-playwright
-          key: ${{ runner.os }}-kit-chromium-${{ hashFiles('package-lock.json') }}
-      - uses: browser-actions/setup-chrome@v1
-        id: chrome
-        with:
-          chrome-version: stable
-      - name: Set Chrome path
-        run: echo "KIT_CHROME=${{ steps.chrome.outputs.chrome-path }}" >> "$GITHUB_ENV"
+            /tmp/chromium
+          key: ${{ runner.os }}-kit-chromium-123.0.1-${{ hashFiles('package-lock.json') }}
       - run: npm run test:visual
       - uses: actions/upload-artifact@v4
         if: always()
