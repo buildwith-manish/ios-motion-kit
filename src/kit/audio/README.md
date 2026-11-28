@@ -60,7 +60,7 @@ on flags.
 
 ## Sounds (13 families x 3 variants, 48 kHz / 24-bit, peak -3 dBFS, 6 ms in / 10 ms out)
 
-`tap`, `tick`, `pop`, `whoosh-soft`, `whoosh-fast`, `swipe`, `slide`, `rise`, `fall`, `chime-success`, `soft-warn`,
+`tap`, `tick`, `pop`, `whoosh-soft`, `whoosh-fast`, `swipe`, `slide`, `rise`, `fall`, `chime-success`, `brand-chime`, `soft-warn`,
 `number-tick`, `impact-soft`, plus the pitched sets above. Every file is peak-normalised, so each family has a default level in `FAMILY_DEFAULTS`
 (e.g. `number-tick` -22 dB, `impact-soft` -8 dB). `manifest.json` lists duration, peak time, active RMS and a LUFS estimate.
 

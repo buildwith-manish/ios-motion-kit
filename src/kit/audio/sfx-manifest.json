@@ -34,6 +34,7 @@
       "rise": 0.05,
       "fall": 0.04,
       "chime-success": 0.08,
+      "brand-chime": 0.08,
       "soft-warn": 0.04,
       "number-tick": 0.03,
       "impact-soft": 0.08
@@ -51,6 +52,7 @@
       "rise": 0.08,
       "fall": 0.08,
       "chime-success": 0.09,
+      "brand-chime": 0.09,
       "soft-warn": 0.09,
       "impact-soft": 0.1
     },
@@ -639,6 +641,69 @@
         "F#5",
         "A5",
         "D6"
+      ]
+    },
+    {
+      "name": "brand-chime-1",
+      "family": "brand-chime",
+      "variant": 1,
+      "file": "kit/sfx/brand-chime-1.wav",
+      "pan": [
+        "L",
+        "R"
+      ],
+      "duration": 1.09,
+      "peakDb": -3.0,
+      "peakTime": 0.4038,
+      "rmsDb": -14.94,
+      "lufs": -14.99,
+      "wet": 0.08,
+      "notes": [
+        "A4",
+        "D5",
+        "F#5"
+      ]
+    },
+    {
+      "name": "brand-chime-2",
+      "family": "brand-chime",
+      "variant": 2,
+      "file": "kit/sfx/brand-chime-2.wav",
+      "pan": [
+        "L",
+        "R"
+      ],
+      "duration": 1.09,
+      "peakDb": -3.0,
+      "peakTime": 0.4044,
+      "rmsDb": -16.34,
+      "lufs": -16.35,
+      "wet": 0.08,
+      "notes": [
+        "B4",
+        "E5",
+        "A5"
+      ]
+    },
+    {
+      "name": "brand-chime-3",
+      "family": "brand-chime",
+      "variant": 3,
+      "file": "kit/sfx/brand-chime-3.wav",
+      "pan": [
+        "L",
+        "R"
+      ],
+      "duration": 1.09,
+      "peakDb": -3.0,
+      "peakTime": 0.4134,
+      "rmsDb": -14.84,
+      "lufs": -15.44,
+      "wet": 0.08,
+      "notes": [
+        "F#4",
+        "A4",
+        "D5"
       ]
     },
     {

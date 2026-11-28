@@ -179,6 +179,7 @@ POP_NOTES = (("A4", "A5"), ("B4", "B5"), ("F#4", "F#5"))  # (glide start, glide 
 RISE_NOTES = (("D5", "A5"), ("E5", "B5"), ("B4", "F#5"))  # fifth up, both ends on scale notes
 FALL_NOTES = (("B5", "E5"), ("A5", "D5"), ("F#5", "B4"))  # fifth down
 CHIME_NOTES = (("D5", "F#5", "A5"), ("E5", "A5", "B5"), ("F#5", "A5", "D6"))  # rising triads from scale degrees
+BRAND_NOTES = (("A4", "D5", "F#5"), ("B4", "E5", "A5"), ("F#4", "A4", "D5"))  # brand chime: three scale notes, softer and lower than the success chime
 WARN_NOTES = (("A5", "E5"), ("B5", "F#5"), ("F#5", "B4"))  # falling fifth within the scale
 IMPACT_NOTES = (("A2", "A1"), ("D3", "D2"), ("A3", "A2"))  # (start, END): octave drop onto A, D, A (close together: one family, three weights)
 KNOCK_NOTES = ("A3", "D4", "F#3")  # tone of the impact-soft mid "knock" layer (150-400 Hz)
@@ -211,6 +212,7 @@ WET = {  # per-family send. EDIT HERE to change how much room a family gets (0 =
     "rise": 0.05,
     "fall": 0.04,
     "chime-success": 0.08,
+    "brand-chime": 0.08,
     "soft-warn": 0.04,
     "number-tick": 0.03,
     "impact-soft": 0.08,
@@ -222,7 +224,7 @@ WET = {  # per-family send. EDIT HERE to change how much room a family gets (0 =
 TAIL_CAP_S = {
     "tap": 0.015, "tick": 0.0, "number-tick": 0.0, "swipe": 0.060, "whoosh-fast": 0.060,
     "pop": 0.050, "whoosh-soft": 0.080, "slide": 0.080, "rise": 0.080, "fall": 0.080,
-    "chime-success": 0.090, "soft-warn": 0.090, "impact-soft": 0.100,
+    "chime-success": 0.090, "brand-chime": 0.090, "soft-warn": 0.090, "impact-soft": 0.100,
 }
 TAIL_CAP_DEFAULT_S = 0.10
 TAIL_FLOOR_DB = -55.0
@@ -440,6 +442,18 @@ def gen_chime_success(v, rng, note=None):
     return buf
 
 
+def gen_brand_chime(v, rng, note=None):
+    """Brand chime, ~1 s: three soft FM-bell notes from the D major pentatonic, spaced out, low FM index, long gentle decay."""
+    notes = [note_freq(n) for n in BRAND_NOTES[v - 1]]
+    starts = (0.0, 0.2, 0.4)
+    note_s = 0.6
+    buf = np.zeros(int(round((starts[-1] + note_s) * SR)))
+    for i, (f, at, g) in enumerate(zip(notes, starts, (0.75, 0.85, 1.0))):
+        n = fade_out(bell(tvec(note_s), f, ratio=3.5, index=1.2, tau=0.2 + 0.05 * i, partial=0.18), NOTE_FADE_S)
+        place(buf, g * n, at)
+    return buf
+
+
 def gen_soft_warn(v, rng, note=None):
     """Soft warning, ~530 ms: two softer notes stepping down a fifth within the scale; low FM index so it reads 'careful'."""
     notes = [note_freq(n) for n in WARN_NOTES[v - 1]]
@@ -496,6 +510,7 @@ FAMILIES = {
     "rise": gen_rise,
     "fall": gen_fall,
     "chime-success": gen_chime_success,
+    "brand-chime": gen_brand_chime,
     "soft-warn": gen_soft_warn,
     "number-tick": gen_number_tick,
     "impact-soft": gen_impact_soft,
@@ -507,7 +522,7 @@ def sound_notes(family, v):
     """Scale notes a sound is tuned to (for the manifest and the pitch check), or None for noise-only sounds."""
     table = {
         "tap": TAP_NOTES[v - 1:v], "tick": TICK_NOTES[v - 1:v], "number-tick": NUMBER_TICK_NOTES[v - 1:v],
-        "pop": POP_NOTES[v - 1], "rise": RISE_NOTES[v - 1], "fall": FALL_NOTES[v - 1], "chime-success": CHIME_NOTES[v - 1],
+        "pop": POP_NOTES[v - 1], "rise": RISE_NOTES[v - 1], "fall": FALL_NOTES[v - 1], "chime-success": CHIME_NOTES[v - 1], "brand-chime": BRAND_NOTES[v - 1],
         "soft-warn": WARN_NOTES[v - 1], "impact-soft": IMPACT_NOTES[v - 1] + KNOCK_NOTES[v - 1:v],
     }
     notes = table.get(family)

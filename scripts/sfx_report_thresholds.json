@@ -39,6 +39,7 @@
     "rise": {"duration_s_max": 0.42, "tail_s_max": 0.4, "rms_target_db": -9.3, "low_share_min": null},
     "fall": {"duration_s_max": 0.44, "tail_s_max": 0.42, "rms_target_db": -9.7, "low_share_min": null},
     "chime-success": {"duration_s_max": 1.2, "tail_s_max": 1.15, "rms_target_db": -17.2, "low_share_min": null},
+    "brand-chime": {"duration_s_max": 1.2, "tail_s_max": 1.15, "rms_target_db": -17.2, "low_share_min": null},
     "soft-warn": {"duration_s_max": 0.65, "tail_s_max": 0.6, "rms_target_db": -13.8, "low_share_min": null},
     "number-tick": {"duration_s_max": 0.05, "tail_s_max": 0.045, "rms_target_db": -12.2, "low_share_min": null},
     "impact-soft": {"duration_s_max": 0.6, "tail_s_max": 0.55, "rms_target_db": -15.0, "low_share_min": 0.5, "bandwidth_hz_min": 20}
