@@ -52,4 +52,5 @@ const lines = [
 ];
 console.log(lines.join('\n'));
 if (process.env.GITHUB_STEP_SUMMARY) appendFileSync(process.env.GITHUB_STEP_SUMMARY, lines.join('\n') + '\n');
+console.log(`::notice title=glass-perf::none=${f1(ms.none)}ms card=${f1(ms.card)}ms liquid=${f1(ms.liquid)}ms gross=${res.gross_ratio.toFixed(2)}x net(card=${f1(netCard)},liquid=${f1(netLiquid)})=${res.net_ratio.toFixed(2)}x target=${target}x`);
 if (res.net_ratio > target) console.log(`::warning::liquid net cost ${res.net_ratio.toFixed(2)}x card exceeds target ${target}x`);
