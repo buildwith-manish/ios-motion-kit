@@ -13,6 +13,7 @@ import {KitTextCompositions} from './TextDemo';
 import {KitQaCompositions} from './QaDemo';
 import {KitDatavizCompositions} from './DatavizDemo';
 import {KitAtmosphereCompositions} from './AtmosphereDemo';
+import {KitIconsCompositions as KitIconsCompositionsRoot} from '../icons/IconsDemo';
 
 registerRoot(() => (
   <>
@@ -24,6 +25,7 @@ registerRoot(() => (
     <KitQaCompositions />
     <KitDatavizCompositions />
     <KitAtmosphereCompositions />
+    <KitIconsCompositionsRoot />
   </>
 ));
 export {KitNumberRollCompositions} from './NumberRollDemo';
