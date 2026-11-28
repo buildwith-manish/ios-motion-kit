@@ -53,7 +53,7 @@ Off by default. Deterministic: same `seed` and time give the same shake on every
 Amplitude requests above 2 px / 0.15 deg are clamped, not honoured.
 
 ### Motion blur
-Off by default on `<CameraRig>`. Camera motion uses the apparent per-frame vector at a point right of centre, including pan, zoom and roll;
+Off by default on `<CameraRig>`. Camera motion uses the apparent per-frame vector at a right-of-centre screen anchor, including pan, zoom and roll;
 handheld remains excluded. Below the threshold (default 3 px/frame; the demo uses 1) no filter is applied. Above it, shutter-gated travel
 is represented by a seven-sample SVG offset average along the vector, capped at 20px. `<TransitionLayer>` uses its `vx` / `vy` as the same
 per-frame path vector, so diagonal transitions no longer smear independently on x and y.

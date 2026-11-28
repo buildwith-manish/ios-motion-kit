@@ -61,7 +61,7 @@ export interface CameraSample {
   delta: CameraDelta;
   /** `hypot(delta.dx, delta.dy)`, px/frame. */
   speed: number;
-  /** Apparent picture motion at the right-of-centre anchor, including translation, zoom, and roll. */
+  /** Apparent picture motion at a right-of-centre screen anchor, including translation, zoom, and roll. */
   motion: CameraDelta;
   /** `hypot(motion.dx, motion.dy)`, px/frame. */
   motionSpeed: number;

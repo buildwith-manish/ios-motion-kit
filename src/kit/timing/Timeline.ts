@@ -198,6 +198,7 @@ export class TimingTimeline {
       cues.push(...cuesFromMotion(events, request.rules));
     });
 
+    cues.sort((a, b) => a.at - b.at);
     cues.forEach((cue, index) => {
       if (!Number.isFinite(cue.at) || cue.at < 0) issues.push(`cue ${index}: time must be finite and non-negative`);
       if (index > 0 && cue.at <= cues[index - 1].at) issues.push(`cue ${index}: times must be strictly increasing`);

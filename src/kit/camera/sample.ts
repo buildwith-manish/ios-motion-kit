@@ -12,9 +12,14 @@ export interface CameraAtOptions {
 /** Apparent screen-space movement of a point near the right edge, including translation, zoom, and roll. */
 export const cameraMotionDelta = (previous: CameraState, current: CameraState, canvas: Canvas): CameraDelta => {
   const anchorX = Math.min(canvas.width, canvas.height) * 0.35;
+  const currentAngle = (current.rotate * Math.PI) / 180;
+  const worldAnchor = {
+    x: current.x + (anchorX * Math.cos(currentAngle)) / current.scale,
+    y: current.y + (anchorX * Math.sin(currentAngle)) / current.scale,
+  };
   const project = (state: CameraState) => {
-    const x = anchorX - state.x;
-    const y = -state.y;
+    const x = worldAnchor.x - state.x;
+    const y = worldAnchor.y - state.y;
     const angle = (-state.rotate * Math.PI) / 180;
     const cos = Math.cos(angle);
     const sin = Math.sin(angle);
