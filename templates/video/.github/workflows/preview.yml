@@ -4,7 +4,7 @@ on:
 
 jobs:
   preview:
-    permissions: { contents: read, actions: read }
+    permissions: { contents: read, actions: read, pages: write, id-token: write }
     uses: buildwith-manish/ios-motion-kit/.github/workflows/reusable-preview.yml@__KIT_TAG__
     with:
       comps: 'My-Video'

@@ -94,7 +94,7 @@ jobs:
     name: Reusable preview (self-test)
     if: github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, '[qa]')
     needs: fast
-    permissions: { contents: read, actions: read }
+    permissions: { contents: read, actions: read, pages: write, id-token: write }
     uses: ./.github/workflows/reusable-preview.yml
     with: { comps: Kit-Scenes-Demo, entry: src/kit/scenes/entry.tsx, scale: 0.25, fps: 10, every: 6, kit_dir: '.', artifact: selftest-preview }
     secrets:

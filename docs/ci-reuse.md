@@ -31,6 +31,8 @@ jobs:
     secrets: inherit
 ```
 
+The preview caller job must grant `pages: write` and `id-token: write` (GitHub validates the nested Pages job even when `publish_pages` is false; otherwise the run ends in `startup_failure`).
+
 Pin `@<tag>` (not `@main`) so a kit change never breaks a render in progress. Add the kit as a submodule over https:
 `git submodule add https://github.com/buildwith-manish/ios-motion-kit.git kit`.
 The callers' package.json should depend on the same Remotion version as the kit; the kit's scripts are run from `kit/scripts`.
