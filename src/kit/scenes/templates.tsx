@@ -2,7 +2,7 @@ import React from 'react';
 import type {ReactNode} from 'react';
 import {Glass} from '../glass';
 import {ShortfallBars, Ticker, type ShortfallBarsData, type TickerStep} from '../dataviz';
-import {iosSpring} from '../motion';
+import {iosSpring, enterStack, type ChoreoItem} from '../motion';
 import {NumberText} from '../text';
 import type {FormatPresetName, FormatSpec} from '../text/format';
 import {radius, safeRect, space, textStyle, unit} from '../tokens';
@@ -10,6 +10,13 @@ import type {Theme} from '../tokens';
 import {rgba} from '../tokens/color';
 import {PlatformTapDemo} from '../production/PlatformEndCard';
 import type {EndCardPlatform} from '../production/logic';
+
+/** Opt-in choreography: fade and rise 18px as the item's progress goes 0 -> 1. */
+const choreoStyle = (item: ChoreoItem | undefined, time: number): React.CSSProperties => {
+  if (!item) return {};
+  const p = Math.max(0, Math.min(1, item.progress(time)));
+  return {opacity: p, transform: `translateY(${(1 - p) * 18}px)`};
+};
 
 export interface SceneTemplateProps {
   frame: number;
@@ -87,16 +94,22 @@ export interface StatCardProps extends SceneTemplateProps {
   suffix?: string;
   decimals?: number;
   delta?: string;
+  /** Opt-in staggered enter for label, number and delta. Default off (unchanged behavior). */
+  choreo?: boolean;
 }
 
-export const StatCard: React.FC<StatCardProps> = ({frame, start, theme, label, value, from, format, prefix, suffix, decimals, delta}) => {
+export const StatCard: React.FC<StatCardProps> = ({frame, start, theme, label, value, from, format, prefix, suffix, decimals, delta, choreo}) => {
   const u = unit(theme);
+  const time = frame / theme.canvas.fps;
+  const c = choreo ? enterStack(3, {start: start + 0.05, stagger: 0.1}) : [];
   return (
     <SceneLayout frame={frame} start={start} theme={theme}>
       <Glass tier="card" theme={theme} style={{width: 'min(100%, 1120px)', boxSizing: 'border-box', padding: space(theme, 8), borderRadius: radius(theme, 'xxl'), textAlign: 'center'}}>
-        <div style={{...textStyle(theme, 'body', {color: 'secondary', weight: 'bold'}), marginBottom: space(theme, 4)}}>{label}</div>
-        <NumberText frame={frame} start={start + 0.25} duration={0.9} theme={theme} to={value} from={from} format={format} prefix={prefix} suffix={suffix} decimals={decimals} fontSize={104 * u} />
-        {delta && <div style={{...textStyle(theme, 'caption', {color: 'accent', weight: 'bold'}), marginTop: space(theme, 4)}}>{delta}</div>}
+        <div style={{...textStyle(theme, 'body', {color: 'secondary', weight: 'bold'}), marginBottom: space(theme, 4), ...choreoStyle(c[0], time)}}>{label}</div>
+        <div style={choreoStyle(c[1], time)}>
+          <NumberText frame={frame} start={start + 0.25} duration={0.9} theme={theme} to={value} from={from} format={format} prefix={prefix} suffix={suffix} decimals={decimals} fontSize={104 * u} />
+        </div>
+        {delta && <div style={{...textStyle(theme, 'caption', {color: 'accent', weight: 'bold'}), marginTop: space(theme, 4), ...choreoStyle(c[2], time)}}>{delta}</div>}
       </Glass>
     </SceneLayout>
   );
@@ -106,16 +119,24 @@ export interface RankingProps extends SceneTemplateProps {
   title: string;
   data: readonly TickerStep[];
   highlight?: string;
+  /** Opt-in staggered enter for title then rows. Default off (unchanged behavior). */
+  choreo?: boolean;
 }
 
-export const Ranking: React.FC<RankingProps> = ({frame, start, theme, title, data, highlight}) => {
+export const Ranking: React.FC<RankingProps> = ({frame, start, theme, title, data, highlight, choreo}) => {
+  const time = frame / theme.canvas.fps;
+  const c = choreo ? enterStack(2, {start: start + 0.05, stagger: 0.15}) : [];
   const safe = safeRect(theme, 'title');
   const u = unit(theme);
   const shifted = data.map((step) => ({...step, at: step.at + start + 0.45}));
   return (
     <SceneLayout frame={frame} start={start} theme={theme} align="start">
-      <SectionTitleContent theme={theme} title={title} align="start" />
-      <Ticker frame={frame} data={shifted} width={Math.min(820, safe.width / u)} rowHeight={72} highlight={highlight} theme={theme} style={{maxWidth: '100%'}} />
+      <div style={choreoStyle(c[0], time)}>
+        <SectionTitleContent theme={theme} title={title} align="start" />
+      </div>
+      <div style={choreoStyle(c[1], time)}>
+        <Ticker frame={frame} data={shifted} width={Math.min(820, safe.width / u)} rowHeight={72} highlight={highlight} theme={theme} style={{maxWidth: '100%'}} />
+      </div>
     </SceneLayout>
   );
 };

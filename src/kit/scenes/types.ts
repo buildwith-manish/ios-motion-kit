@@ -42,6 +42,8 @@ export interface StatSceneData extends SceneBase {
   suffix?: string;
   decimals?: number;
   delta?: string;
+  /** Opt-in choreography (staggered enter). Default off. */
+  choreo?: boolean;
 }
 
 export interface RankingSceneData extends SceneBase {
@@ -49,6 +51,8 @@ export interface RankingSceneData extends SceneBase {
   title: string;
   data: readonly TickerStep[];
   highlight?: string;
+  /** Opt-in choreography (staggered enter). Default off. */
+  choreo?: boolean;
 }
 
 export interface ComparisonSceneData extends SceneBase {

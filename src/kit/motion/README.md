@@ -24,3 +24,7 @@ const hero = iosSpring(t - 1, SPRING_PRESETS.hero.response, {bounce: SPRING_PRES
 | `travelBlur(pxPerFrame, fps?)`, `gatedTravelBlur` | Directional-blur length; the gated one returns 0 at 1px/frame or slower. |
 | `staggerDelay(i, gapSeconds?)` | Delay for the i-th item in a group, in seconds. |
 | `secondsToFrames`, `framesToSeconds` | Conversions at a given fps. |
+| `enterStack(n, {start, stagger})`, `emphasize(at)`, `exit(at)`, `handoff(from, to)` | Choreography presets (choreo.ts): `{start, progress(time)}` items in seconds. |
+| `springWithVelocity(v0, opts)`, `sampleSpring(m, t)`, `retarget(m, t, to?)` | Spring that keeps velocity; retargeting is continuous in position and velocity. |
+
+Scene templates `stat` and `ranking` accept `choreo: true` (default off) to stagger their elements with `enterStack`.

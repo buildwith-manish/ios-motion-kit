@@ -69,6 +69,30 @@ export const SCENE_DEMO_SCENES: readonly SceneDefinition[] = [
     },
   },
   {
+    id: 'choreo-stat',
+    type: 'stat',
+    duration: 3.5,
+    choreo: true,
+    label: 'Choreographed stat',
+    value: 1280,
+    prefix: '$',
+    delta: 'Label, number and note enter in a stack',
+  },
+  {
+    id: 'choreo-ranking',
+    type: 'ranking',
+    duration: 4,
+    choreo: true,
+    title: 'Choreographed ranking',
+    data: [
+      {at: 0.6, rows: [
+        {id: 'a', label: 'Alpha', value: 900, prefix: '$'},
+        {id: 'b', label: 'Beta', value: 600, prefix: '$'},
+        {id: 'c', label: 'Gamma', value: 300, prefix: '$'},
+      ]},
+    ],
+  },
+  {
     id: 'end-card',
     type: 'endCard',
     duration: 6,
