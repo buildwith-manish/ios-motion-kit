@@ -452,6 +452,17 @@ The GitHub token was used for clone and push only (the camera session cloned wit
 
 - No T5 build, tests, typecheck, QA run, or still render has been run; these are deferred until the implementation pass is complete.
 
+## T6 — Scene kit
+
+### Built
+
+- Added JSON scene definitions, timeline/duration helpers, and Hook, StatCard, Ranking/Ticker, Comparison, NeededVsEarned, SectionTitle, Takeaway, EndCard, and MapHero templates.
+- Added scene-to-scene transitions, optional Atmosphere and Finish, safe-area bounds, adaptive title sizing, a six-scene 30-second demo, API README, and `docs/how-to-build-a-video.md`.
+
+### Verification deferred
+
+- No T6 build, tests, typecheck, QA run, render, or performance measurement has been run; these are deferred until the implementation pass is complete.
+
 ## T8 — Camera and motion upgrades
 
 ### Built
