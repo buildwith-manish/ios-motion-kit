@@ -89,6 +89,7 @@ jobs:
         run: |
           node scripts/new-video.mjs "$RUNNER_TEMP/video" --name "Scaffold Check"
           ln -s "$GITHUB_WORKSPACE" "$RUNNER_TEMP/video/kit"
+          test -s "$RUNNER_TEMP/video/CLAUDE.md" || { echo "::error::scaffold is missing CLAUDE.md"; exit 1; }
       - run: npm install --no-audit --no-fund
         working-directory: ${{ runner.temp }}/video
       - run: npx tsc --noEmit
