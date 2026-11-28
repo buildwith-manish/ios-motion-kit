@@ -441,6 +441,25 @@ The GitHub token was used for clone and push only (the camera session cloned wit
 
 - No full-motion playback review on alternate browsers.
 
+## T8 — Camera and motion upgrades
+
+### Built
+
+- Promoted the existing camera/motion upgrade from its accidental T4 label to T8; no camera source changes were needed.
+- Added underdamped spring bounce, deterministic `lookAt`, camera blur that accounts for zoom/roll, and directional seven-sample transition blur.
+- Added a depth/parallax comparison demo and refreshed the camera, motion, and transition README examples.
+
+### Verified
+
+- Existing camera stills were reviewed, including landscape pan/push-in/roll, vertical pan, and the 4K depth comparison.
+- Historical Actions run `46065708166` passed contrast, safe-area, and motion checks on all four camera compositions. The code used by that run is unchanged in this branch; evidence is recorded in `docs/progress/T8-camera-upgrades.md` and the `T8-*` QA logs.
+- The camera audit and `npx tsc --noEmit` passed for the camera-upgrade change.
+
+### NOT verified
+
+- No full-motion playback or cross-browser comparison.
+- No render-concurrency or performance benchmark for the seven-sample directional filter.
+
 ## T7 — Word timing and timeline builder
 
 ### Built

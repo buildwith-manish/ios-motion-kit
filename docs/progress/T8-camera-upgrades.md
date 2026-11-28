@@ -1,4 +1,4 @@
-# T4 — Camera and motion upgrades
+# T8 — Camera and motion upgrades
 
 ## Built
 
@@ -22,7 +22,7 @@
 | TypeScript | — | `npx tsc --noEmit` passes |
 | Motion audit (GitHub Actions) | Not run | 0 static stretches across all four camera compositions |
 
-Contrast logs: `T4-contrast.txt` and `T4-contrast-final.txt`; safe-area logs: `T4-safe-area.txt` and `T4-safe-area-confirm.txt`.
+Contrast logs: `T8-contrast.txt` and `T8-contrast-final.txt`; safe-area logs: `T8-safe-area.txt` and `T8-safe-area-confirm.txt`.
 Motion audit: GitHub Actions run `46065708166`; all shards completed successfully with zero static stretches.
 
 ## NOT verified
