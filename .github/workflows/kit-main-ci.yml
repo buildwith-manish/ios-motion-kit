@@ -62,6 +62,31 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: always()
         with: { name: 'main-qa-${{ matrix.suite }}', path: out/main-qa, retention-days: 7, if-no-files-found: ignore }
+  banding:
+    name: Banding check (dither x presets)
+    if: github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, '[qa]')
+    needs: fast
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      KIT_NO_DOWNLOAD: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 20, cache: npm }
+      - run: npm ci
+      - uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cache/remotion
+            ~/.cache/ms-playwright
+            /tmp/chromium
+          key: ${{ runner.os }}-kit-chromium-123.0.1-${{ hashFiles('package-lock.json') }}
+      - run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg
+      - run: node scripts/kit_banding_check.mjs --out out/banding
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with: { name: banding, path: out/banding, retention-days: 7, if-no-files-found: ignore }
   scaffold:
     name: New-video scaffold (install, tsc, still)
     if: github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, '[qa]')

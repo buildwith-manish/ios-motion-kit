@@ -7,3 +7,4 @@ export * from './TextDemo';
 export * from './QaDemo';
 export * from './DatavizDemo';
 export * from './MapDemo';
+export * from './BandingDemo';
