@@ -23,7 +23,7 @@ export const LowerThird: React.FC<LowerThirdProps> = ({frame, start, end, theme,
   const safe = safeRect(theme, 'title');
   const u = unit(theme);
   return (
-    <div style={{position: 'absolute', left: safe.left, width: safe.width, bottom: theme.canvas.height - safe.bottom + space(theme, 10), display: 'flex', justifyContent: 'flex-start', opacity: p, transform: `translateY(${(1 - p) * 28 * u}px)`, color: theme.colors.text.primary}}>
+    <div style={{position: 'absolute', left: safe.left, width: safe.width, bottom: safe.bottom + space(theme, 10), display: 'flex', justifyContent: 'flex-start', opacity: p, transform: `translateY(${(1 - p) * 28 * u}px)`, color: theme.colors.text.primary}}>
       <Glass tier="pill" theme={theme} style={{maxWidth: '100%', boxSizing: 'border-box', padding: `${space(theme, 3)}px ${space(theme, 6)}px`, borderRadius: radius(theme, 'lg')}}>
         <div style={{...textStyle(theme, 'body', {weight: 'bold'}), lineHeight: 1.2}}>{text}</div>
         {detail && <div style={{...textStyle(theme, 'caption', {color: 'secondary'}), marginTop: space(theme, 1)}}>{detail}</div>}
