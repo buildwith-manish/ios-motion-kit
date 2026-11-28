@@ -1,5 +1,6 @@
 import {describe, expect, it} from 'vitest';
 import {TILE_GRID_CELLS, TILE_GRID_COLS, TILE_GRID_ROWS, tileGridLayout, inkOn} from '../../src/kit/map/tileGridLayout';
+import {MAP_SCENES_DEMO_SCENES, SAMPLE_RENT} from '../../src/kit/scenes/mapScenesDemoData';
 import {
   BAKED_CITIES, US_STATES, canonicalRegionData, flyTiming, highlightSteps, layoutSceneSequence, normalizeStateId, parseRegionNumber,
   planHighlights, regionsFromCsv, regionsFromRows, validateMapScene, type SceneDefinition,
@@ -151,5 +152,15 @@ describe('tileGrid', () => {
     expect(() => validateMapScene({...ok, data: {Narnia: 1}} as SceneDefinition)).toThrow(/Scene "t"/);
     expect(() => validateMapScene({...ok, domain: [3, 1]} as SceneDefinition)).toThrow(/domain/);
     expect(() => layoutSceneSequence([ok])).not.toThrow();
+  });
+});
+
+describe('map scenes demo video', () => {
+  it('has valid scenes covering all 51 states, and lays out in landscape fps terms', () => {
+    expect(Object.keys(SAMPLE_RENT)).toHaveLength(51);
+    expect(canonicalRegionData('d', 'states', SAMPLE_RENT)).toBeTruthy();
+    for (const s of MAP_SCENES_DEMO_SCENES) validateMapScene(s);
+    expect(MAP_SCENES_DEMO_SCENES.map((s) => s.type)).toEqual(['hook', 'choropleth', 'regionHighlight', 'tileGrid', 'flyToCity', 'takeaway', 'endCard']);
+    expect(layoutSceneSequence(MAP_SCENES_DEMO_SCENES).duration).toBeGreaterThan(40);
   });
 });

@@ -1,0 +1,71 @@
+# Review stills of the new map scene types and a landscape + portrait render of the data-only demo video, with timings.
+# Manual, or on a push to main whose last commit message contains [qa] and touches the scenes / map code. 14-day artifact.
+name: Map scenes
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ['src/kit/scenes/**', 'src/kit/map/**', 'scripts/map_scenes_stills.ts', '.github/workflows/map-scenes.yml']
+permissions:
+  contents: read
+concurrency:
+  group: map-scenes
+  cancel-in-progress: false
+jobs:
+  scenes:
+    if: github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, '[qa]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - name: Fetch baked map data and audio (kept out of git)
+        run: npm run kit:fetch-data
+      - run: command -v ffmpeg || (sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg bc)
+      - name: Stills of every new scene type (landscape + portrait)
+        id: stills
+        continue-on-error: true
+        run: npx tsx scripts/map_scenes_stills.ts --out=docs/previews/kit-map-scenes 2>&1 | tee docs/previews/kit-map-scenes-stills.log
+      - name: Render landscape + portrait videos, timings
+        id: render
+        continue-on-error: true
+        run: |
+          mkdir -p docs/previews/kit-map-scenes/video
+          OUT=docs/previews/kit-map-scenes/video
+          rc=0
+          for spec in "Kit-MapScenes-Demo landscape" "Kit-MapScenes-Demo-Vertical portrait"; do
+            set -- $spec
+            s=$(date +%s)
+            if npx remotion render src/kit/demo/entry.tsx "$1" "$OUT/$2.mp4" --codec=h264 --crf=20 --concurrency=2 --log=error > "$OUT/$2.log" 2>&1; then
+              e=$(date +%s)
+              frames=$(ffprobe -v error -count_frames -select_streams v:0 -show_entries stream=nb_read_frames -of csv=p=0 "$OUT/$2.mp4")
+              echo "$2: $frames frames in $((e-s)) s => $(echo "scale=2; ($e-$s)/$frames" | bc) s/frame (2 workers, software GL, incl. encode)"
+            else
+              rc=1; echo "$2: RENDER FAILED, last 40 log lines:"; tail -40 "$OUT/$2.log"
+            fi
+          done
+          # 4K, measured separately: 90 frames of the landscape choropleth + the tile grid (scale 2 = 3840x2160)
+          s=$(date +%s)
+          if npx remotion render src/kit/demo/entry.tsx Kit-MapScenes-Demo "$OUT/landscape-4k-clip.mp4" --scale=2 --frames=150-239 --codec=h264 --crf=20 --concurrency=2 --log=error > "$OUT/4k.log" 2>&1; then
+            e=$(date +%s); echo "4K clip (frames 150-239, 90 frames): $((e-s)) s => $(echo "scale=2; ($e-$s)/90" | bc) s/frame"
+          else rc=1; echo "4K clip FAILED:"; tail -40 "$OUT/4k.log"; fi
+          exit $rc
+      - name: Collect new outputs (never committed)
+        if: always()
+        run: |
+          mkdir -p out/artifact
+          git ls-files -z -o -m docs/previews | xargs -0 -r cp --parents -t out/artifact
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: map-scenes
+          path: out/artifact
+          retention-days: 14
+          if-no-files-found: warn
+      - name: Fail if a step failed
+        if: steps.stills.outcome == 'failure' || steps.render.outcome == 'failure'
+        run: exit 1

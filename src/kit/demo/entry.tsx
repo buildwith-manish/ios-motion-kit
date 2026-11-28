@@ -38,6 +38,7 @@ registerRoot(() => (
     <KitFlyCompositions />
     <KitFormatCompositions />
     <KitChartsCompositions />
+    <KitMapSceneRoot />
   </>
 ));
 export {KitNumberRollCompositions} from './NumberRollDemo';
@@ -46,3 +47,5 @@ export {KitIconsCompositions} from '../icons/IconsDemo';
 export {KitTimingCompositions} from '../timing/TimingDemo';
 export {KitUiCompositions} from '../ui/UiDemo';
 export {KitSceneCompositions} from '../scenes/SceneDemo';
+export {KitMapSceneCompositions} from '../scenes/MapScenesDemo';
+import {KitMapSceneCompositions as KitMapSceneRoot} from '../scenes/MapScenesDemo';
