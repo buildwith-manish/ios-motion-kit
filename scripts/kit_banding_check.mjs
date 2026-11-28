@@ -39,8 +39,8 @@ const tmp = mkdtempSync(path.join(tmpdir(), 'kit-banding-'));
 const rows = [];
 try {
   for (const [name, p] of Object.entries(presets)) {
-    for (const dither of ['off', 'banding-safe']) {
-      const inputProps = {dither};
+    for (const [dither, ditherValue] of [['off', 'off'], ['banding-safe', 'banding-safe'], ['amount-2.5', {amount: 2.5}]]) {
+      const inputProps = {dither: ditherValue};
       const comp = await selectComposition({serveUrl, id: 'Kit-Banding-Gradient', inputProps, puppeteerInstance, ...(await remotionBrowserOptions())});
       const png = path.join(tmp, `${name}-${dither}.png`);
       await renderStill({composition: comp, serveUrl, inputProps, frame: args.frame ?? 0, output: png, scale: p.scale, imageFormat: 'png', puppeteerInstance, ...(await remotionBrowserOptions())});
@@ -51,9 +51,12 @@ try {
       const y = run('ffmpeg', ['-v', 'error', '-i', mp4, '-vf', 'extractplanes=y', '-f', 'rawvideo', '-pix_fmt', 'gray', '-frames:v', '1', '-']);
       if (y.length !== w * h) throw new Error(`${name}: expected ${w * h} luma bytes, got ${y.length}`);
       // Rows at 40 / 50 / 60 % of the height; the worst run and the fewest levels are reported.
+      const lumaOf = (file) => run('ffmpeg', ['-v', 'error', '-i', file, '-vf', 'extractplanes=y', '-f', 'rawvideo', '-pix_fmt', 'gray', '-frames:v', '1', '-']);
+      const src = lumaOf(png); // before x264: separates "noise not applied" from "noise removed by the encoder"
+      const srcStats = rowStats(src.subarray(Math.floor(h * 0.5) * w, Math.floor(h * 0.5) * w + w));
       const stats = [0.4, 0.5, 0.6].map((f) => rowStats(y.subarray(Math.floor(h * f) * w, Math.floor(h * f) * w + w)));
       const longest = Math.max(...stats.map((s) => s.longest));
-      rows.push({preset: name, dither, width: w, height: h, crf: p.crf, x264Preset: p.x264Preset, lumaLevels: Math.min(...stats.map((s) => s.levels)), longestRunPx: longest, longestRunPct: Number(((100 * longest) / w).toFixed(2))});
+      rows.push({preset: name, dither, width: w, height: h, crf: p.crf, x264Preset: p.x264Preset, lumaLevels: Math.min(...stats.map((s) => s.levels)), longestRunPx: longest, longestRunPct: Number(((100 * longest) / w).toFixed(2)), sourceLevels: srcStats.levels, sourceRunPct: Number(((100 * srcStats.longest) / w).toFixed(2))});
     }
   }
 } finally {
@@ -61,7 +64,7 @@ try {
   rmSync(tmp, {recursive: true, force: true});
 }
 
-const header = ['preset', 'dither', 'size', 'luma levels', 'longest run px', 'run % width'];
+const header = ['preset', 'dither', 'size', 'luma levels', 'longest run px', 'run % width', 'src levels', 'src run %'];
 const cells = rows.map((r) => [r.preset, r.dither, `${r.width}x${r.height}`, String(r.lumaLevels), String(r.longestRunPx), r.longestRunPct.toFixed(2)]);
 const widths = header.map((h, i) => Math.max(h.length, ...cells.map((c) => c[i].length)));
 const line = (c) => c.map((v, i) => v.padEnd(widths[i])).join('  ');
@@ -71,6 +74,6 @@ writeFileSync(reportPath, JSON.stringify({note: 'Luma = decoded Y plane (tv rang
 console.log(`\nJSON: ${path.relative(process.cwd(), reportPath)}`);
 
 if (args.enforce) {
-  const bad = rows.filter((r) => r.dither !== 'off' && ((maxRunPct != null && r.longestRunPct > maxRunPct) || (minLevels != null && r.lumaLevels < minLevels)));
+  const bad = rows.filter((r) => r.dither === 'banding-safe' && ((maxRunPct != null && r.longestRunPct > maxRunPct) || (minLevels != null && r.lumaLevels < minLevels)));
   if (bad.length) fail(`banding above threshold with dither on: ${bad.map((r) => `${r.preset} run ${r.longestRunPct}% levels ${r.lumaLevels}`).join('; ')}`);
 }

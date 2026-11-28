@@ -85,7 +85,7 @@ jobs:
       - run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg
       - run: node scripts/kit_banding_check.mjs --out out/banding
       - name: Banding table as a notice (readable through the API)
-        run: python3 -c "import json;r=json.load(open('out/banding/banding-report.json'))['rows'];print('::notice title=banding::'+' | '.join('%s/%s w%d lv%d run%d (%.2f%%)'%(x['preset'],x['dither'],x['width'],x['lumaLevels'],x['longestRunPx'],x['longestRunPct']) for x in r))"
+        run: python3 -c "import json;r=json.load(open('out/banding/banding-report.json'))['rows'];print('::notice title=banding::'+' | '.join('%s/%s w%d lv%d run%.1f%% src lv%d run%.1f%%'%(x['preset'],x['dither'],x['width'],x['lumaLevels'],x['longestRunPct'],x['sourceLevels'],x['sourceRunPct']) for x in r))"
       - uses: actions/upload-artifact@v4
         if: always()
         with: { name: banding, path: out/banding, retention-days: 7, if-no-files-found: ignore }
