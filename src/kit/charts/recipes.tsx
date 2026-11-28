@@ -85,12 +85,12 @@ export const Waterfall: React.FC<WaterfallProps> = ({items, opening = 0, ...rest
 export interface CandleMarkProps {
   candles: readonly Candle[];
   /** 'candle' (filled bodies) or 'ohlc' (open/close ticks). Default 'candle'. */
-  style?: 'candle' | 'ohlc';
+  variant?: 'candle' | 'ohlc';
   stagger?: number;
 }
 
 /** Candles or OHLC bars; up = positive, down = negative. Each grows out from its open price. */
-export const CandleMark: React.FC<CandleMarkProps> = ({candles, style = 'candle', stagger = 0.03}) => {
+export const CandleMark: React.FC<CandleMarkProps> = ({candles, variant = 'candle', stagger = 0.03}) => {
   const c = useChart();
   const {theme, layout} = c;
   const u = unit(theme);
@@ -104,7 +104,7 @@ export const CandleMark: React.FC<CandleMarkProps> = ({candles, style = 'candle'
         if (p <= 0) return null;
         const col = toneColor(theme, g.up ? 'positive' : 'negative');
         const at = (y: number) => g.openY + (y - g.openY) * p;
-        if (style === 'ohlc') {
+        if (variant === 'ohlc') {
           const tick = g.w / 2;
           return (
             <g key={`c${i}`} stroke={col} strokeWidth={wick} strokeLinecap="round">
@@ -129,16 +129,16 @@ export const CandleMark: React.FC<CandleMarkProps> = ({candles, style = 'candle'
 
 export interface CandlestickProps extends Frame {
   candles: readonly Candle[];
-  style?: 'candle' | 'ohlc';
+  variant?: 'candle' | 'ohlc';
   yFormat?: ChartProps['yFormat'];
   timeLabel?: ChartProps['timeLabel'];
   xType?: ChartProps['xType'];
   grid?: boolean;
 }
 
-export const Candlestick: React.FC<CandlestickProps> = ({candles, style, ...rest}) => (
+export const Candlestick: React.FC<CandlestickProps> = ({candles, variant, ...rest}) => (
   <Chart {...rest} x={candles.map((k) => k.x)} xType={rest.xType ?? 'band'} zero={false} series={[{name: 'High', values: candles.map((k) => k.high)}, {name: 'Low', values: candles.map((k) => k.low)}]}>
-    <CandleMark candles={candles} style={style} />
+    <CandleMark candles={candles} variant={variant} />
   </Chart>
 );
 
