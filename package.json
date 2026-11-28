@@ -16,7 +16,8 @@
     "kit:shrink-previews": "bash scripts/kit_shrink_previews.sh",
     "test:unit": "vitest run",
     "test:visual": "node scripts/kit-visual-regression.mjs",
-    "test:visual:update": "node scripts/kit-visual-regression.mjs --update"
+    "test:visual:update": "node scripts/kit-visual-regression.mjs --update",
+    "kit:sfx-report": "python3 scripts/sfx_report.py && python3 scripts/sfx_build_page.py"
   },
   "dependencies": {
     "@fontsource/inter": "5.3.0",

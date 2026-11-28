@@ -22,24 +22,69 @@ export const Audio = () => (<><MusicBed src="kit/music/pad-loop.wav" fps={60} vo
 ## Generate the assets
 
 ```
-python3 scripts/kit_make_sfx.py        # public/kit/sfx/*.wav + manifest.json (+ src/kit/audio/sfx-manifest.json)
+python3 scripts/kit_make_sfx.py        # public/kit/sfx/*.wav, pitched/*.wav, manifest.json (+ src/kit/audio/sfx-manifest.json)
 python3 scripts/kit_make_music.py      # public/kit/music/pad-loop.wav (64 s seamless loop, ~-28 LUFS)
 python3 scripts/kit_vo_envelope.py vo.wav -o src/vo-envelope.json   # RMS per 1/30 s
 node scripts/kit-audio-check.mjs       # rule checks (determinism, limits, ducking timing, ceiling, motion events)
 node scripts/kit-audio-table.mjs       # docs/kit-audio-cues.txt for the demo timeline
 ```
 
+## SFX report and listening page
+
+```
+pip install -r scripts/sfx_report_requirements.txt   # numpy, scipy, matplotlib
+python3 scripts/sfx_report.py          # dist/sfx-report/: report.json, report.md, spectrograms/, contact-sheet.png
+python3 scripts/sfx_build_page.py      # dist/sfx-report/index.html + audio/ (open it in a browser)
+npm run kit:sfx-report                 # both
+```
+
+The report reads the mono WAVs (not the `@L` / `@R` copies) and flags measurable issues: `too-harsh`, `too-thin`,
+`too-long`, `too-quiet`, `too-loud`, `inconsistent`. A flag is not a verdict, and an unflagged sound is not approved: judge
+by ear. `--strict` exits 1 when anything is flagged.
+
+**Editing thresholds:** `scripts/sfx_report_thresholds.json`. `defaults` applies to every family; an entry under `families`
+overrides it key by key; `null` switches a test off; the `_help` lines define each test. `rms_target_db` is the median of
+the set committed when the file was written, so after an intended level change, update it. Attack is the 10-90% rise to the
+highest point of the envelope, so for multi-note or swelling sounds it measures the time to the loudest part.
+
+`python3 scripts/sfx_key_check.py` checks the tuning: single-pitch sounds are measured from the audio (within 15 cents);
+glides and multi-note sounds are checked against the notes the manifest declares.
+
+`.github/workflows/sfx-build.yml` regenerates, measures and compares old with new. To have it commit the regenerated
+files, end the push's newest commit message with `[sfx-commit]` (or tick `commit` on a manual run).
+
+**CI** (`.github/workflows/sfx-report.yml`) runs when the generator, report scripts or sounds change: it checks that the
+generator reproduces the committed files, uploads the report as an artifact, comments on pull requests, and on `main`
+deploys the page to GitHub Pages (needs Settings > Pages > Source: GitHub Actions). Run it manually with `strict` to fail
+on flags.
+
 ## Sounds (13 families x 3 variants, 48 kHz / 24-bit, peak -3 dBFS, 6 ms in / 10 ms out)
 
 `tap`, `tick`, `pop`, `whoosh-soft`, `whoosh-fast`, `swipe`, `slide`, `rise`, `fall`, `chime-success`, `soft-warn`,
-`number-tick`, `impact-soft`. Every file is peak-normalised, so each family has a default level in `FAMILY_DEFAULTS`
+`number-tick`, `impact-soft`, plus the pitched sets above. Every file is peak-normalised, so each family has a default level in `FAMILY_DEFAULTS`
 (e.g. `number-tick` -22 dB, `impact-soft` -8 dB). `manifest.json` lists duration, peak time, active RMS and a LUFS estimate.
+
+## Pitched sounds (data values)
+
+All tonal sounds are in one key, C major pentatonic (`scripts/sfx_key.py`). `number-tick`, `tick` and `pop` also come as
+12 ascending notes (`public/kit/sfx/pitched/<family>-n00..n11.wav`), so a sound can follow a value:
+
+```ts
+cue('pop', 1.2, {note: noteForValue(bar.value, 0, maxValue)}); // bigger value, higher note
+cuesFromMotion(numberRollEvents({start: 2}), [{on: 'number-tick', play: 'number-tick', note: (e) => e.index}]); // rising roll
+```
+
+The SFX report below measures only the variant files, not the pitched ones; listen to those separately.
+
+`note` is rounded and clamped to 0..11 and replaces the variant. A cue with `note` on a family without pitched files is
+dropped with reason `unknown-note`. The 120 ms rule applies per note.
 
 ## API
 
 | Export | What it does |
 | --- | --- |
-| `cue(name, atSeconds, {gain, pan, variant, anchor})` | Build a cue. `gain` is a linear multiplier on the family default; `pan` -1..1 (L / centre / R files); `anchor: 'peak'` lands the loudest moment on `atSeconds`. |
+| `cue(name, atSeconds, {gain, pan, variant, note, anchor})` | Build a cue. `gain` is a linear multiplier on the family default; `pan` -1..1 (L / centre / R files); `anchor: 'peak'` lands the loudest moment on `atSeconds`. |
+| `noteForValue(value, min, max)` / `pitchedInfo(family, noteIndex)` | Data value to note index 0..11; manifest entry of a pitched file. |
 | `resolveCues(cues, {seed, limits})` | Seeded variant choice + limits. Returns `{cues, dropped}`. Pure. |
 | `<CueTrack cues fps seed limits mix/>` | One `<Sequence><Audio/></Sequence>` per resolved cue, volume per frame (duck + voice ceiling). |
 | `enterEvents`, `transitionEvents`, `numberRollEvents` | Motion events (start, peak velocity, settle, mid, ticks) from the kit springs/ease. |

@@ -21,3 +21,6 @@ public/kit/map/cities/*.json
 !public/kit/map/cities/alignment.json
 !public/kit/map/cities/credits.json
 public/kit/music/*.wav
+
+# SFX report output (scripts/sfx_report.py)
+dist/

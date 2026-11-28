@@ -49,7 +49,7 @@ export const CueTrack: React.FC<CueTrackProps> = ({cues, fps, seed = 1, limits, 
         const from = Math.round(c.at * fps);
         const frames = Math.ceil(c.info.duration * fps) + 1;
         return (
-          <Sequence key={`${c.id}-${c.name}-${c.variant}`} from={from} durationInFrames={frames} layout="none" name={`cue ${c.name}-${c.variant}`}>
+          <Sequence key={`${c.id}-${c.name}-${c.variant}`} from={from} durationInFrames={frames} layout="none" name={`cue ${c.info.name}`}>
             <Audio src={staticFile(c.file)} volume={dynamic ? (f: number) => sfxGainAt(c, (from + f) / fps, mix) : sfxGainAt(c, c.at, mix)} />
           </Sequence>
         );

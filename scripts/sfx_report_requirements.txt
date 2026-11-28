@@ -1,0 +1,4 @@
+# Python deps for scripts/sfx_report.py (pinned: CI also checks the generator reproduces the committed WAVs byte for byte).
+numpy==2.5.3
+scipy==1.18.1
+matplotlib==3.11.2

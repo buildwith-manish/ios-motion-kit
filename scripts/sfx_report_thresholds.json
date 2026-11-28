@@ -1,0 +1,46 @@
+{
+  "_help": [
+    "Edit freely; the report only measures and flags, it does not judge how a sound feels.",
+    "A family entry overrides 'defaults' key by key; set a limit to null to switch that test off.",
+    "click: number of >8 kHz energy spikes (a note cut while audible, a transient that outruns its body) > clicks_max. 0 = none allowed; null switches the test off.",
+    "too-harsh: (2-5 kHz share > share_2k_5k_max OR centroid > centroid_hz_max) AND attack <= harsh_attack_ms_max AND crest >= harsh_crest_db_min.",
+    "too-thin: share below 300 Hz < low_share_min OR spectral bandwidth < bandwidth_hz_min.",
+    "too-long: duration > duration_s_max OR tail (envelope peak to last point above -40 dB) > tail_s_max.",
+    "too-quiet / too-loud: active RMS differs from rms_target_db by more than rms_tolerance_db; also peak outside peak_dbfs_min..peak_dbfs_max, or clipped samples > clip_samples_max.",
+    "inconsistent: max-min LUFS across a family's variants > variant_lufs_spread_max, or (max-min)/median of centroid > variant_centroid_spread_max.",
+    "rms_target_db values are the median of the sounds committed when this file was written, so they detect drift, not absolute correctness. Durations come from the design lengths in kit_make_sfx.py plus headroom."
+  ],
+  "defaults": {
+    "share_2k_5k_max": 0.45,
+    "centroid_hz_max": 3500,
+    "harsh_attack_ms_max": 5.0,
+    "harsh_crest_db_min": 12.0,
+    "low_share_min": 0.02,
+    "bandwidth_hz_min": 100,
+    "duration_s_max": 1.0,
+    "tail_s_max": 0.9,
+    "rms_target_db": -14.0,
+    "rms_tolerance_db": 3.0,
+    "peak_dbfs_max": -2.5,
+    "peak_dbfs_min": -4.0,
+    "clip_samples_max": 0,
+    "variant_lufs_spread_max": 2.0,
+    "variant_centroid_spread_max": 0.35,
+    "clicks_max": 0
+  },
+  "families": {
+    "tap": {"duration_s_max": 0.08, "tail_s_max": 0.07, "rms_target_db": -15.6, "low_share_min": null},
+    "tick": {"duration_s_max": 0.05, "tail_s_max": 0.045, "rms_target_db": -13.5, "low_share_min": null},
+    "pop": {"duration_s_max": 0.2, "tail_s_max": 0.18, "rms_target_db": -13.8, "low_share_min": 0.05},
+    "whoosh-soft": {"duration_s_max": 0.6, "tail_s_max": 0.55, "rms_target_db": -17.0, "low_share_min": 0.02},
+    "whoosh-fast": {"duration_s_max": 0.32, "tail_s_max": 0.3, "rms_target_db": -16.0, "low_share_min": null},
+    "swipe": {"duration_s_max": 0.26, "tail_s_max": 0.24, "rms_target_db": -17.7, "low_share_min": null},
+    "slide": {"duration_s_max": 0.5, "tail_s_max": 0.46, "rms_target_db": -16.0, "low_share_min": 0.05},
+    "rise": {"duration_s_max": 0.42, "tail_s_max": 0.4, "rms_target_db": -9.3, "low_share_min": null},
+    "fall": {"duration_s_max": 0.44, "tail_s_max": 0.42, "rms_target_db": -9.7, "low_share_min": null},
+    "chime-success": {"duration_s_max": 1.2, "tail_s_max": 1.15, "rms_target_db": -17.2, "low_share_min": null},
+    "soft-warn": {"duration_s_max": 0.65, "tail_s_max": 0.6, "rms_target_db": -13.8, "low_share_min": null},
+    "number-tick": {"duration_s_max": 0.05, "tail_s_max": 0.045, "rms_target_db": -12.2, "low_share_min": null},
+    "impact-soft": {"duration_s_max": 0.6, "tail_s_max": 0.55, "rms_target_db": -15.0, "low_share_min": 0.5, "bandwidth_hz_min": 20}
+  }
+}
