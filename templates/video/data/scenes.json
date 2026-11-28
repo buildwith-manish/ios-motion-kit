@@ -1,0 +1,6 @@
+[
+  {"id": "hook", "type": "hook", "duration": 4, "eyebrow": "__NAME__", "title": "Your first scene", "body": "Edit data/scenes.json to change this video."},
+  {"id": "stat", "type": "stat", "duration": 5, "label": "Example figure", "value": 1250, "from": 0, "format": "int", "prefix": "$"},
+  {"id": "disclaimer", "type": "disclaimer", "duration": 3, "text": "General information, not financial or tax advice."},
+  {"id": "end", "type": "endCard", "duration": 5, "title": "Thanks for watching", "subtitle": "Tap to see the full video", "platform": "youtube", "videoTitle": "The full video"}
+]

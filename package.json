@@ -11,6 +11,7 @@
     "kit:contrast": "node scripts/kit_contrast_tokens.mjs",
     "kit:sizeguard": "node scripts/kit_size_guard.mjs",
     "kit:init": "node scripts/kit_init.mjs",
+    "kit:new-video": "node scripts/new-video.mjs",
     "kit:data-check": "node scripts/kit_data_check.mjs",
     "kit:layout-lint": "node scripts/kit_layout_lint.mjs",
     "kit:fetch-data": "node scripts/kit_fetch_data.mjs",

@@ -1,7 +1,7 @@
 # Reusing the kit's CI from a video repo
 
 The kit (private repo `buildwith-manish/ios-motion-kit`) ships four reusable workflows. A video repo adds the kit as a submodule
-(`kit/`) and calls them. `node scripts/kit_init.mjs <dir>` writes the four caller files below (preview, render, shorts, qa) and
+(`kit/`) and calls them. `node scripts/new-video.mjs <dir> --name <name>` scaffolds a whole video repo (callers, package.json, demo composition, README; it prints the `git submodule add` command and the three private-kit setup steps); `node scripts/kit_init.mjs <dir>` writes only the four caller files below (preview, render, shorts, qa) and
 prints the setup steps.
 
 | workflow | does | main inputs |

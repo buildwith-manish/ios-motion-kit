@@ -17,6 +17,7 @@ const walk = (dir) => readdirSync(dir).flatMap((n) => (statSync(path.join(dir, n
 let written = 0;
 for (const f of walk(src)) {
   const rel = path.relative(src, f); const out = path.join(dest, rel);
+  if (!rel.startsWith('.github') && rel !== 'data.manifest.json') continue; // the rest of the template is for scripts/new-video.mjs
   if (existsSync(out)) { console.log(`kept     ${rel}`); continue; }
   mkdirSync(path.dirname(out), {recursive: true});
   writeFileSync(out, readFileSync(f, 'utf8').replaceAll('__KIT_TAG__', tag)); written++;
