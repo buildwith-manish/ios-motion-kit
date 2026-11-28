@@ -454,8 +454,9 @@ The GitHub token was used for clone and push only (the camera session cloned wit
 
 - `scripts/kit-timing-audit.ts` passes parser, phrase/word matching, missing-anchor warning, scene overlap, and cue-order checks.
 - Generated 1080p and 4K demo stills and visually inspected both.
-- `npx tsc --noEmit` passes; GitHub Actions QA is pending.
+- `npx tsc --noEmit` passes.
+- Targeted GitHub Actions run `46115853987` passed contrast and safe-area checks with zero findings and motion audit with zero static stretches for all three timing compositions (`docs/progress/T7-qa.txt`).
 
 ### NOT verified
 
-- GitHub Actions contrast, safe-area, and motion QA has not yet run.
+- No full-motion playback review on alternate browsers.
