@@ -1,0 +1,65 @@
+# Reusable workflow (workflow_call). Private kit: the caller passes KIT_TOKEN (secrets: inherit); see docs/ci-reuse.md.
+name: Reusable shorts (matrix of vertical compositions)
+on:
+  workflow_call:
+    inputs:
+      comps: { description: 'JSON array of composition ids, e.g. ["Short1-Vertical","Short2-Vertical"]', required: true, type: string }
+      entry: { description: 'Remotion entry file', required: false, type: string, default: 'src/index.ts' }
+      quality: { description: '1080p or 4K (4K = scale 2 of a 1080-wide composition)', required: false, type: string, default: '1080p' }
+      kit_dir: { description: 'Where the kit lives in the caller', required: false, type: string, default: 'kit' }
+      frames: { description: 'Optional frame range a-b (smoke tests only)', required: false, type: string, default: '' }
+      loudness_gate: { description: 'Fail when a short is off -14 LUFS (+-1.5)', required: false, type: boolean, default: false }
+    secrets:
+      KIT_TOKEN:
+        description: 'Fine-grained token, Contents: read-only on the private ios-motion-kit repo (see docs/ci-reuse.md)'
+        required: true
+permissions:
+  contents: read
+jobs:
+  short:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    name: short ${{ matrix.comp }}
+    strategy:
+      fail-fast: false
+      matrix:
+        comp: ${{ fromJSON(inputs.comps) }}
+    env:
+      KIT: ${{ inputs.kit_dir }}
+      KIT_NO_DOWNLOAD: '1'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          token: ${{ secrets.KIT_TOKEN }}
+      - uses: actions/setup-node@v4
+        with: { node-version: 20, cache: npm }
+      - run: npm ci
+      - name: Kit dependencies (kit used as a submodule)
+        run: if [ "${{ inputs.kit_dir }}" != "." ] && [ -f "${{ inputs.kit_dir }}/package-lock.json" ]; then npm ci --prefix "${{ inputs.kit_dir }}"; fi
+      - uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cache/remotion
+            ~/.cache/ms-playwright
+            /tmp/chromium
+          key: ${{ runner.os }}-kit-chromium-123.0.1-${{ hashFiles('package-lock.json') }}
+      - run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg
+      - name: Render (h264, crf 16, slow, tune film, aac 320k, bt709)
+        run: |
+          mkdir -p out
+          SCALE=1; if [ "${{ inputs.quality }}" = "4K" ]; then SCALE=2; fi
+          FR=""; if [ -n "${{ inputs.frames }}" ]; then FR="--frames=${{ inputs.frames }}"; fi
+          npx remotion render "${{ inputs.entry }}" "${{ matrix.comp }}" "out/${{ matrix.comp }}.mp4" \
+            --codec=h264 --crf=16 --x264-preset=slow --tune=film --audio-codec=aac --audio-bitrate=320k \
+            --color-space=bt709 --scale=$SCALE --concurrency=4 --log=error $FR
+          [ "$(stat -c%s "out/${{ matrix.comp }}.mp4")" -gt 20000 ] || { echo "ERROR: ${{ matrix.comp }} is too small"; exit 1; }
+      - name: Loudness
+        run: |
+          set +e
+          node "$KIT/scripts/kit_loudness.mjs" "out/${{ matrix.comp }}.mp4"
+          rc=$?
+          if [ "${{ inputs.loudness_gate }}" = "true" ]; then exit $rc; fi
+          exit 0
+      - uses: actions/upload-artifact@v4
+        with: { name: 'short-${{ matrix.comp }}', path: 'out/${{ matrix.comp }}.mp4', retention-days: 14, overwrite: true }

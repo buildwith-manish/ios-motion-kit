@@ -1,0 +1,85 @@
+# Reusable workflow (workflow_call). Private kit: the caller passes KIT_TOKEN (secrets: inherit); see docs/ci-reuse.md.
+name: Reusable preview (low-res MP4, contact sheet, QA report)
+on:
+  workflow_call:
+    inputs:
+      comps: { description: 'Composition ids, comma separated', required: true, type: string }
+      entry: { description: 'Remotion entry file', required: false, type: string, default: 'src/index.ts' }
+      scale: { description: 'Render scale (0.25 = quarter size)', required: false, type: number, default: 0.25 }
+      fps: { description: 'Frame rate of the preview MP4', required: false, type: number, default: 15 }
+      every: { description: 'Seconds between contact-sheet stills', required: false, type: number, default: 2 }
+      kit_dir: { description: 'Where the kit lives in the caller', required: false, type: string, default: 'kit' }
+      publish_pages: { description: 'Publish the previews to GitHub Pages (caller needs pages: write + id-token: write)', required: false, type: boolean, default: false }
+      artifact: { description: 'Artifact name', required: false, type: string, default: 'preview' }
+    secrets:
+      KIT_TOKEN:
+        description: 'Fine-grained token, Contents: read-only on the private ios-motion-kit repo (see docs/ci-reuse.md)'
+        required: true
+permissions:
+  contents: read
+jobs:
+  preview:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    env:
+      KIT: ${{ inputs.kit_dir }}
+      KIT_NO_DOWNLOAD: '1'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          token: ${{ secrets.KIT_TOKEN }}
+      - uses: actions/setup-node@v4
+        with: { node-version: 20, cache: npm }
+      - run: npm ci
+      - name: Kit dependencies (kit used as a submodule)
+        run: if [ "${{ inputs.kit_dir }}" != "." ] && [ -f "${{ inputs.kit_dir }}/package-lock.json" ]; then npm ci --prefix "${{ inputs.kit_dir }}"; fi
+      - uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cache/remotion
+            ~/.cache/ms-playwright
+            /tmp/chromium
+          key: ${{ runner.os }}-kit-chromium-123.0.1-${{ hashFiles('package-lock.json') }}
+      - run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg
+      - name: Low-res MP4 per composition
+        run: |
+          mkdir -p out/preview/raw
+          node "$KIT/scripts/kit_render.mjs" --profile draft --comp "${{ inputs.comps }}" --entry "${{ inputs.entry }}" --scale ${{ inputs.scale }} --out out/preview/raw
+          for f in out/preview/raw/*.mp4; do
+            [ -e "$f" ] || { echo "no preview MP4 was rendered"; exit 1; }
+            ffmpeg -y -v error -i "$f" -vf "fps=${{ inputs.fps }}" -c:v libx264 -crf 28 -preset veryfast -pix_fmt yuv420p -c:a aac -b:a 96k "out/preview/$(basename "$f")"
+          done
+          rm -rf out/preview/raw
+      - name: Contact sheet
+        run: node "$KIT/scripts/kit_contact_sheet.mjs" --comp "${{ inputs.comps }}" --entry "${{ inputs.entry }}" --every ${{ inputs.every }} --out out/preview
+      - name: QA report (report only, never fails the preview)
+        run: |
+          for c in contrast_check safe_area_check; do node "$KIT/scripts/kit_$c.mjs" --comp "${{ inputs.comps }}" --entry "${{ inputs.entry }}" --every 2 --no-images --no-fail --out out/preview/qa/$c || true; done
+          node "$KIT/scripts/kit_layout_lint.mjs" --comp "${{ inputs.comps }}" --entry "${{ inputs.entry }}" --every 2 --no-images --no-fail --out out/preview/qa/layout || true
+      - name: Index page
+        run: |
+          cd out/preview
+          { echo '<!doctype html><meta charset=utf-8><title>Preview</title><body style="font:16px system-ui;max-width:960px;margin:2rem auto">'
+            for f in *.mp4; do [ -e "$f" ] && echo "<h3>$f</h3><video src=\"$f\" controls style=\"width:100%\"></video>"; done
+            for f in *.png; do [ -e "$f" ] && echo "<h3>$f</h3><img src=\"$f\" style=\"width:100%\">"; done
+          } > index.html
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with: { name: '${{ inputs.artifact }}', path: out/preview, retention-days: 7, if-no-files-found: ignore }
+      - uses: actions/upload-pages-artifact@v3
+        if: ${{ inputs.publish_pages }}
+        with: { path: out/preview }
+  pages:
+    if: ${{ inputs.publish_pages }}
+    needs: preview
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - id: deploy
+        uses: actions/deploy-pages@v4

@@ -1,0 +1,17 @@
+name: Final render
+on:
+  workflow_dispatch:
+    inputs:
+      resume_from_run: { description: 'Run id to reuse pieces from', required: false, default: '' }
+      force_rerender: { description: 'Ignore cached pieces', type: boolean, default: false }
+jobs:
+  render:
+    permissions: { contents: read, actions: read }
+    uses: buildwith-manish/ios-motion-kit/.github/workflows/reusable-render.yml@__KIT_TAG__
+    with:
+      comp: 'My-Video'
+      entry: src/index.ts
+      quality: 4K
+      resume_from_run: ${{ inputs.resume_from_run }}
+      force_rerender: ${{ inputs.force_rerender }}
+    secrets: inherit

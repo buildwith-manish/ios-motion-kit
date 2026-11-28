@@ -129,3 +129,13 @@ console.log(holds, outside, contrast?.ratio);
 `Kit-Qa-Demo` (1920x1080@60), `-Vertical`, `-30fps` and `-Clean` (`src/kit/demo/QaDemo.tsx`) have known answers:
 one 2.5 s hold (3.0-5.5 s) that must be reported, a 0.6 s hold that must not, two safe-area faults, two contrast
 faults, and traps (clipped, invisible and ignored text). `-Clean` must pass all three checks.
+
+## Layout lint (`npm run kit:layout-lint`)
+
+`scripts/kit_layout_lint.mjs --comp <id>` samples frames like the other checks and applies the design rules: no text under 28 px,
+labels >= 36 px, hero number 120-200 px inside the hero zone (zone >= 60 % of the frame), at most 3 secondary elements, nothing in
+the rail / footer strips, no overlapping elements, delta chips one at a time. Sizes are normalised to the 1920 (landscape) / 1080
+(portrait) design width. Tag elements in the scene: `data-qa-role="hero|label|support|secondary|chip|rail|footer"`
+(untagged text is only held to the 28 px floor; `data-qa-ignore` skips an element). Thresholds live in
+`scripts/kit_layout_lint.config.json` (the old video 3 values); `--config my.json` overrides single keys. Rules are pure in
+`scripts/kit_layout_lint_rules.mjs` (unit tests in `tests/kit/layoutLint.test.ts`). `reusable-qa.yml` runs it (`layout_fail: false` = report only).

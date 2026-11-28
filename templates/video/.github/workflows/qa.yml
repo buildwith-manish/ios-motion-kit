@@ -1,0 +1,15 @@
+name: QA gate
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+jobs:
+  qa:
+    permissions: { contents: read, actions: read }
+    uses: buildwith-manish/ios-motion-kit/.github/workflows/reusable-qa.yml@__KIT_TAG__
+    with:
+      comps: 'My-Video'
+      entry: src/index.ts
+      times: '2,6,10'
+      loudness_comp: 'My-Video'
+    secrets: inherit

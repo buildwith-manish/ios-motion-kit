@@ -80,3 +80,40 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: always()
         with: { name: kit-visual-regression, path: out/kit-visual, retention-days: 14, if-no-files-found: ignore }
+  # Self-test of the reusable workflows against the kit's own demo compositions (same trigger as the heavy QA).
+  reuse-qa:
+    name: Reusable QA (self-test)
+    if: github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, '[qa]')
+    needs: fast
+    permissions: { contents: read, actions: read }
+    uses: ./.github/workflows/reusable-qa.yml
+    with: { comps: Kit-Scenes-Demo, entry: src/kit/scenes/entry.tsx, times: '2,7', kit_dir: '.', layout_fail: false, artifact: selftest-qa }
+    secrets:
+      KIT_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  reuse-preview:
+    name: Reusable preview (self-test)
+    if: github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, '[qa]')
+    needs: fast
+    permissions: { contents: read, actions: read }
+    uses: ./.github/workflows/reusable-preview.yml
+    with: { comps: Kit-Scenes-Demo, entry: src/kit/scenes/entry.tsx, scale: 0.25, fps: 10, every: 6, kit_dir: '.', artifact: selftest-preview }
+    secrets:
+      KIT_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  reuse-render:
+    name: Reusable render (self-test)
+    if: github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, '[qa]')
+    needs: fast
+    permissions: { contents: read, actions: read }
+    uses: ./.github/workflows/reusable-render.yml
+    with: { comp: Kit-Audio-Demo, entry: src/kit/demo/entry.tsx, frames: '0-89', chunk_frames: 45, kit_dir: '.', output_name: selftest-video }
+    secrets:
+      KIT_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  reuse-shorts:
+    name: Reusable shorts (self-test)
+    if: github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, '[qa]')
+    needs: fast
+    permissions: { contents: read, actions: read }
+    uses: ./.github/workflows/reusable-shorts.yml
+    with: { comps: '["Kit-Ui-Demo-Vertical"]', entry: src/kit/ui/entry.tsx, frames: '0-59', kit_dir: '.' }
+    secrets:
+      KIT_TOKEN: ${{ secrets.GITHUB_TOKEN }}

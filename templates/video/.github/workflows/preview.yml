@@ -1,0 +1,14 @@
+name: Preview
+on:
+  workflow_dispatch:
+
+jobs:
+  preview:
+    permissions: { contents: read, actions: read }
+    uses: buildwith-manish/ios-motion-kit/.github/workflows/reusable-preview.yml@__KIT_TAG__
+    with:
+      comps: 'My-Video'
+      entry: src/index.ts
+      scale: 0.25
+      fps: 15
+    secrets: inherit

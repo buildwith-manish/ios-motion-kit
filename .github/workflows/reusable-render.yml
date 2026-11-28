@@ -1,0 +1,206 @@
+# Reusable workflow (workflow_call). Private kit: the caller passes KIT_TOKEN (secrets: inherit); see docs/ci-reuse.md.
+# Final render: plan -> matrix of video-only pieces (+ one audio job) -> concat + two-pass loudnorm. Old h264 flags kept.
+name: Reusable render (final video, optional 4K)
+on:
+  workflow_call:
+    inputs:
+      comp: { description: 'Composition id to render', required: true, type: string }
+      entry: { description: 'Remotion entry file', required: false, type: string, default: 'src/index.ts' }
+      quality: { description: '1080p or 4K (4K = scale 2 of a 1080-wide composition)', required: false, type: string, default: '1080p' }
+      chunk_frames: { description: 'Frames per piece (0 = one piece; max 256 pieces)', required: false, type: number, default: 270 }
+      frames: { description: 'Optional frame range a-b (smoke tests only)', required: false, type: string, default: '' }
+      audio_comp: { description: 'Composition that renders the soundtrack (empty = the main composition)', required: false, type: string, default: '' }
+      force_rerender: { description: 'Ignore cached pieces and render everything again', required: false, type: boolean, default: false }
+      resume_from_run: { description: 'Run id of an earlier run whose finished pieces / soundtrack are reused', required: false, type: string, default: '' }
+      lufs: { description: 'Target loudness (LUFS)', required: false, type: string, default: '-14' }
+      true_peak: { description: 'True peak limit (dBTP)', required: false, type: string, default: '-1.5' }
+      output_name: { description: 'File / artifact name (without extension)', required: false, type: string, default: 'video' }
+      kit_dir: { description: 'Where the kit lives in the caller', required: false, type: string, default: 'kit' }
+    secrets:
+      KIT_TOKEN:
+        description: 'Fine-grained token, Contents: read-only on the private ios-motion-kit repo (see docs/ci-reuse.md)'
+        required: true
+permissions:
+  contents: read
+  actions: read # download artifacts of an earlier run
+env:
+  KIT: ${{ inputs.kit_dir }}
+  KIT_NO_DOWNLOAD: '1'
+jobs:
+  plan:
+    runs-on: ubuntu-latest
+    outputs:
+      total: ${{ steps.plan.outputs.total }}
+      fps: ${{ steps.plan.outputs.fps }}
+      chunks: ${{ steps.plan.outputs.chunks }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          token: ${{ secrets.KIT_TOKEN }}
+      - uses: actions/setup-node@v4
+        with: { node-version: 20, cache: npm }
+      - run: npm ci
+      - name: Kit dependencies (kit used as a submodule)
+        run: if [ "${{ inputs.kit_dir }}" != "." ] && [ -f "${{ inputs.kit_dir }}/package-lock.json" ]; then npm ci --prefix "${{ inputs.kit_dir }}"; fi
+      - uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cache/remotion
+            ~/.cache/ms-playwright
+            /tmp/chromium
+          key: ${{ runner.os }}-kit-chromium-123.0.1-${{ hashFiles('package-lock.json') }}
+      - id: plan
+        run: node "$KIT/scripts/kit_ci_plan.mjs" --comp "${{ inputs.comp }}" --entry "${{ inputs.entry }}" --chunk-frames ${{ inputs.chunk_frames }} --frames "${{ inputs.frames }}"
+
+  render:
+    needs: plan
+    runs-on: ubuntu-latest
+    name: render ${{ matrix.id }} (frames ${{ matrix.start }}-${{ matrix.end }})
+    strategy:
+      fail-fast: false
+      max-parallel: 40
+      matrix:
+        include: ${{ fromJSON(needs.plan.outputs.chunks) }}
+    steps:
+      - name: Try this piece from the earlier run
+        if: ${{ inputs.resume_from_run != '' }}
+        uses: actions/download-artifact@v4
+        with:
+          name: clips-chunk-${{ matrix.id }}
+          path: out/clips
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          run-id: ${{ inputs.resume_from_run }}
+        continue-on-error: true
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          token: ${{ secrets.KIT_TOKEN }}
+      - name: Cached piece (same sources, same settings)
+        if: ${{ !inputs.force_rerender }}
+        uses: actions/cache@v4
+        with:
+          path: out/clips/chunk-${{ matrix.id }}.mp4
+          key: kit-piece-${{ inputs.comp }}-${{ inputs.quality }}-${{ matrix.id }}-${{ matrix.start }}-${{ matrix.end }}-${{ hashFiles('src/**', 'public/**', 'package-lock.json', format('{0}/src/**', inputs.kit_dir)) }}
+      - name: Is the piece already there?
+        id: have
+        run: |
+          F="out/clips/chunk-${{ matrix.id }}.mp4"
+          if [ "${{ inputs.force_rerender }}" != "true" ] && [ -f "$F" ] && [ "$(stat -c%s "$F")" -gt 50000 ]; then
+            echo "have=true" >> "$GITHUB_OUTPUT"; echo "Reusing $F"
+          else
+            rm -f "$F"; echo "have=false" >> "$GITHUB_OUTPUT"
+          fi
+      - uses: actions/setup-node@v4
+        if: steps.have.outputs.have != 'true'
+        with: { node-version: 20, cache: npm }
+      - name: Install
+        if: steps.have.outputs.have != 'true'
+        run: |
+          npm ci
+          if [ "${{ inputs.kit_dir }}" != "." ] && [ -f "${{ inputs.kit_dir }}/package-lock.json" ]; then npm ci --prefix "${{ inputs.kit_dir }}"; fi
+          sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg
+      - uses: actions/cache@v4
+        if: steps.have.outputs.have != 'true'
+        with:
+          path: |
+            ~/.cache/remotion
+            ~/.cache/ms-playwright
+            /tmp/chromium
+          key: ${{ runner.os }}-kit-chromium-123.0.1-${{ hashFiles('package-lock.json') }}
+      - name: Render piece (h264, crf 16, bt709, video only)
+        if: steps.have.outputs.have != 'true'
+        run: |
+          mkdir -p out/clips
+          SCALE=1; if [ "${{ inputs.quality }}" = "4K" ]; then SCALE=2; fi
+          ID=${{ matrix.id }}; START=${{ matrix.start }}; END=${{ matrix.end }}
+          npx remotion render "${{ inputs.entry }}" "${{ inputs.comp }}" "out/clips/chunk-$ID.mp4" \
+            --frames=$START-$END --codec=h264 --crf=16 --x264-preset=fast --color-space=bt709 --muted \
+            --concurrency=$(nproc) --scale=$SCALE --log=error
+          FRAMES=$(( END - START + 1 ))
+          EXPECTED=$(python3 -c "print(round($FRAMES / ${{ needs.plan.outputs.fps }}.0, 3))")
+          ACTUAL=$(ffprobe -v error -show_entries format=duration -of csv=p=0 "out/clips/chunk-$ID.mp4" 2>/dev/null || echo 0)
+          SIZE=$(stat -c%s "out/clips/chunk-$ID.mp4" 2>/dev/null || echo 0)
+          echo "Rendered ${ACTUAL}s (expected ${EXPECTED}s), ${SIZE} bytes"
+          python3 -c "import sys; sys.exit(0 if abs(float('$ACTUAL') - float('$EXPECTED')) < 0.3 and $SIZE > 20000 else 1)" || { echo "ERROR: piece $ID has the wrong length or is too small"; exit 1; }
+      - uses: actions/upload-artifact@v4
+        with:
+          name: clips-chunk-${{ matrix.id }}
+          path: out/clips/chunk-${{ matrix.id }}.mp4
+          retention-days: 7
+          overwrite: true
+
+  audio:
+    needs: plan
+    runs-on: ubuntu-latest
+    steps:
+      - name: Try the soundtrack from the earlier run
+        if: ${{ inputs.resume_from_run != '' }}
+        uses: actions/download-artifact@v4
+        with:
+          name: audio-track
+          path: out/audio
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          run-id: ${{ inputs.resume_from_run }}
+        continue-on-error: true
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          token: ${{ secrets.KIT_TOKEN }}
+      - uses: actions/setup-node@v4
+        with: { node-version: 20, cache: npm }
+      - run: npm ci
+      - name: Kit dependencies (kit used as a submodule)
+        run: if [ "${{ inputs.kit_dir }}" != "." ] && [ -f "${{ inputs.kit_dir }}/package-lock.json" ]; then npm ci --prefix "${{ inputs.kit_dir }}"; fi
+      - uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cache/remotion
+            ~/.cache/ms-playwright
+            /tmp/chromium
+          key: ${{ runner.os }}-kit-chromium-123.0.1-${{ hashFiles('package-lock.json') }}
+      - run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg
+      - name: Render the whole soundtrack once (audio only)
+        run: |
+          if [ "${{ inputs.force_rerender }}" != "true" ] && [ -s out/audio/audio.wav ]; then echo "Reusing the earlier soundtrack"; exit 0; fi
+          mkdir -p out/audio
+          AC="${{ inputs.audio_comp }}"; [ -n "$AC" ] || AC="${{ inputs.comp }}"
+          FR=""; if [ -n "${{ inputs.frames }}" ]; then FR="--frames=${{ inputs.frames }}"; fi
+          npx remotion render "${{ inputs.entry }}" "$AC" out/audio/audio.wav --codec=wav --log=error $FR
+      - name: Check the soundtrack length
+        run: |
+          D=$(ffprobe -v error -show_entries format=duration -of csv=p=0 out/audio/audio.wav)
+          E=$(python3 -c "print(round(${{ needs.plan.outputs.total }} / ${{ needs.plan.outputs.fps }}.0, 3))")
+          echo "audio ${D}s, video ${E}s"
+          python3 -c "import sys; sys.exit(0 if abs(float('$D') - float('$E')) < 0.5 else 1)" || { echo "ERROR: soundtrack and video differ in length"; exit 1; }
+      - uses: actions/upload-artifact@v4
+        with: { name: audio-track, path: out/audio/audio.wav, retention-days: 7, overwrite: true }
+
+  concat:
+    needs: [plan, render, audio]
+    runs-on: ubuntu-latest
+    steps:
+      - run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg
+      - uses: actions/download-artifact@v4
+        with: { pattern: clips-chunk-*, path: out/clips, merge-multiple: true }
+      - uses: actions/download-artifact@v4
+        with: { name: audio-track, path: out/audio }
+      - name: Join the pieces and mix in the soundtrack (two-pass loudnorm)
+        run: |
+          cd out
+          WANT=$(python3 -c "import json; print(len(json.loads('''${{ needs.plan.outputs.chunks }}''')))")
+          HAVE=$(ls clips/chunk-*.mp4 | wc -l)
+          [ "$HAVE" = "$WANT" ] || { echo "ERROR: $HAVE of $WANT pieces. Use 'Re-run failed jobs': only the failed pieces render again."; exit 1; }
+          for f in $(ls clips/chunk-*.mp4 | sort -V); do echo "file '$PWD/$f'"; done > concat.txt
+          ffmpeg -y -v error -f concat -safe 0 -i concat.txt -c copy -an video_only.mp4
+          I=${{ inputs.lufs }}; TP=${{ inputs.true_peak }}
+          stats=$(ffmpeg -hide_banner -nostats -i audio/audio.wav -af "loudnorm=I=$I:TP=$TP:LRA=11:print_format=json" -f null - 2>&1 | sed -n '/^{/,/^}/p')
+          get() { echo "$stats" | python3 -c "import sys,json; print(json.load(sys.stdin)['$1'])"; }
+          AF="loudnorm=I=$I:TP=$TP:LRA=11:measured_I=$(get input_i):measured_TP=$(get input_tp):measured_LRA=$(get input_lra):measured_thresh=$(get input_thresh):offset=$(get target_offset):linear=true"
+          case "$(get input_i)" in *inf*) echo "soundtrack is silent: loudnorm skipped"; AF="anull";; esac
+          ffmpeg -y -v error -i video_only.mp4 -i audio/audio.wav -map 0:v -map 1:a -c:v copy -c:a aac -b:a 320k -ar 48000 \
+            -af "$AF" \
+            -shortest -movflags +faststart "${{ inputs.output_name }}.mp4"
+          ls -l "${{ inputs.output_name }}.mp4"
+      - uses: actions/upload-artifact@v4
+        with: { name: '${{ inputs.output_name }}', path: 'out/${{ inputs.output_name }}.mp4', retention-days: 14, overwrite: true }

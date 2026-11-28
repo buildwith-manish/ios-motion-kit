@@ -1,0 +1,12 @@
+name: Shorts
+on:
+  workflow_dispatch:
+
+jobs:
+  shorts:
+    permissions: { contents: read, actions: read }
+    uses: buildwith-manish/ios-motion-kit/.github/workflows/reusable-shorts.yml@__KIT_TAG__
+    with:
+      comps: '["My-Short-1","My-Short-2"]'
+      entry: src/index.ts
+    secrets: inherit
