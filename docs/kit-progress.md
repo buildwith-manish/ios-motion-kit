@@ -487,7 +487,7 @@ The GitHub token was used for clone and push only (the camera session cloned wit
 
 - Refreshed all four fixed-frame visual baselines and confirmed zero differing pixels in the follow-up comparison.
 - Typecheck and all 16 unit tests passed; sampled UI and scene contrast/safe-area checks passed, and motion audits found no static stretches over 3 seconds.
-- GitHub Actions run `46119243608` passed type/unit, visual regression, and tokens/transitions/UI/scenes QA. Token sample points now stay within the composition duration; transition-scene QA ignores moving scene labels only during active transitions.
+- GitHub Actions run `46121236232` passed type/unit, visual regression, and tokens/transitions/UI/scenes QA after syncing the branch with `main`. Token sample points now stay within the composition duration; transition-scene QA ignores moving scene labels only during active transitions.
 - Review follow-up fixed mixed cue ordering, spring response validation and tiny-bounce stability, camera zoom velocity at the screen-space anchor, and named CSS colors in Atmosphere; CI motion findings now fail the QA job.
 
 ### Remaining
