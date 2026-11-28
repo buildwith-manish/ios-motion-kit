@@ -66,7 +66,7 @@ on flags.
 
 ## Pitched sounds (data values)
 
-All tonal sounds are in one key, C major pentatonic (`scripts/sfx_key.py`). `number-tick`, `tick` and `pop` also come as
+All tonal sounds are in one key, D major pentatonic (`scripts/sfx_key.py`). `number-tick`, `tick` and `pop` also come as
 12 ascending notes (`public/kit/sfx/pitched/<family>-n00..n11.wav`), so a sound can follow a value:
 
 ```ts
@@ -107,3 +107,13 @@ dropped with reason `unknown-note`. The 120 ms rule applies per note.
 - Sequences start on whole frames: a cue lands within half a frame of its time (8 ms @ 60, 17 ms @ 30).
 - Remotion's `<Audio>` has no pan prop, so pan uses pre-rendered `@L` / `@R` files (equal-power +-0.75); pan is 3 positions.
 - The ducking envelope is 30 Hz, but the smoothing runs on a 500 Hz grid, so attack/release are exact at any fps.
+
+## Pitched cues and dedupe
+
+`valueToNoteIndex(value, {min, max})` (same as `noteForValue(value, min, max)`) gives note 0..11, linear and clamped; `min === max` gives 0.
+`pitchedCue('pop', value, {min, max, at, gain, pan})` returns a `note` cue. Pitched cues skip the variant picker; the 120 ms
+dedupe applies per family + note (two different notes may start together), and polyphony / priority are the family's own.
+
+## Determinism
+
+The generator is seeded; CI runs it twice into temp dirs and compares file hashes (`sfx-build` workflow, "Determinism" step).

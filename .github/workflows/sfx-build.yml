@@ -61,7 +61,14 @@ jobs:
           python -B scripts/sfx_report.py
           python -B scripts/sfx_build_page.py
 
-      - name: Key check (every tonal peak within 15 cents of a C major pentatonic note)
+      - name: Determinism (generator twice, hashes must match)
+        run: |
+          for d in a b; do python -B scripts/kit_make_sfx.py --out /tmp/sfx_$d --ts-manifest /tmp/sfx_$d/ts.json > /dev/null; done
+          (cd /tmp/sfx_a && find . -type f | sort | xargs sha256sum) > /tmp/ha.txt
+          (cd /tmp/sfx_b && find . -type f | sort | xargs sha256sum) > /tmp/hb.txt
+          diff /tmp/ha.txt /tmp/hb.txt && echo deterministic
+
+      - name: Key check (every tonal peak within 15 cents of a D major pentatonic note)
         shell: bash # explicit bash sets pipefail, so a failed check is not hidden by tee
         run: python -B scripts/sfx_key_check.py | tee dist/sfx-report/key-check.txt
 

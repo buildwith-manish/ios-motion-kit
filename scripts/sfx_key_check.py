@@ -4,7 +4,7 @@ sfx_key_check.py - measure that the tonal SFX really sit in the kit's key (scrip
 
 For every single-pitch sound (tap, tick, number-tick, pop and the 12-note pitched sets) it measures the sine's frequency
 (envelope-weighted matched filter around the declared note) and reports the distance in cents to the
-nearest C major pentatonic note; pitched-set files must also land on the note the manifest says they were made for.
+nearest D major pentatonic note; pitched-set files must also land on the note the manifest says they were made for.
 Single-pitch sounds are measured over the dry onset (the room's pre-delay, before any reflection), where the tone is
 clean. Pop (glide + room send) and multi-note sounds (rise, fall, chime, warn, impact) cannot be read reliably from the
 finished file, so they are checked against their declared notes in the manifest, which the generator derives from

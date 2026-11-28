@@ -1,4 +1,4 @@
-import {FAMILY_DEFAULTS, PITCHED_NOTES, SFX_FAMILIES, SFX_VARIANTS, dbToGain, isPitchedFamily, pitchedInfo, sfxInfo, type SfxFamily, type SfxInfo} from './families';
+import {valueToNoteIndex, FAMILY_DEFAULTS, PITCHED_NOTES, SFX_FAMILIES, SFX_VARIANTS, dbToGain, isPitchedFamily, pitchedInfo, sfxInfo, type PitchedFamily, type SfxFamily, type SfxInfo} from './families';
 import {hashString, mulberry32} from './prng';
 
 /** Where in the sound the cue time points. */
@@ -35,6 +35,21 @@ export interface Cue extends CueOptions {
  * @example cue('pop', 1.25, {gain: 0.8, pan: -0.4})
  */
 export const cue = (name: SfxFamily, atSeconds: number, options: CueOptions = {}): Cue => ({name, at: atSeconds, ...options});
+
+/** Options of {@link pitchedCue}: the value range plus the usual cue options and a start time. */
+export interface PitchedCueOptions extends Omit<CueOptions, 'note' | 'variant'> {
+  min: number;
+  max: number;
+  /** Start time in seconds. Default 0. */
+  at?: number;
+}
+
+/**
+ * A cue on the pitched set of `family` whose note follows `value` between `min` (lowest) and `max` (highest).
+ * Resolves like any `note` cue: dedupe is per family + note (120 ms), polyphony and priority are the family's.
+ */
+export const pitchedCue = (family: PitchedFamily, value: number, {min, max, at = 0, ...rest}: PitchedCueOptions): Cue =>
+  cue(family, at, {...rest, note: valueToNoteIndex(value, {min, max})});
 
 /** Polyphony / repetition limits. */
 export interface CueLimits {

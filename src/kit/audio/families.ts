@@ -51,7 +51,7 @@ export const PITCHED_FAMILIES = ['number-tick', 'tick', 'pop'] as const;
 /** Name of a family with pitched files. */
 export type PitchedFamily = (typeof PITCHED_FAMILIES)[number];
 
-/** Notes in each pitched set, ascending along C major pentatonic. */
+/** Notes in each pitched set, ascending along D major pentatonic. */
 export const PITCHED_NOTES = 12;
 
 /** One pitched sound file. */
@@ -105,8 +105,12 @@ export const allPitchedSfx = (): readonly PitchedSfxInfo[] => PITCHED;
  * range are clamped. An empty range (`min === max`) gives the lowest note. For a falling scale, swap the sign of all three.
  * @example cue('pop', 1.2, {note: noteForValue(72, 0, 100)}) // 8
  */
-export const noteForValue = (value: number, min: number, max: number): number => {
-  if (![value, min, max].every(Number.isFinite) || max < min) throw new RangeError(`kit/audio: noteForValue(${value}, ${min}, ${max}) needs finite numbers and max >= min`);
+export const noteForValue = (value: number, min: number, max: number): number => valueToNoteIndex(value, {min, max});
+
+/** Same mapping with a range object: `min` -> note 0, `max` -> note 11, linear, clamped; `min === max` -> 0; throws on NaN or max < min. */
+export const valueToNoteIndex = (value: number, range: {min: number; max: number}): number => {
+  const {min, max} = range;
+  if (![value, min, max].every(Number.isFinite) || max < min) throw new RangeError(`kit/audio: valueToNoteIndex(${value}, {min: ${min}, max: ${max}}) needs finite numbers and max >= min`);
   if (max === min) return 0;
   const x = Math.min(1, Math.max(0, (value - min) / (max - min)));
   return Math.round(x * (PITCHED_NOTES - 1));

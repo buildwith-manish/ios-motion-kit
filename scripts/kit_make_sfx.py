@@ -170,21 +170,21 @@ def finish(x, dur=None):
 
 
 # ------------------------------------------------------------------------------------------------- the key
-# Note tables (names from sfx_key.py: C major pentatonic = C D E G A). Three variants = three scale-degree choices.
+# Note tables (names from sfx_key.py: D major pentatonic = D E F# A B). Three variants = three scale-degree choices.
 # The ticks keep their old register: the old frequency was snapped to the nearest scale note (in cents).
-TAP_NOTES = ("D6", "E6", "C6")  # an octave under the old register: at 2.1-2.6 kHz about 90% of a tap sat in the harsh 2-5 kHz band
-TICK_NOTES = ("C8", "A7", "D8")  # was 4200 / 3600 / 4800 Hz
-NUMBER_TICK_NOTES = ("G7", "A7", "E7")  # was 3000 / 3400 / 2700 Hz
-POP_NOTES = (("G4", "G5"), ("A4", "A5"), ("E4", "E5"))  # (glide start, glide END) - an octave up, landing on the note
-RISE_NOTES = (("C5", "G5"), ("D5", "A5"), ("A4", "E5"))  # fifth up, both ends on scale notes
-FALL_NOTES = (("A5", "D5"), ("G5", "C5"), ("E5", "A4"))  # fifth down
-CHIME_NOTES = (("C5", "E5", "G5"), ("D5", "G5", "A5"), ("E5", "G5", "C6"))  # rising triads from scale degrees
-WARN_NOTES = (("G5", "D5"), ("A5", "E5"), ("E5", "A4"))  # falling fifth within the scale
-IMPACT_NOTES = (("G2", "G1"), ("C3", "C2"), ("A2", "A1"))  # (start, END): octave drop onto G, C, A (close together: one family, three weights)
-KNOCK_NOTES = ("G3", "C4", "A3")  # tone of the impact-soft mid "knock" layer (150-400 Hz)
+TAP_NOTES = ("E6", "F#6", "D6")  # an octave under the old register: at 2.1-2.6 kHz about 90% of a tap sat in the harsh 2-5 kHz band
+TICK_NOTES = ("D8", "B7", "E8")  # was 4200 / 3600 / 4800 Hz
+NUMBER_TICK_NOTES = ("A7", "B7", "F#7")  # was 3000 / 3400 / 2700 Hz
+POP_NOTES = (("A4", "A5"), ("B4", "B5"), ("F#4", "F#5"))  # (glide start, glide END) - an octave up, landing on the note
+RISE_NOTES = (("D5", "A5"), ("E5", "B5"), ("B4", "F#5"))  # fifth up, both ends on scale notes
+FALL_NOTES = (("B5", "E5"), ("A5", "D5"), ("F#5", "B4"))  # fifth down
+CHIME_NOTES = (("D5", "F#5", "A5"), ("E5", "A5", "B5"), ("F#5", "A5", "D6"))  # rising triads from scale degrees
+WARN_NOTES = (("A5", "E5"), ("B5", "F#5"), ("F#5", "B4"))  # falling fifth within the scale
+IMPACT_NOTES = (("A2", "A1"), ("D3", "D2"), ("A3", "A2"))  # (start, END): octave drop onto A, D, A (close together: one family, three weights)
+KNOCK_NOTES = ("A3", "D4", "F#3")  # tone of the impact-soft mid "knock" layer (150-400 Hz)
 
 # Pitched sets for data values: 12 consecutive scale notes (2.4 octaves) per family.
-PITCHED_STARTS = {"number-tick": "C6", "tick": "C6", "pop": "C4"}  # C6..D8 for the ticks (1.05-4.7 kHz), C4..D6 for pop
+PITCHED_STARTS = {"number-tick": "D6", "tick": "D6", "pop": "D4"}  # D6..E8 for the ticks (1.2-5.3 kHz), D4..E6 for pop
 PITCHED_COUNT = 12
 PITCHED_FAMILIES = tuple(PITCHED_STARTS)
 
