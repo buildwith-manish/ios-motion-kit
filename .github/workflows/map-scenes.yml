@@ -29,7 +29,10 @@ jobs:
       - name: Stills of every new scene type (landscape + portrait)
         id: stills
         continue-on-error: true
-        run: npx tsx scripts/map_scenes_stills.ts --out=docs/previews/kit-map-scenes 2>&1 | tee docs/previews/kit-map-scenes-stills.log
+        run: |
+          set -o pipefail
+          mkdir -p docs/previews
+          npx tsx scripts/map_scenes_stills.ts --out=docs/previews/kit-map-scenes 2>&1 | tee docs/previews/kit-map-scenes-stills.log
       - name: Render landscape + portrait videos, timings
         id: render
         continue-on-error: true
