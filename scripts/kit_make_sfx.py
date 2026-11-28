@@ -172,7 +172,7 @@ def finish(x, dur=None):
 # ------------------------------------------------------------------------------------------------- the key
 # Note tables (names from sfx_key.py: C major pentatonic = C D E G A). Three variants = three scale-degree choices.
 # Percussive sounds keep their old register: the old frequency was snapped to the nearest scale note (in cents).
-TAP_NOTES = ("D7", "G7", "C7")  # was 2400 / 2900 / 2100 Hz
+TAP_NOTES = ("D7", "E7", "C7")  # was 2400 / 2900 / 2100 Hz (2900 would snap to G7 = +8%: too far, E7 is -9% but keeps the set close)
 TICK_NOTES = ("C8", "A7", "D8")  # was 4200 / 3600 / 4800 Hz
 NUMBER_TICK_NOTES = ("G7", "A7", "E7")  # was 3000 / 3400 / 2700 Hz
 POP_NOTES = (("G4", "G5"), ("A4", "A5"), ("E4", "E5"))  # (glide start, glide END) - an octave up, landing on the note
@@ -180,7 +180,7 @@ RISE_NOTES = (("C5", "G5"), ("D5", "A5"), ("A4", "E5"))  # fifth up, both ends o
 FALL_NOTES = (("A5", "D5"), ("G5", "C5"), ("E5", "A4"))  # fifth down
 CHIME_NOTES = (("C5", "E5", "G5"), ("D5", "G5", "A5"), ("E5", "G5", "C6"))  # rising triads from scale degrees
 WARN_NOTES = (("G5", "D5"), ("A5", "E5"), ("E5", "A4"))  # falling fifth within the scale
-IMPACT_NOTES = (("G2", "G1"), ("C3", "C2"), ("C2", "C1"))  # (start, END): octave drop onto the fifth / the tonic
+IMPACT_NOTES = (("G2", "G1"), ("C3", "C2"), ("A2", "A1"))  # (start, END): octave drop onto G, C, A (close together: one family, three weights)
 KNOCK_NOTES = ("G3", "C4", "A3")  # tone of the impact-soft mid "knock" layer (150-400 Hz)
 
 # Pitched sets for data values: 12 consecutive scale notes (2.4 octaves) per family.
@@ -195,27 +195,36 @@ def pitched_notes(family):
 
 # --------------------------------------------------------------------------------------------- the shared room
 # ONE deterministic synthetic impulse response: exponentially decaying band-limited noise. Every family is sent to it
-# with the wet amount below (energy fraction of the final mix: out = sqrt(1-w) dry + sqrt(w) room, IR has unit energy).
+# with the wet amount below (energy fraction of the final mix: out = sqrt(1-w) dry + sqrt(w) room, IR has unit in-band power gain).
 ROOM = {"rt60_s": 0.42, "predelay_s": 0.007, "highcut_hz": 6500.0, "lowcut_hz": 100.0, "length_s": 0.52}
-WET = {  # per-family send. EDIT HERE to change how much room a family gets (0 = fully dry).
+WET = {  # per-family send. EDIT HERE to change how much room a family gets (0 = fully dry). 0.04 = -14 dB, 0.08 = -11 dB.
+    # Chosen with the room normalised by in-band gain (see room_ir): the highest send at which each family stays within ~2.5 dB
+    # of its pre-room level and its three variants stay within 2 LU of each other. Pure tones in a room ripple (a swept tone
+    # sees the room's random frequency response), so the swept families (rise, fall) and the two-note ones get the least.
     "tap": 0.04,
     "tick": 0.03,
-    "pop": 0.12,
-    "whoosh-soft": 0.12,
+    "pop": 0.08,
+    "whoosh-soft": 0.06,
     "whoosh-fast": 0.04,
     "swipe": 0.04,
-    "slide": 0.12,
-    "rise": 0.12,
-    "fall": 0.12,
-    "chime-success": 0.13,
-    "soft-warn": 0.12,
+    "slide": 0.06,
+    "rise": 0.05,
+    "fall": 0.04,
+    "chime-success": 0.08,
+    "soft-warn": 0.04,
     "number-tick": 0.03,
-    "impact-soft": 0.10,
+    "impact-soft": 0.08,
 }
-# Longest room tail added after the dry sound. Wet families get the whole tail (cut where the mix is 55 dB under its peak);
-# dry families get only a hint, because a file's duration is also its polyphony slot in the cue system (number rolls!).
-TAIL_CAP_S = {"tap": 0.05, "tick": 0.03, "number-tick": 0.03, "swipe": 0.08, "whoosh-fast": 0.10}
-TAIL_CAP_DEFAULT_S = 0.52
+# Longest room tail added after the dry sound (seconds). The room itself rings for ~0.4 s, but a file's duration is also its
+# slot in the cue system's polyphony limit (number rolls!), so every family gets only as much tail as keeps it inside the
+# length its role allows (see scripts/sfx_report_thresholds.json). The tail is cut where the mix is 55 dB under its peak or
+# at the cap, whichever is first, and always ends in a fade, so it is a short room "bloom", not a long reverb.
+TAIL_CAP_S = {
+    "tap": 0.015, "tick": 0.0, "number-tick": 0.0, "swipe": 0.060, "whoosh-fast": 0.060,
+    "pop": 0.050, "whoosh-soft": 0.080, "slide": 0.080, "rise": 0.080, "fall": 0.080,
+    "chime-success": 0.090, "soft-warn": 0.090, "impact-soft": 0.100,
+}
+TAIL_CAP_DEFAULT_S = 0.10
 TAIL_FLOOR_DB = -55.0
 # Raised-cosine taper (s) at the end of the DRY sound before it enters the room, so nothing is cut while still loud.
 END_TAPER_S = {"whoosh-fast": 0.085, "swipe": 0.075, "whoosh-soft": 0.06, "slide": 0.06}
@@ -237,7 +246,14 @@ def room_ir():
         k = int(0.02 * SR)
         ir[-k:] *= 0.5 + 0.5 * np.cos(np.pi * np.arange(k) / k)
         ir = np.concatenate([np.zeros(int(round(ROOM["predelay_s"] * SR))), ir])
-        _IR_CACHE["ir"] = ir / np.sqrt(np.sum(ir**2))
+        # Normalise by the IN-BAND power gain, not by total energy. The room only passes lowcut..highcut, so a unit-energy IR
+        # has |H(f)|^2 ~ 3.7 (+5.7 dB) inside that band; a tone or any band-limited sound would then get ~4x the wet energy it
+        # was sent, plus Rayleigh peaks up to +3.5 dB over the dry sound. With this, `wet` is the energy fraction of the mix for
+        # any input that sits inside the room's band.
+        H = np.fft.rfft(ir, 1 << 17)
+        f = np.fft.rfftfreq(1 << 17, 1 / SR)
+        band = (f >= ROOM["lowcut_hz"]) & (f <= ROOM["highcut_hz"])
+        _IR_CACHE["ir"] = ir / np.sqrt(np.mean(np.abs(H[band]) ** 2))
     return _IR_CACHE["ir"]
 
 
@@ -262,14 +278,15 @@ def apply_room(body, wet, tail_cap_s):
 # ------------------------------------------------------------------------------------------------- texture layer
 # A subtle synthesized noise transient on the onset of tap / pop / swipe / slide. Level = PEAK of the transient relative
 # to the PEAK of the main layer (the tone for tap and pop; the sweep + glide body for swipe and slide, which have no
-# separate tone at that level). band = band-pass edges in Hz, dur = transient length in seconds.
+# separate tone at that level). band = band-pass edges in Hz, dur = transient length in seconds, attack = rise time in seconds
+# (default 1.5 ms; a faster one is itself a >8 kHz click, and a body that is quiet at its onset needs a slower one).
 TEXTURE = {
     "tap": {"band": (1500.0, 6000.0), "dur": 0.010, "level_db": -18.0},
     "pop": {"band": (300.0, 1800.0), "dur": 0.018, "level_db": -17.0},
     "swipe": {"band": (2500.0, 7000.0), "dur": 0.012, "level_db": -18.0},
-    "slide": {"band": (600.0, 2800.0), "dur": 0.024, "level_db": -18.0},
+    "slide": {"band": (500.0, 2200.0), "dur": 0.030, "level_db": -20.0, "attack": 0.004},  # a soft grain, not a transient
 }
-ONSET_FRACTION = 0.05  # onset = first point where the 1 ms-smoothed envelope reaches 5% of its peak
+ONSET_FRACTION = 0.05  # onset = first point where the 1 ms-smoothed envelope reaches 5% of its peak (texture is placed there)
 
 
 def onset_index(x):
@@ -284,13 +301,16 @@ def add_texture(family, variant, body):
     t = np.arange(n) / SR
     lo, hi = cfg["band"]
     x = bandpass(rng.standard_normal(n + int(0.02 * SR)), lo, hi, 2)[int(0.02 * SR) :]  # skip the filter start-up
-    env = attack(t, 0.0005) * np.exp(-t / (cfg["dur"] / 4.0))
+    env = attack(t, cfg.get("attack", 0.0015)) * np.exp(-t / (cfg["dur"] / 4.0))
     env *= 0.5 + 0.5 * np.cos(np.pi * np.clip((t - 0.6 * cfg["dur"]) / (0.4 * cfg["dur"]), 0.0, 1.0))
     x = x * env
     x *= (np.max(np.abs(body)) * 10 ** (cfg["level_db"] / 20)) / np.max(np.abs(x))
-    start = min(onset_index(body), int(0.005 * SR))  # aligned to the onset, inside the first 5 ms
+    # Aligned to where the body really starts (5% of its peak). Clamping this to the first few ms put the transient alone, ahead
+    # of a slowly rising body (slide is ~40 dB down for its first 10 ms), where it is louder than the sound it decorates: a click.
+    start = onset_index(body)
     out = body.copy()
-    out[start : start + n] += x
+    m = min(n, len(out) - start)
+    out[start : start + m] += x[:m]
     return out
 
 

@@ -159,6 +159,9 @@ def flag_sound(m, t):
     def add(flag, reason):
         out.append({"flag": flag, "reason": reason})
 
+    if over(len(m["clicks"]), t.get("clicks_max", 0)):
+        add("click", f"{len(m['clicks'])} spike(s) above 8 kHz at {', '.join(f'{c * 1000:.1f} ms' for c in m['clicks'])}")
+
     bright = []
     if over(m["band_share"]["2k_5k"], t["share_2k_5k_max"]):
         bright.append(f"2-5 kHz share {m['band_share']['2k_5k']:.0%} > {t['share_2k_5k_max']:.0%}")
