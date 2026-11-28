@@ -1,0 +1,173 @@
+name: sfx-report
+
+on:
+  pull_request:
+    paths:
+      - scripts/kit_make_sfx.py
+      - scripts/sfx_report*
+      - scripts/sfx_build_page.py
+      - public/kit/sfx/**
+      - .github/workflows/sfx-report.yml
+  push:
+    branches: [main]
+    paths:
+      - scripts/kit_make_sfx.py
+      - scripts/sfx_report*
+      - scripts/sfx_build_page.py
+      - public/kit/sfx/**
+      - .github/workflows/sfx-report.yml
+  workflow_dispatch:
+    inputs:
+      strict:
+        description: Fail the job if any sound is flagged
+        type: boolean
+        default: false
+      check_determinism:
+        description: Regenerate the sounds and fail if they differ from the committed files
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+
+concurrency:
+  group: sfx-report-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  report:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    outputs:
+      comment: ${{ steps.comment.outputs.body }}
+      pages: ${{ steps.pages.outcome == 'success' }}
+    steps:
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6.3.0
+        with:
+          python-version: '3.13'
+          cache: pip
+          cache-dependency-path: scripts/sfx_report_requirements.txt
+      - run: pip install -r scripts/sfx_report_requirements.txt
+      - name: Determinism check (regenerate and compare)
+        id: determinism
+        if: github.event_name != 'workflow_dispatch' || inputs.check_determinism
+        continue-on-error: true # the report is still built; the last step fails the job
+        run: |
+          python -B scripts/kit_make_sfx.py --out "$RUNNER_TEMP/sfx" --ts-manifest "$RUNNER_TEMP/sfx-manifest.json" > /dev/null
+          diff -rq "$RUNNER_TEMP/sfx" public/kit/sfx
+          cmp "$RUNNER_TEMP/sfx-manifest.json" src/kit/audio/sfx-manifest.json
+          echo "Regenerated sounds are byte-identical to the committed files."
+      - name: Build report and listening page
+        run: |
+          python scripts/sfx_report.py
+          python scripts/sfx_build_page.py
+      - name: Job summary
+        run: cat dist/sfx-report/report.md >> "$GITHUB_STEP_SUMMARY"
+      - name: Upload report
+        id: artifact
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: sfx-report
+          path: dist/sfx-report
+          retention-days: 14
+          if-no-files-found: error
+      - name: Upload Pages artifact
+        id: pages
+        if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+        uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
+        with:
+          path: dist/sfx-report
+      - name: Compose PR comment
+        id: comment
+        if: github.event_name == 'pull_request'
+        env:
+          ARTIFACT_URL: ${{ steps.artifact.outputs.artifact-url }}
+          DETERMINISM: ${{ steps.determinism.outcome }}
+        run: |
+          python - <<'PY'
+          import json, os
+          r = json.load(open('dist/sfx-report/report.json'))
+          s = r['summary']
+          lines = ['<!-- sfx-report -->', '### SFX report', '',
+                   f"**{s['flagged']} of {s['sounds']} sounds flagged.** " + ', '.join(f'{k}: {v}' for k, v in s['by_flag'].items()), '']
+          flagged = [x for x in r['sounds'] if x['flags']]
+          if flagged:
+              lines += ['| sound | flag | measured |', '|---|---|---|']
+              lines += [f"| {x['name']} | {f['flag']} | {f['reason'].replace('<', '&lt;')} |" for x in flagged for f in x['flags']]
+          same = 'passed' if os.environ['DETERMINISM'] == 'success' else '**failed** (see the job log)'
+          lines += ['', f'Determinism check: {same}.',
+                    f"[Download the report and listening page]({os.environ['ARTIFACT_URL']}) (unzip, open `index.html`; kept 14 days).",
+                    '', 'Flags are measurements against `scripts/sfx_report_thresholds.json`; judge the sounds by ear.']
+          with open(os.environ['GITHUB_OUTPUT'], 'a') as out:
+              out.write('body<<SFX_EOF\n' + '\n'.join(lines) + '\nSFX_EOF\n')
+          PY
+      - name: Gate (determinism, strict)
+        env:
+          DETERMINISM: ${{ steps.determinism.outcome }}
+          STRICT: ${{ inputs.strict }}
+        run: |
+          flagged=$(python -c "import json; print(json.load(open('dist/sfx-report/report.json'))['summary']['flagged'])")
+          fail=0
+          if [ "$DETERMINISM" = failure ]; then
+            echo "::error::Regenerated sounds differ from the committed files."; fail=1
+          fi
+          if [ "$flagged" -gt 0 ]; then
+            if [ "$STRICT" = true ]; then
+              echo "::error::$flagged sounds flagged (strict mode)."; fail=1
+            else
+              echo "::warning::$flagged sounds flagged; see the job summary."
+            fi
+          fi
+          exit $fail
+
+  comment:
+    needs: report
+    # Fork pull requests get a read-only token, so they only get the artifact and job summary.
+    if: always() && github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository && needs.report.outputs.comment != ''
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8.0.0
+        env:
+          BODY: ${{ needs.report.outputs.comment }}
+        with:
+          script: |
+            const {owner, repo} = context.repo;
+            const issue_number = context.issue.number;
+            const comments = await github.paginate(github.rest.issues.listComments, {owner, repo, issue_number, per_page: 100});
+            const mine = comments.find((c) => c.user.type === 'Bot' && c.body.startsWith('<!-- sfx-report -->'));
+            if (mine) await github.rest.issues.updateComment({owner, repo, comment_id: mine.id, body: process.env.BODY});
+            else await github.rest.issues.createComment({owner, repo, issue_number, body: process.env.BODY});
+
+  deploy:
+    needs: report
+    if: always() && needs.report.outputs.pages == 'true'
+    runs-on: ubuntu-24.04
+    permissions:
+      pages: write
+      id-token: write
+    concurrency:
+      group: pages
+      cancel-in-progress: false
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - name: Check that Pages is enabled
+        id: enabled
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if out=$(gh api "repos/$GITHUB_REPOSITORY/pages" 2>&1); then
+            echo "ok=true" >> "$GITHUB_OUTPUT"
+          elif grep -q 'HTTP 404' <<< "$out"; then
+            echo "::warning::GitHub Pages is not enabled. Set Settings > Pages > Source to 'GitHub Actions', then re-run."
+          else
+            echo "$out"; exit 1
+          fi
+      - id: deploy
+        if: steps.enabled.outputs.ok == 'true'
+        uses: actions/deploy-pages@cd2ce8fcbc39b97be8ca5fce6e763baed58fa128 # v5.0.0
