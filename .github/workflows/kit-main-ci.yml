@@ -33,6 +33,7 @@ jobs:
           - { suite: tokens, entry: src/kit/demo/entry.tsx, comp: Kit-Tokens-Demo, times: '0.8,2,3.2' }
           - { suite: transitions, entry: src/kit/demo/entry.tsx, comp: Kit-Transitions-Demo, times: '1.7,3.9,6.1,8.3,10.5,12.7' }
           - { suite: ui, entry: src/kit/ui/entry.tsx, comp: 'Kit-Ui-Demo,Kit-Ui-Demo-Vertical,Kit-Ui-Demo-30fps', times: '2,4.5,7.5,8.5' }
+          - { suite: charts, entry: src/kit/demo/entry.tsx, comp: 'Kit-Charts-Demo,Kit-Charts-Demo-Vertical,Kit-Charts-Demo-30fps', times: '2.4,5.6,8.8,12,15.2,18.4,21.6,24.8,28,31.2' }
           - { suite: scenes, entry: src/kit/scenes/entry.tsx, comp: Kit-Scenes-Demo, times: '2,7,12,17,22,27' }
     steps:
       - uses: actions/checkout@v4

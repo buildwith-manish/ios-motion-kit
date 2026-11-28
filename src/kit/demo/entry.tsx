@@ -19,6 +19,7 @@ import {KitMapCompositions} from './MapDemo';
 import {KitMetroCompositions} from './MetroDemo';
 import {KitFlyCompositions} from './FlyDemo';
 import {KitFormatCompositions} from './FormatDemo';
+import {KitChartsCompositions} from './ChartsDemo';
 
 registerRoot(() => (
   <>
@@ -36,6 +37,7 @@ registerRoot(() => (
     <KitMetroCompositions />
     <KitFlyCompositions />
     <KitFormatCompositions />
+    <KitChartsCompositions />
   </>
 ));
 export {KitNumberRollCompositions} from './NumberRollDemo';
