@@ -11,7 +11,7 @@ import {ensureDir, fail, getBundle, openRemotionBrowser, parseArgs, remotionBrow
 
 // Thresholds apply to the final-4k banding-safe row only (longest identical-luma run as % of width; distinct levels).
 // Set from measured values: see docs/export-quality.md.
-const THRESHOLDS = {maxRunPct: null, minLevels: null}; // enforced on final-4k / banding-safe only
+const THRESHOLDS = {maxRunPct: 6, minLevels: 8}; // enforced on final-4k / banding-safe only
 
 const usage = 'usage: node scripts/kit_banding_check.mjs [--out <dir>] [--enforce] [--max-run-pct <n>] [--min-levels <n>] [--frame <n>]';
 const args = parseArgs({out: 'string', enforce: 'flag', 'max-run-pct': 'number', 'min-levels': 'number', frame: 'number'}, usage);
