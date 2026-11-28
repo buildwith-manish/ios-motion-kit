@@ -11,6 +11,12 @@ import {DEFAULT_ENTRY, ensureDir, fail, getBundle, openRemotionBrowser, parseArg
 import {mergeReview} from './kit_review_merge.mjs';
 import {tileSheet} from './pipeline/tile.mjs';
 
+// CI can only read annotations here, so surface failures as ::error:: lines too.
+const annotate = (level, title, msg) => console.log(`::${level} title=${title}::${String(msg).split('\n').slice(0, 3).join(' | ').slice(0, 500)}`);
+const origError = console.error;
+console.error = (...a) => { annotate('error', 'kit:review', a.join(' ')); origError(...a); };
+process.on('uncaughtException', (e) => { annotate('error', 'kit:review', e?.stack ?? e); process.exit(1); });
+process.on('unhandledRejection', (e) => { annotate('error', 'kit:review', e?.stack ?? e); process.exit(1); });
 const args = parseArgs({comp: 'string', times: 'string', portrait: 'flag', entry: 'string', out: 'string', loudness: 'flag'}, 'node scripts/kit_review.mjs --comp <id> [--times 1,3,5] [--portrait] [--entry file] [--loudness] [--out dir]');
 if (!args.comp || args.comp.includes(',')) fail('--comp <one composition id> is required');
 const here = path.dirname(fileURLToPath(import.meta.url));
@@ -42,7 +48,7 @@ await tileSheet({cwd: process.cwd(), items: stills.map((file, i) => ({file, labe
 // 3. QA scripts (report only; each writes JSON into qa/<name>/).
 const run = (script, extra, name, jsonName) => {
   const dir = path.join(out, 'qa', name);
-  const r = spawnSync(process.execPath, [path.join(here, script), '--comp', id, '--entry', entry, '--serve-url', serveUrl, '--no-images', '--no-fail', '--out', dir, ...extra], {stdio: ['ignore', 'ignore', 'inherit']});
+  const r = spawnSync(process.execPath, [path.join(here, script), '--comp', id, '--entry', entry, '--serve-url', serveUrl, ...(script === 'kit_motion_audit.mjs' ? [] : ['--no-images']), '--no-fail', '--out', dir, ...extra], {stdio: ['ignore', 'ignore', 'inherit']});
   const file = path.join(dir, jsonName);
   if (r.status !== 0 || !existsSync(file)) return {reason: `exit ${r.status ?? 'signal'}`};
   return {report: JSON.parse(readFileSync(file, 'utf8'))};
@@ -59,7 +65,7 @@ const reports = {};
 const skipped = {};
 for (const [key, [script, extra, name, jsonName]] of Object.entries(jobs)) {
   const r = run(script, extra, name, jsonName);
-  if (r.report) reports[key] = r.report; else skipped[key] = r.reason;
+  if (r.report) reports[key] = r.report; else { skipped[key] = r.reason; annotate('warning', 'review skipped', `${key}: ${r.reason}`); }
 }
 
 // 4. review.md

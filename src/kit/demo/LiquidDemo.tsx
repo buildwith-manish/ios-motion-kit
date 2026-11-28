@@ -18,7 +18,7 @@ const HeroCard: React.FC<{theme: Theme; tier: GlassTierProp; label: string; fram
   const u = unit(theme);
   return (
     <div style={{position: 'absolute', left: x, top: y, width: w}}>
-      <div style={{...textStyle(theme, 'caption', {weight: 'bold'}), color: safeText(theme, 'primary', 'canvas'), textTransform: 'uppercase', marginBottom: space(theme, 3)}}>{label}</div>
+      <div style={{...textStyle(theme, 'caption', {weight: 'bold'}), fontSize: 30 * u, color: safeText(theme, 'primary', 'canvas'), textTransform: 'uppercase', marginBottom: space(theme, 3)}}>{label}</div>
       <Glass
         tier={tier}
         width={w}
