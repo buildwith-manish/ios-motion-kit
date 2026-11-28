@@ -3,8 +3,94 @@
   "sampleRate": 48000,
   "bitDepth": 24,
   "peakDbTarget": -3.0,
-  "lufsNote": "K-weighted ungated mean-square over the whole (sub-400ms) file; relative estimate, not BS.1770 integrated.",
+  "lufsNote": "K-weighted ungated mean-square over the whole file; relative estimate, not BS.1770 integrated.",
   "panNote": "@L/@R files are stereo, equal-power pan at -/+0.75.",
+  "key": {
+    "name": "C major pentatonic",
+    "tonic": "C",
+    "scale": [
+      "C",
+      "D",
+      "E",
+      "G",
+      "A"
+    ],
+    "a4Hz": 440.0
+  },
+  "room": {
+    "rt60_s": 0.42,
+    "predelay_s": 0.007,
+    "highcut_hz": 6500.0,
+    "lowcut_hz": 100.0,
+    "length_s": 0.52,
+    "wetByFamily": {
+      "tap": 0.04,
+      "tick": 0.03,
+      "pop": 0.08,
+      "whoosh-soft": 0.06,
+      "whoosh-fast": 0.04,
+      "swipe": 0.04,
+      "slide": 0.06,
+      "rise": 0.05,
+      "fall": 0.04,
+      "chime-success": 0.08,
+      "soft-warn": 0.04,
+      "number-tick": 0.03,
+      "impact-soft": 0.08
+    },
+    "tailFloorDb": -55.0,
+    "tailCapSeconds": {
+      "tap": 0.015,
+      "tick": 0.0,
+      "number-tick": 0.0,
+      "swipe": 0.06,
+      "whoosh-fast": 0.06,
+      "pop": 0.05,
+      "whoosh-soft": 0.08,
+      "slide": 0.08,
+      "rise": 0.08,
+      "fall": 0.08,
+      "chime-success": 0.09,
+      "soft-warn": 0.09,
+      "impact-soft": 0.1
+    },
+    "tailCapDefaultSeconds": 0.1
+  },
+  "texture": {
+    "tap": {
+      "band": [
+        1500.0,
+        6000.0
+      ],
+      "dur": 0.01,
+      "level_db": -18.0
+    },
+    "pop": {
+      "band": [
+        300.0,
+        1800.0
+      ],
+      "dur": 0.018,
+      "level_db": -17.0
+    },
+    "swipe": {
+      "band": [
+        2500.0,
+        7000.0
+      ],
+      "dur": 0.012,
+      "level_db": -18.0
+    },
+    "slide": {
+      "band": [
+        500.0,
+        2200.0
+      ],
+      "dur": 0.03,
+      "level_db": -20.0,
+      "attack": 0.004
+    }
+  },
   "sounds": [
     {
       "name": "tap-1",
@@ -15,11 +101,15 @@
         "L",
         "R"
       ],
-      "duration": 0.055,
+      "duration": 0.07,
       "peakDb": -3.0,
-      "peakTime": 0.0043,
-      "rmsDb": -15.5,
-      "lufs": -14.58
+      "peakTime": 0.0044,
+      "rmsDb": -17.39,
+      "lufs": -15.5,
+      "wet": 0.04,
+      "notes": [
+        "D7"
+      ]
     },
     {
       "name": "tap-2",
@@ -30,11 +120,15 @@
         "L",
         "R"
       ],
-      "duration": 0.055,
+      "duration": 0.07,
       "peakDb": -3.0,
-      "peakTime": 0.0049,
-      "rmsDb": -15.61,
-      "lufs": -14.44
+      "peakTime": 0.0054,
+      "rmsDb": -17.52,
+      "lufs": -15.6,
+      "wet": 0.04,
+      "notes": [
+        "E7"
+      ]
     },
     {
       "name": "tap-3",
@@ -45,11 +139,15 @@
         "L",
         "R"
       ],
-      "duration": 0.055,
+      "duration": 0.07,
       "peakDb": -3.0,
       "peakTime": 0.0049,
-      "rmsDb": -15.8,
-      "lufs": -15.24
+      "rmsDb": -16.99,
+      "lufs": -15.76,
+      "wet": 0.04,
+      "notes": [
+        "C7"
+      ]
     },
     {
       "name": "tick-1",
@@ -63,8 +161,12 @@
       "duration": 0.028,
       "peakDb": -3.0,
       "peakTime": 0.0042,
-      "rmsDb": -13.53,
-      "lufs": -11.66
+      "rmsDb": -13.59,
+      "lufs": -11.59,
+      "wet": 0.03,
+      "notes": [
+        "C8"
+      ]
     },
     {
       "name": "tick-2",
@@ -77,9 +179,13 @@
       ],
       "duration": 0.028,
       "peakDb": -3.0,
-      "peakTime": 0.0044,
-      "rmsDb": -13.67,
-      "lufs": -11.87
+      "peakTime": 0.0045,
+      "rmsDb": -14.12,
+      "lufs": -12.12,
+      "wet": 0.03,
+      "notes": [
+        "A7"
+      ]
     },
     {
       "name": "tick-3",
@@ -92,9 +198,13 @@
       ],
       "duration": 0.028,
       "peakDb": -3.0,
-      "peakTime": 0.0045,
-      "rmsDb": -13.16,
-      "lufs": -11.45
+      "peakTime": 0.0046,
+      "rmsDb": -13.88,
+      "lufs": -11.78,
+      "wet": 0.03,
+      "notes": [
+        "D8"
+      ]
     },
     {
       "name": "pop-1",
@@ -105,11 +215,16 @@
         "L",
         "R"
       ],
-      "duration": 0.14,
+      "duration": 0.19,
       "peakDb": -3.0,
-      "peakTime": 0.0053,
-      "rmsDb": -13.8,
-      "lufs": -14.73
+      "peakTime": 0.0056,
+      "rmsDb": -14.8,
+      "lufs": -16.34,
+      "wet": 0.08,
+      "notes": [
+        "G4",
+        "G5"
+      ]
     },
     {
       "name": "pop-2",
@@ -120,11 +235,16 @@
         "L",
         "R"
       ],
-      "duration": 0.14,
+      "duration": 0.19,
       "peakDb": -3.0,
-      "peakTime": 0.0065,
-      "rmsDb": -13.81,
-      "lufs": -14.62
+      "peakTime": 0.0063,
+      "rmsDb": -14.57,
+      "lufs": -16.09,
+      "wet": 0.08,
+      "notes": [
+        "A4",
+        "A5"
+      ]
     },
     {
       "name": "pop-3",
@@ -135,11 +255,16 @@
         "L",
         "R"
       ],
-      "duration": 0.14,
+      "duration": 0.19,
       "peakDb": -3.0,
-      "peakTime": 0.006,
-      "rmsDb": -13.93,
-      "lufs": -14.94
+      "peakTime": 0.0066,
+      "rmsDb": -14.55,
+      "lufs": -16.13,
+      "wet": 0.08,
+      "notes": [
+        "E4",
+        "E5"
+      ]
     },
     {
       "name": "whoosh-soft-1",
@@ -150,11 +275,12 @@
         "L",
         "R"
       ],
-      "duration": 0.48,
+      "duration": 0.56,
       "peakDb": -3.0,
       "peakTime": 0.2697,
-      "rmsDb": -16.32,
-      "lufs": -16.3
+      "rmsDb": -16.65,
+      "lufs": -16.92,
+      "wet": 0.06
     },
     {
       "name": "whoosh-soft-2",
@@ -165,11 +291,12 @@
         "L",
         "R"
       ],
-      "duration": 0.52,
+      "duration": 0.6,
       "peakDb": -3.0,
       "peakTime": 0.2705,
-      "rmsDb": -17.52,
-      "lufs": -17.86
+      "rmsDb": -17.18,
+      "lufs": -17.74,
+      "wet": 0.06
     },
     {
       "name": "whoosh-soft-3",
@@ -180,11 +307,12 @@
         "L",
         "R"
       ],
-      "duration": 0.44,
+      "duration": 0.52,
       "peakDb": -3.0,
-      "peakTime": 0.2469,
-      "rmsDb": -17.03,
-      "lufs": -16.93
+      "peakTime": 0.2051,
+      "rmsDb": -17.37,
+      "lufs": -17.57,
+      "wet": 0.06
     },
     {
       "name": "whoosh-fast-1",
@@ -195,11 +323,12 @@
         "L",
         "R"
       ],
-      "duration": 0.23,
+      "duration": 0.29,
       "peakDb": -3.0,
       "peakTime": 0.0704,
-      "rmsDb": -15.97,
-      "lufs": -14.79
+      "rmsDb": -16.54,
+      "lufs": -16.17,
+      "wet": 0.04
     },
     {
       "name": "whoosh-fast-2",
@@ -210,11 +339,12 @@
         "L",
         "R"
       ],
-      "duration": 0.26,
+      "duration": 0.32,
       "peakDb": -3.0,
-      "peakTime": 0.0741,
-      "rmsDb": -16.13,
-      "lufs": -15.47
+      "peakTime": 0.0491,
+      "rmsDb": -15.84,
+      "lufs": -16.04,
+      "wet": 0.04
     },
     {
       "name": "whoosh-fast-3",
@@ -225,11 +355,12 @@
         "L",
         "R"
       ],
-      "duration": 0.21,
+      "duration": 0.27,
       "peakDb": -3.0,
-      "peakTime": 0.0976,
-      "rmsDb": -15.29,
-      "lufs": -13.79
+      "peakTime": 0.0865,
+      "rmsDb": -15.66,
+      "lufs": -14.95,
+      "wet": 0.04
     },
     {
       "name": "swipe-1",
@@ -240,11 +371,12 @@
         "L",
         "R"
       ],
-      "duration": 0.19,
+      "duration": 0.25,
       "peakDb": -3.0,
       "peakTime": 0.0161,
-      "rmsDb": -17.69,
-      "lufs": -16.94
+      "rmsDb": -17.75,
+      "lufs": -18.07,
+      "wet": 0.04
     },
     {
       "name": "swipe-2",
@@ -255,11 +387,12 @@
         "L",
         "R"
       ],
-      "duration": 0.19,
+      "duration": 0.25,
       "peakDb": -3.0,
       "peakTime": 0.0114,
-      "rmsDb": -18.75,
-      "lufs": -18.36
+      "rmsDb": -18.79,
+      "lufs": -19.52,
+      "wet": 0.04
     },
     {
       "name": "swipe-3",
@@ -270,11 +403,12 @@
         "L",
         "R"
       ],
-      "duration": 0.19,
+      "duration": 0.25,
       "peakDb": -3.0,
       "peakTime": 0.0208,
-      "rmsDb": -17.45,
-      "lufs": -16.33
+      "rmsDb": -17.76,
+      "lufs": -17.78,
+      "wet": 0.04
     },
     {
       "name": "slide-1",
@@ -285,11 +419,12 @@
         "L",
         "R"
       ],
-      "duration": 0.38,
+      "duration": 0.46,
       "peakDb": -3.0,
-      "peakTime": 0.2208,
-      "rmsDb": -15.16,
-      "lufs": -15.75
+      "peakTime": 0.2646,
+      "rmsDb": -15.65,
+      "lufs": -16.54,
+      "wet": 0.06
     },
     {
       "name": "slide-2",
@@ -300,11 +435,12 @@
         "L",
         "R"
       ],
-      "duration": 0.42,
+      "duration": 0.5,
       "peakDb": -3.0,
       "peakTime": 0.2646,
-      "rmsDb": -16.43,
-      "lufs": -17.31
+      "rmsDb": -17.03,
+      "lufs": -18.29,
+      "wet": 0.06
     },
     {
       "name": "slide-3",
@@ -315,11 +451,12 @@
         "L",
         "R"
       ],
-      "duration": 0.34,
+      "duration": 0.42,
       "peakDb": -3.0,
-      "peakTime": 0.2136,
-      "rmsDb": -15.98,
-      "lufs": -16.53
+      "peakTime": 0.1715,
+      "rmsDb": -16.81,
+      "lufs": -17.78,
+      "wet": 0.06
     },
     {
       "name": "rise-1",
@@ -330,11 +467,16 @@
         "L",
         "R"
       ],
-      "duration": 0.32,
+      "duration": 0.4,
       "peakDb": -3.0,
-      "peakTime": 0.0268,
-      "rmsDb": -9.32,
-      "lufs": -10.0
+      "peakTime": 0.116,
+      "rmsDb": -12.27,
+      "lufs": -13.56,
+      "wet": 0.05,
+      "notes": [
+        "C5",
+        "G5"
+      ]
     },
     {
       "name": "rise-2",
@@ -345,11 +487,16 @@
         "L",
         "R"
       ],
-      "duration": 0.32,
+      "duration": 0.4,
       "peakDb": -3.0,
-      "peakTime": 0.021,
-      "rmsDb": -9.31,
-      "lufs": -9.86
+      "peakTime": 0.1418,
+      "rmsDb": -11.76,
+      "lufs": -12.75,
+      "wet": 0.05,
+      "notes": [
+        "D5",
+        "A5"
+      ]
     },
     {
       "name": "rise-3",
@@ -360,11 +507,16 @@
         "L",
         "R"
       ],
-      "duration": 0.32,
+      "duration": 0.4,
       "peakDb": -3.0,
-      "peakTime": 0.0206,
-      "rmsDb": -9.33,
-      "lufs": -10.1
+      "peakTime": 0.1177,
+      "rmsDb": -10.74,
+      "lufs": -12.15,
+      "wet": 0.05,
+      "notes": [
+        "A4",
+        "E5"
+      ]
     },
     {
       "name": "fall-1",
@@ -375,11 +527,16 @@
         "L",
         "R"
       ],
-      "duration": 0.34,
+      "duration": 0.42,
       "peakDb": -3.0,
-      "peakTime": 0.0949,
-      "rmsDb": -9.69,
-      "lufs": -10.31
+      "peakTime": 0.074,
+      "rmsDb": -12.18,
+      "lufs": -13.53,
+      "wet": 0.04,
+      "notes": [
+        "A5",
+        "D5"
+      ]
     },
     {
       "name": "fall-2",
@@ -390,11 +547,16 @@
         "L",
         "R"
       ],
-      "duration": 0.34,
+      "duration": 0.42,
       "peakDb": -3.0,
-      "peakTime": 0.0838,
-      "rmsDb": -9.69,
-      "lufs": -10.16
+      "peakTime": 0.0816,
+      "rmsDb": -12.38,
+      "lufs": -13.73,
+      "wet": 0.04,
+      "notes": [
+        "G5",
+        "C5"
+      ]
     },
     {
       "name": "fall-3",
@@ -405,11 +567,16 @@
         "L",
         "R"
       ],
-      "duration": 0.34,
+      "duration": 0.42,
       "peakDb": -3.0,
-      "peakTime": 0.1,
-      "rmsDb": -9.7,
-      "lufs": -10.41
+      "peakTime": 0.1003,
+      "rmsDb": -12.0,
+      "lufs": -13.18,
+      "wet": 0.04,
+      "notes": [
+        "E5",
+        "A4"
+      ]
     },
     {
       "name": "chime-success-1",
@@ -420,11 +587,17 @@
         "L",
         "R"
       ],
-      "duration": 1.05,
+      "duration": 1.16,
       "peakDb": -3.0,
-      "peakTime": 0.1802,
-      "rmsDb": -17.17,
-      "lufs": -15.87
+      "peakTime": 0.2076,
+      "rmsDb": -16.92,
+      "lufs": -16.64,
+      "wet": 0.08,
+      "notes": [
+        "C5",
+        "E5",
+        "G5"
+      ]
     },
     {
       "name": "chime-success-2",
@@ -435,11 +608,17 @@
         "L",
         "R"
       ],
-      "duration": 1.05,
+      "duration": 1.16,
       "peakDb": -3.0,
-      "peakTime": 0.1756,
-      "rmsDb": -16.93,
-      "lufs": -15.79
+      "peakTime": 0.1767,
+      "rmsDb": -17.84,
+      "lufs": -17.28,
+      "wet": 0.08,
+      "notes": [
+        "D5",
+        "G5",
+        "A5"
+      ]
     },
     {
       "name": "chime-success-3",
@@ -450,11 +629,17 @@
         "L",
         "R"
       ],
-      "duration": 1.05,
+      "duration": 1.146,
       "peakDb": -3.0,
-      "peakTime": 0.1805,
-      "rmsDb": -17.21,
-      "lufs": -15.73
+      "peakTime": 0.1742,
+      "rmsDb": -17.45,
+      "lufs": -16.65,
+      "wet": 0.08,
+      "notes": [
+        "E5",
+        "G5",
+        "C6"
+      ]
     },
     {
       "name": "soft-warn-1",
@@ -465,11 +650,16 @@
         "L",
         "R"
       ],
-      "duration": 0.55,
+      "duration": 0.608,
       "peakDb": -3.0,
-      "peakTime": 0.1383,
-      "rmsDb": -13.84,
-      "lufs": -14.66
+      "peakTime": 0.14,
+      "rmsDb": -13.92,
+      "lufs": -15.2,
+      "wet": 0.04,
+      "notes": [
+        "G5",
+        "D5"
+      ]
     },
     {
       "name": "soft-warn-2",
@@ -480,11 +670,16 @@
         "L",
         "R"
       ],
-      "duration": 0.55,
+      "duration": 0.618,
       "peakDb": -3.0,
-      "peakTime": 0.1416,
-      "rmsDb": -13.58,
-      "lufs": -14.46
+      "peakTime": 0.156,
+      "rmsDb": -13.83,
+      "lufs": -15.06,
+      "wet": 0.04,
+      "notes": [
+        "A5",
+        "E5"
+      ]
     },
     {
       "name": "soft-warn-3",
@@ -495,11 +690,16 @@
         "L",
         "R"
       ],
-      "duration": 0.55,
+      "duration": 0.62,
       "peakDb": -3.0,
-      "peakTime": 0.1379,
-      "rmsDb": -13.79,
-      "lufs": -14.58
+      "peakTime": 0.137,
+      "rmsDb": -12.76,
+      "lufs": -14.15,
+      "wet": 0.04,
+      "notes": [
+        "E5",
+        "A4"
+      ]
     },
     {
       "name": "number-tick-1",
@@ -512,9 +712,13 @@
       ],
       "duration": 0.03,
       "peakDb": -3.0,
-      "peakTime": 0.0049,
-      "rmsDb": -11.96,
-      "lufs": -10.22
+      "peakTime": 0.005,
+      "rmsDb": -12.85,
+      "lufs": -10.56,
+      "wet": 0.03,
+      "notes": [
+        "G7"
+      ]
     },
     {
       "name": "number-tick-2",
@@ -527,9 +731,13 @@
       ],
       "duration": 0.03,
       "peakDb": -3.0,
-      "peakTime": 0.0046,
-      "rmsDb": -12.22,
-      "lufs": -10.02
+      "peakTime": 0.0049,
+      "rmsDb": -12.49,
+      "lufs": -10.51,
+      "wet": 0.03,
+      "notes": [
+        "A7"
+      ]
     },
     {
       "name": "number-tick-3",
@@ -542,9 +750,13 @@
       ],
       "duration": 0.03,
       "peakDb": -3.0,
-      "peakTime": 0.0045,
-      "rmsDb": -12.26,
-      "lufs": -10.26
+      "peakTime": 0.0048,
+      "rmsDb": -12.52,
+      "lufs": -10.62,
+      "wet": 0.03,
+      "notes": [
+        "E7"
+      ]
     },
     {
       "name": "impact-soft-1",
@@ -555,11 +767,17 @@
         "L",
         "R"
       ],
-      "duration": 0.48,
+      "duration": 0.494,
       "peakDb": -3.0,
-      "peakTime": 0.0141,
-      "rmsDb": -14.98,
-      "lufs": -19.12
+      "peakTime": 0.0119,
+      "rmsDb": -15.92,
+      "lufs": -19.75,
+      "wet": 0.08,
+      "notes": [
+        "G2",
+        "G1",
+        "G3"
+      ]
     },
     {
       "name": "impact-soft-2",
@@ -570,11 +788,17 @@
         "L",
         "R"
       ],
-      "duration": 0.48,
+      "duration": 0.54,
       "peakDb": -3.0,
-      "peakTime": 0.0125,
-      "rmsDb": -15.11,
-      "lufs": -18.74
+      "peakTime": 0.0088,
+      "rmsDb": -16.1,
+      "lufs": -19.28,
+      "wet": 0.08,
+      "notes": [
+        "C3",
+        "C2",
+        "C4"
+      ]
     },
     {
       "name": "impact-soft-3",
@@ -585,11 +809,703 @@
         "L",
         "R"
       ],
-      "duration": 0.48,
+      "duration": 0.486,
       "peakDb": -3.0,
-      "peakTime": 0.0165,
-      "rmsDb": -14.73,
-      "lufs": -19.49
+      "peakTime": 0.0106,
+      "rmsDb": -16.01,
+      "lufs": -19.36,
+      "wet": 0.08,
+      "notes": [
+        "A2",
+        "A1",
+        "A3"
+      ]
+    }
+  ],
+  "pitched": [
+    {
+      "name": "number-tick-n00",
+      "family": "number-tick",
+      "variant": 0,
+      "noteIndex": 0,
+      "note": "C6",
+      "midi": 84,
+      "file": "kit/sfx/pitched/number-tick-n00.wav",
+      "pan": [
+        "L",
+        "R"
+      ],
+      "duration": 0.03,
+      "peakDb": -3.0,
+      "peakTime": 0.005,
+      "rmsDb": -12.63,
+      "lufs": -13.77,
+      "wet": 0.03
+    },
+    {
+      "name": "number-tick-n01",
+      "family": "number-tick",
+      "variant": 0,
+      "noteIndex": 1,
+      "note": "D6",
+      "midi": 86,
+      "file": "kit/sfx/pitched/number-tick-n01.wav",
+      "pan": [
+        "L",
+        "R"
+      ],
+      "duration": 0.03,
+      "peakDb": -3.0,
+      "peakTime": 0.0049,
+      "rmsDb": -12.9,
+      "lufs": -13.41,
+      "wet": 0.03
+    },
+    {
+      "name": "number-tick-n02",
+      "family": "number-tick",
+      "variant": 0,
+      "noteIndex": 2,
+      "note": "E6",
+      "midi": 88,
+      "file": "kit/sfx/pitched/number-tick-n02.wav",
+      "pan": [
+        "L",
+        "R"
+      ],
+      "duration": 0.03,
+      "peakDb": -3.0,
+      "peakTime": 0.0047,
+      "rmsDb": -12.95,
+      "lufs": -13.1,
+      "wet": 0.03
+    },
+    {
+      "name": "number-tick-n03",
+      "family": "number-tick",
+      "variant": 0,
+      "noteIndex": 3,
+      "note": "G6",
+      "midi": 91,
+      "file": "kit/sfx/pitched/number-tick-n03.wav",
+      "pan": [
+        "L",
+        "R"
+      ],
+      "duration": 0.03,
+      "peakDb": -3.0,
+      "peakTime": 0.0049,
+      "rmsDb": -12.32,
+      "lufs": -12.11,
+      "wet": 0.03
+    },
+    {
+      "name": "number-tick-n04",
+      "family": "number-tick",
+      "variant": 0,
+      "noteIndex": 4,
+      "note": "A6",
+      "midi": 93,
+      "file": "kit/sfx/pitched/number-tick-n04.wav",
+      "pan": [
+        "L",
+        "R"
+      ],
+      "duration": 0.03,
+      "peakDb": -3.0,
+      "peakTime": 0.0047,
+      "rmsDb": -12.6,
+      "lufs": -11.66,
+      "wet": 0.03
+    },
+    {
+      "name": "number-tick-n05",
+      "family": "number-tick",
+      "variant": 0,
+      "noteIndex": 5,
+      "note": "C7",
+      "midi": 96,
+      "file": "kit/sfx/pitched/number-tick-n05.wav",
+      "pan": [
+        "L",
+        "R"
+      ],
+      "duration": 0.03,
+      "peakDb": -3.0,
+      "peakTime": 0.0049,
+      "rmsDb": -12.56,
+      "lufs": -10.89,
+      "wet": 0.03
+    },
+    {
+      "name": "number-tick-n06",
+      "family": "number-tick",
+      "variant": 0,
+      "noteIndex": 6,
+      "note": "D7",
+      "midi": 98,
+      "file": "kit/sfx/pitched/number-tick-n06.wav",
+      "pan": [
+        "L",
+        "R"
+      ],
+      "duration": 0.03,
+      "peakDb": -3.0,
+      "peakTime": 0.005,
+      "rmsDb": -12.31,
+      "lufs": -10.63,
+      "wet": 0.03
+    },
+    {
+      "name": "number-tick-n07",
+      "family": "number-tick",
+      "variant": 0,
+      "noteIndex": 7,
+      "note": "E7",
+      "midi": 100,
+      "file": "kit/sfx/pitched/number-tick-n07.wav",
+      "pan": [
+        "L",
+        "R"
+      ],
+      "duration": 0.03,
+      "peakDb": -3.0,
+      "peakTime": 0.0048,
+      "rmsDb": -12.5,
+      "lufs": -10.6,
+      "wet": 0.03
+    },
+    {
+      "name": "number-tick-n08",
+      "family": "number-tick",
+      "variant": 0,
+      "noteIndex": 8,
+      "note": "G7",
+      "midi": 103,
+      "file": "kit/sfx/pitched/number-tick-n08.wav",
+      "pan": [
+        "L",
+        "R"
+      ],
+      "duration": 0.03,
+      "peakDb": -3.0,
+      "peakTime": 0.005,
+      "rmsDb": -12.88,
+      "lufs": -10.57,
+      "wet": 0.03
+    },
+    {
+      "name": "number-tick-n09",
+      "family": "number-tick",
+      "variant": 0,
+      "noteIndex": 9,
+      "note": "A7",
+      "midi": 105,
+      "file": "kit/sfx/pitched/number-tick-n09.wav",
+      "pan": [
+        "L",
+        "R"
+      ],
+      "duration": 0.03,
+      "peakDb": -3.0,
+      "peakTime": 0.005,
+      "rmsDb": -12.49,
+      "lufs": -10.49,
+      "wet": 0.03
+    },
+    {
+      "name": "number-tick-n10",
+      "family": "number-tick",
+      "variant": 0,
+      "noteIndex": 10,
+      "note": "C8",
+      "midi": 108,
+      "file": "kit/sfx/pitched/number-tick-n10.wav",
+      "pan": [
+        "L",
+        "R"
+      ],
+      "duration": 0.03,
+      "peakDb": -3.0,
+      "peakTime": 0.005,
+      "rmsDb": -12.17,
+      "lufs": -10.06,
+      "wet": 0.03
+    },
+    {
+      "name": "number-tick-n11",
+      "family": "number-tick",
+      "variant": 0,
+      "noteIndex": 11,
+      "note": "D8",
+      "midi": 110,
+      "file": "kit/sfx/pitched/number-tick-n11.wav",
+      "pan": [
+        "L",
+        "R"
+      ],
+      "duration": 0.03,
+      "peakDb": -3.0,
+      "peakTime": 0.0046,
+      "rmsDb": -12.25,
+      "lufs": -10.19,
+      "wet": 0.03
+    },
+    {
+      "name": "tick-n00",
+      "family": "tick",
+      "variant": 0,
+      "noteIndex": 0,
+      "note": "C6",
+      "midi": 84,
+      "file": "kit/sfx/pitched/tick-n00.wav",
+      "pan": [
+        "L",
+        "R"
+      ],
+      "duration": 0.028,
+      "peakDb": -3.0,
+      "peakTime": 0.004,
+      "rmsDb": -13.83,
+      "lufs": -14.82,
+      "wet": 0.03
+    },
+    {
+      "name": "tick-n01",
+      "family": "tick",
+      "variant": 0,
+      "noteIndex": 1,
+      "note": "D6",
+      "midi": 86,
+      "file": "kit/sfx/pitched/tick-n01.wav",
+      "pan": [
+        "L",
+        "R"
+      ],
+      "duration": 0.028,
+      "peakDb": -3.0,
+      "peakTime": 0.0049,
+      "rmsDb": -14.06,
+      "lufs": -14.54,
+      "wet": 0.03
+    },
+    {
+      "name": "tick-n02",
+      "family": "tick",
+      "variant": 0,
+      "noteIndex": 2,
+      "note": "E6",
+      "midi": 88,
+      "file": "kit/sfx/pitched/tick-n02.wav",
+      "pan": [
+        "L",
+        "R"
+      ],
+      "duration": 0.028,
+      "peakDb": -3.0,
+      "peakTime": 0.0044,
+      "rmsDb": -14.43,
+      "lufs": -14.51,
+      "wet": 0.03
+    },
+    {
+      "name": "tick-n03",
+      "family": "tick",
+      "variant": 0,
+      "noteIndex": 3,
+      "note": "G6",
+      "midi": 91,
+      "file": "kit/sfx/pitched/tick-n03.wav",
+      "pan": [
+        "L",
+        "R"
+      ],
+      "duration": 0.028,
+      "peakDb": -3.0,
+      "peakTime": 0.0049,
+      "rmsDb": -13.56,
+      "lufs": -13.35,
+      "wet": 0.03
+    },
+    {
+      "name": "tick-n04",
+      "family": "tick",
+      "variant": 0,
+      "noteIndex": 4,
+      "note": "A6",
+      "midi": 93,
+      "file": "kit/sfx/pitched/tick-n04.wav",
+      "pan": [
+        "L",
+        "R"
+      ],
+      "duration": 0.028,
+      "peakDb": -3.0,
+      "peakTime": 0.0044,
+      "rmsDb": -14.04,
+      "lufs": -13.19,
+      "wet": 0.03
+    },
+    {
+      "name": "tick-n05",
+      "family": "tick",
+      "variant": 0,
+      "noteIndex": 5,
+      "note": "C7",
+      "midi": 96,
+      "file": "kit/sfx/pitched/tick-n05.wav",
+      "pan": [
+        "L",
+        "R"
+      ],
+      "duration": 0.028,
+      "peakDb": -3.0,
+      "peakTime": 0.0047,
+      "rmsDb": -14.11,
+      "lufs": -12.48,
+      "wet": 0.03
+    },
+    {
+      "name": "tick-n06",
+      "family": "tick",
+      "variant": 0,
+      "noteIndex": 6,
+      "note": "D7",
+      "midi": 98,
+      "file": "kit/sfx/pitched/tick-n06.wav",
+      "pan": [
+        "L",
+        "R"
+      ],
+      "duration": 0.028,
+      "peakDb": -3.0,
+      "peakTime": 0.0041,
+      "rmsDb": -13.84,
+      "lufs": -12.33,
+      "wet": 0.03
+    },
+    {
+      "name": "tick-n07",
+      "family": "tick",
+      "variant": 0,
+      "noteIndex": 7,
+      "note": "E7",
+      "midi": 100,
+      "file": "kit/sfx/pitched/tick-n07.wav",
+      "pan": [
+        "L",
+        "R"
+      ],
+      "duration": 0.028,
+      "peakDb": -3.0,
+      "peakTime": 0.0045,
+      "rmsDb": -14.03,
+      "lufs": -12.33,
+      "wet": 0.03
+    },
+    {
+      "name": "tick-n08",
+      "family": "tick",
+      "variant": 0,
+      "noteIndex": 8,
+      "note": "G7",
+      "midi": 103,
+      "file": "kit/sfx/pitched/tick-n08.wav",
+      "pan": [
+        "L",
+        "R"
+      ],
+      "duration": 0.028,
+      "peakDb": -3.0,
+      "peakTime": 0.0044,
+      "rmsDb": -14.27,
+      "lufs": -12.13,
+      "wet": 0.03
+    },
+    {
+      "name": "tick-n09",
+      "family": "tick",
+      "variant": 0,
+      "noteIndex": 9,
+      "note": "A7",
+      "midi": 105,
+      "file": "kit/sfx/pitched/tick-n09.wav",
+      "pan": [
+        "L",
+        "R"
+      ],
+      "duration": 0.028,
+      "peakDb": -3.0,
+      "peakTime": 0.0045,
+      "rmsDb": -14.09,
+      "lufs": -12.1,
+      "wet": 0.03
+    },
+    {
+      "name": "tick-n10",
+      "family": "tick",
+      "variant": 0,
+      "noteIndex": 10,
+      "note": "C8",
+      "midi": 108,
+      "file": "kit/sfx/pitched/tick-n10.wav",
+      "pan": [
+        "L",
+        "R"
+      ],
+      "duration": 0.028,
+      "peakDb": -3.0,
+      "peakTime": 0.0042,
+      "rmsDb": -13.6,
+      "lufs": -11.6,
+      "wet": 0.03
+    },
+    {
+      "name": "tick-n11",
+      "family": "tick",
+      "variant": 0,
+      "noteIndex": 11,
+      "note": "D8",
+      "midi": 110,
+      "file": "kit/sfx/pitched/tick-n11.wav",
+      "pan": [
+        "L",
+        "R"
+      ],
+      "duration": 0.028,
+      "peakDb": -3.0,
+      "peakTime": 0.0046,
+      "rmsDb": -13.88,
+      "lufs": -11.78,
+      "wet": 0.03
+    },
+    {
+      "name": "pop-n00",
+      "family": "pop",
+      "variant": 0,
+      "noteIndex": 0,
+      "note": "C4",
+      "midi": 60,
+      "file": "kit/sfx/pitched/pop-n00.wav",
+      "pan": [
+        "L",
+        "R"
+      ],
+      "duration": 0.19,
+      "peakDb": -3.0,
+      "peakTime": 0.0089,
+      "rmsDb": -13.75,
+      "lufs": -15.81,
+      "wet": 0.08
+    },
+    {
+      "name": "pop-n01",
+      "family": "pop",
+      "variant": 0,
+      "noteIndex": 1,
+      "note": "D4",
+      "midi": 62,
+      "file": "kit/sfx/pitched/pop-n01.wav",
+      "pan": [
+        "L",
+        "R"
+      ],
+      "duration": 0.19,
+      "peakDb": -3.0,
+      "peakTime": 0.008,
+      "rmsDb": -14.45,
+      "lufs": -16.25,
+      "wet": 0.08
+    },
+    {
+      "name": "pop-n02",
+      "family": "pop",
+      "variant": 0,
+      "noteIndex": 2,
+      "note": "E4",
+      "midi": 64,
+      "file": "kit/sfx/pitched/pop-n02.wav",
+      "pan": [
+        "L",
+        "R"
+      ],
+      "duration": 0.19,
+      "peakDb": -3.0,
+      "peakTime": 0.007,
+      "rmsDb": -14.39,
+      "lufs": -16.09,
+      "wet": 0.08
+    },
+    {
+      "name": "pop-n03",
+      "family": "pop",
+      "variant": 0,
+      "noteIndex": 3,
+      "note": "G4",
+      "midi": 67,
+      "file": "kit/sfx/pitched/pop-n03.wav",
+      "pan": [
+        "L",
+        "R"
+      ],
+      "duration": 0.19,
+      "peakDb": -3.0,
+      "peakTime": 0.0059,
+      "rmsDb": -15.19,
+      "lufs": -16.81,
+      "wet": 0.08
+    },
+    {
+      "name": "pop-n04",
+      "family": "pop",
+      "variant": 0,
+      "noteIndex": 4,
+      "note": "A4",
+      "midi": 69,
+      "file": "kit/sfx/pitched/pop-n04.wav",
+      "pan": [
+        "L",
+        "R"
+      ],
+      "duration": 0.19,
+      "peakDb": -3.0,
+      "peakTime": 0.0055,
+      "rmsDb": -14.51,
+      "lufs": -16.0,
+      "wet": 0.08
+    },
+    {
+      "name": "pop-n05",
+      "family": "pop",
+      "variant": 0,
+      "noteIndex": 5,
+      "note": "C5",
+      "midi": 72,
+      "file": "kit/sfx/pitched/pop-n05.wav",
+      "pan": [
+        "L",
+        "R"
+      ],
+      "duration": 0.19,
+      "peakDb": -3.0,
+      "peakTime": 0.0117,
+      "rmsDb": -14.33,
+      "lufs": -16.11,
+      "wet": 0.08
+    },
+    {
+      "name": "pop-n06",
+      "family": "pop",
+      "variant": 0,
+      "noteIndex": 6,
+      "note": "D5",
+      "midi": 74,
+      "file": "kit/sfx/pitched/pop-n06.wav",
+      "pan": [
+        "L",
+        "R"
+      ],
+      "duration": 0.19,
+      "peakDb": -3.0,
+      "peakTime": 0.0074,
+      "rmsDb": -14.49,
+      "lufs": -16.22,
+      "wet": 0.08
+    },
+    {
+      "name": "pop-n07",
+      "family": "pop",
+      "variant": 0,
+      "noteIndex": 7,
+      "note": "E5",
+      "midi": 76,
+      "file": "kit/sfx/pitched/pop-n07.wav",
+      "pan": [
+        "L",
+        "R"
+      ],
+      "duration": 0.19,
+      "peakDb": -3.0,
+      "peakTime": 0.0066,
+      "rmsDb": -14.5,
+      "lufs": -16.09,
+      "wet": 0.08
+    },
+    {
+      "name": "pop-n08",
+      "family": "pop",
+      "variant": 0,
+      "noteIndex": 8,
+      "note": "G5",
+      "midi": 79,
+      "file": "kit/sfx/pitched/pop-n08.wav",
+      "pan": [
+        "L",
+        "R"
+      ],
+      "duration": 0.19,
+      "peakDb": -3.0,
+      "peakTime": 0.0056,
+      "rmsDb": -14.8,
+      "lufs": -16.34,
+      "wet": 0.08
+    },
+    {
+      "name": "pop-n09",
+      "family": "pop",
+      "variant": 0,
+      "noteIndex": 9,
+      "note": "A5",
+      "midi": 81,
+      "file": "kit/sfx/pitched/pop-n09.wav",
+      "pan": [
+        "L",
+        "R"
+      ],
+      "duration": 0.19,
+      "peakDb": -3.0,
+      "peakTime": 0.0071,
+      "rmsDb": -14.32,
+      "lufs": -15.8,
+      "wet": 0.08
+    },
+    {
+      "name": "pop-n10",
+      "family": "pop",
+      "variant": 0,
+      "noteIndex": 10,
+      "note": "C6",
+      "midi": 84,
+      "file": "kit/sfx/pitched/pop-n10.wav",
+      "pan": [
+        "L",
+        "R"
+      ],
+      "duration": 0.19,
+      "peakDb": -3.0,
+      "peakTime": 0.006,
+      "rmsDb": -14.64,
+      "lufs": -15.99,
+      "wet": 0.08
+    },
+    {
+      "name": "pop-n11",
+      "family": "pop",
+      "variant": 0,
+      "noteIndex": 11,
+      "note": "D6",
+      "midi": 86,
+      "file": "kit/sfx/pitched/pop-n11.wav",
+      "pan": [
+        "L",
+        "R"
+      ],
+      "duration": 0.19,
+      "peakDb": -3.0,
+      "peakTime": 0.007,
+      "rmsDb": -14.47,
+      "lufs": -15.61,
+      "wet": 0.08
     }
   ]
 }
