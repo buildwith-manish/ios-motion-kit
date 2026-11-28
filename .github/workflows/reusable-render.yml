@@ -15,6 +15,7 @@ on:
       lufs: { description: 'Target loudness (LUFS)', required: false, type: string, default: '-14' }
       true_peak: { description: 'True peak limit (dBTP)', required: false, type: string, default: '-1.5' }
       output_name: { description: 'File / artifact name (without extension)', required: false, type: string, default: 'video' }
+      data_tags: { description: 'kit:fetch-data --only tags to download before rendering (empty = none), e.g. audio', required: false, type: string, default: '' }
       kit_dir: { description: 'Where the kit lives in the caller', required: false, type: string, default: 'kit' }
     secrets:
       KIT_TOKEN:
@@ -108,6 +109,11 @@ jobs:
             ~/.cache/ms-playwright
             /tmp/chromium
           key: ${{ runner.os }}-kit-chromium-123.0.1-${{ hashFiles('package-lock.json') }}
+      - name: Fetch kit data (private release, uses KIT_TOKEN)
+        if: steps.have.outputs.have != 'true' && inputs.data_tags != ''
+        env:
+          KIT_TOKEN: ${{ secrets.KIT_TOKEN }}
+        run: node "$KIT/scripts/kit_fetch_data.mjs" --dest-root . --only "${{ inputs.data_tags }}"
       - name: Render piece (h264, crf 16, bt709, video only)
         if: steps.have.outputs.have != 'true'
         run: |
@@ -160,6 +166,11 @@ jobs:
             /tmp/chromium
           key: ${{ runner.os }}-kit-chromium-123.0.1-${{ hashFiles('package-lock.json') }}
       - run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg
+      - name: Fetch kit data (private release, uses KIT_TOKEN)
+        if: inputs.data_tags != ''
+        env:
+          KIT_TOKEN: ${{ secrets.KIT_TOKEN }}
+        run: node "$KIT/scripts/kit_fetch_data.mjs" --dest-root . --only "${{ inputs.data_tags }}"
       - name: Render the whole soundtrack once (audio only)
         run: |
           if [ "${{ inputs.force_rerender }}" != "true" ] && [ -s out/audio/audio.wav ]; then echo "Reusing the earlier soundtrack"; exit 0; fi

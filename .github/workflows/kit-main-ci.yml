@@ -105,7 +105,7 @@ jobs:
     needs: fast
     permissions: { contents: read, actions: read }
     uses: ./.github/workflows/reusable-render.yml
-    with: { comp: Kit-Audio-Demo, entry: src/kit/demo/entry.tsx, frames: '0-89', chunk_frames: 45, kit_dir: '.', output_name: selftest-video }
+    with: { comp: Kit-Audio-Demo, entry: src/kit/demo/entry.tsx, frames: '0-89', chunk_frames: 45, kit_dir: '.', output_name: selftest-video, data_tags: audio }
     secrets:
       KIT_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   reuse-shorts:

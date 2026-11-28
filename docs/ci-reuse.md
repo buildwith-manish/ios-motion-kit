@@ -7,7 +7,7 @@ prints the setup steps.
 | workflow | does | main inputs |
 |---|---|---|
 | `reusable-preview.yml` | low-res MP4 + contact sheet + QA report artifacts, optional GitHub Pages | `comps`, `scale`, `fps`, `publish_pages` |
-| `reusable-render.yml` | final render in pieces + soundtrack + concat + loudnorm (-14 LUFS, -1.5 dBTP) | `comp`, `quality` (1080p/4K), `chunk_frames`, `force_rerender`, `resume_from_run` |
+| `reusable-render.yml` | final render in pieces + soundtrack + concat + loudnorm (-14 LUFS, -1.5 dBTP) | `comp`, `quality` (1080p/4K), `chunk_frames`, `force_rerender`, `resume_from_run`, `data_tags` (kit:fetch-data tags) |
 | `reusable-shorts.yml` | matrix of vertical compositions, h264 crf 16 / slow / aac 320k | `comps` (JSON array), `quality` |
 | `reusable-qa.yml` | contrast, safe area, motion, layout lint, loudness gate; fails on violations | `comps`, `times`, `layout_fail`, `loudness_comp` |
 
