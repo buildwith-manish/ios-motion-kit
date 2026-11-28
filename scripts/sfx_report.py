@@ -26,7 +26,7 @@ import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import numpy as np
-from scipy import signal
+from scipy import ndimage, signal
 from scipy.io import wavfile
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -37,7 +37,15 @@ from kit_make_sfx import FAMILIES, active_rms_db, lufs_estimate  # noqa: E402
 BANDS = (("lt300", 0, 300), ("300_2k", 300, 2000), ("2k_5k", 2000, 5000), ("gt5k", 5000, None))
 SPEC_DB = (-100.0, 0.0)  # shared colour scale (0 dB = full-scale sine)
 SPEC_HZ = (50.0, 20000.0)  # shared log frequency axis
-FLAG_ORDER = ("too-harsh", "too-thin", "too-long", "too-quiet", "too-loud", "inconsistent")
+FLAG_ORDER = ("click", "too-harsh", "too-thin", "too-long", "too-quiet", "too-loud", "inconsistent")
+# Click detector (HF energy spikes). A discontinuity (a note cut while still audible, a clipped buffer end) puts a short burst
+# of broadband energy above 8 kHz into a sound whose own HF content is smooth.
+CLICK_HP_HZ = 8000.0
+CLICK_WINDOW_MS = 2.0
+CLICK_HOP_MS = 0.5
+CLICK_CONTEXT_MS = 20.0  # the "local envelope" is the median of the window levels within +-20 ms
+CLICK_FLOOR_DB = -90.0  # ignore spikes whose own level is below this (dBFS RMS in the window): nothing audible
+MID_BAND = (150.0, 500.0)  # the "knock" region: how much of a sound lives where phone speakers can reproduce it
 
 
 def read_wav(path):
@@ -65,6 +73,33 @@ def envelope(x, sr):
     return np.convolve(mag, np.ones(n) / n, mode="same")
 
 
+def find_clicks(x, sr, spike_db=25.0):
+    """
+    Times (s) of >8 kHz energy spikes more than `spike_db` above the local envelope inside a 2 ms window.
+    The high-passed signal is cut into 2 ms windows every 0.5 ms; each window's RMS is compared with the median RMS of the
+    windows within +-20 ms. Neighbouring hits are merged into one click.
+    """
+    sos = signal.butter(4, CLICK_HP_HZ, btype="high", fs=sr, output="sos")
+    hp = signal.sosfiltfilt(sos, x)
+    win, hop = int(round(CLICK_WINDOW_MS * 1e-3 * sr)), int(round(CLICK_HOP_MS * 1e-3 * sr))
+    if len(hp) < win + hop:
+        return []
+    csum = np.concatenate([[0.0], np.cumsum(hp**2)])
+    starts = np.arange(0, len(hp) - win + 1, hop)
+    rms = np.sqrt((csum[starts + win] - csum[starts]) / win)
+    ctx = 2 * int(round(CLICK_CONTEXT_MS / CLICK_HOP_MS)) + 1
+    local = ndimage.median_filter(rms, size=ctx, mode="nearest")
+    ratio_db = 20 * np.log10(np.maximum(rms, 1e-12) / np.maximum(local, 1e-12))
+    level_db = 20 * np.log10(np.maximum(rms, 1e-12))
+    hits = np.nonzero((ratio_db > spike_db) & (level_db > CLICK_FLOOR_DB))[0]
+    clicks, last = [], -10**9
+    for k in hits:
+        if k - last > ctx // 4:  # a new click, not the tail of the previous one
+            clicks.append(round(float((starts[k] + win / 2) / sr), 4))
+        last = k
+    return clicks
+
+
 def measure(x, sr, clipped):
     peak = float(np.max(np.abs(x)))
     if peak <= 0:
@@ -83,6 +118,9 @@ def measure(x, sr, clipped):
     centroid = float(np.sum(freq * power) / total)
     bandwidth = float(np.sqrt(np.sum((freq - centroid) ** 2 * power) / total))
     shares = {k: float(np.sum(power[(freq >= lo) & (freq < (hi or sr))]) / total) for k, lo, hi in BANDS}
+    mid_share = float(np.sum(power[(freq >= MID_BAND[0]) & (freq < MID_BAND[1])]) / total)
+    fade_guard = int(round(0.012 * sr))  # just before the final 10 ms fade
+    end_db = 20 * np.log10(max(float(np.max(env[max(0, len(x) - fade_guard - int(0.002 * sr)) : max(1, len(x) - fade_guard)])), 1e-9) / env[top])
     return {
         "duration_s": round(len(x) / sr, 4),
         "peak_dbfs": round(float(peak_db), 2),
@@ -95,6 +133,9 @@ def measure(x, sr, clipped):
         "centroid_hz": round(centroid, 1),
         "bandwidth_hz": round(bandwidth, 1),
         "band_share": {k: round(v, 4) for k, v in shares.items()},
+        "mid_150_500_share": round(mid_share, 4),
+        "end_db": round(float(end_db), 1),
+        "clicks": find_clicks(x, sr),
         "clipped_samples": clipped,
     }
 
