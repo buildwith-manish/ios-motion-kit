@@ -197,10 +197,12 @@ jobs:
       - uses: actions/download-artifact@v4
         with: { name: audio-track, path: out/audio }
       - name: Join the pieces and mix in the soundtrack (two-pass loudnorm)
+        env:
+          CHUNKS: ${{ needs.plan.outputs.chunks }}
         run: |
           trap 'echo "::error::concat failed at: $BASH_COMMAND"' ERR
           cd out
-          WANT=$(python3 -c "import json; print(len(json.loads('''${{ needs.plan.outputs.chunks }}''')))")
+          WANT=$(python3 -c "import json,os; print(len(json.loads(os.environ['CHUNKS'])))")
           HAVE=$(ls clips/chunk-*.mp4 | wc -l)
           [ "$HAVE" = "$WANT" ] || { echo "ERROR: $HAVE of $WANT pieces. Use 'Re-run failed jobs': only the failed pieces render again."; exit 1; }
           for f in $(ls clips/chunk-*.mp4 | sort -V); do echo "file '$PWD/$f'"; done > concat.txt
