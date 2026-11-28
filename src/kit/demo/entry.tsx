@@ -28,3 +28,4 @@ registerRoot(() => (
 ));
 export {KitNumberRollCompositions} from './NumberRollDemo';
 export {KitFinishCompositions} from './FinishDemo';
+export {KitIconsCompositions} from '../icons/IconsDemo';

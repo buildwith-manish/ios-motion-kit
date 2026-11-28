@@ -1,0 +1,14 @@
+bundling src/kit/icons/entry.tsx ...
+browser: KIT_CHROME
+Kit-Icons-Demo: 12 frames, 0 finding(s)
+Kit-Icons-Demo-Vertical: 12 frames, 1 finding(s)
+Kit-Icons-Demo-30fps: 12 frames, 0 finding(s)
+
+Text below 4.5:1 (10th-percentile pixel)
+composition              status  text                     ratio   text on background  size  seen             samples
+-----------------------  ------  -----------------------  ------  ------------------  ----  ---------------  -------
+Kit-Icons-Demo           pass    217 text run(s) checked  -       -                   -     -                -
+Kit-Icons-Demo-Vertical  fail    bus                      4.16:1  #77644f on #d5deeb  9px   0:00.00-0:05.50  12
+Kit-Icons-Demo-30fps     pass    217 text run(s) checked  -       -                   -     -                -
+
+JSON: ../../../../tmp/t4-icons-contrast/contrast.json

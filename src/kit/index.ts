@@ -11,3 +11,4 @@ export * from './dataviz';
 export {NumberText} from './text/NumberText';
 export * from './background';
 export * from './finish';
+export * from './icons';
