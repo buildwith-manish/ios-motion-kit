@@ -1,7 +1,9 @@
 #!/usr/bin/env node
 // Downloads the large generated files that are kept out of git (see data-manifest.json) and verifies their SHA-256.
 //   node scripts/kit_fetch_data.mjs                 fetch everything missing
-//   node scripts/kit_fetch_data.mjs --only map      only files tagged "map" (or "audio"); comma list allowed
+//   node scripts/kit_fetch_data.mjs --only states,city/chicago    only files carrying any of these tags
+//        tags: map, audio, regions, states, counties, cbsa, outline, zcta, tracts, tracts/<FIPS>,
+//              zcta-metro, zcta-metro/<CBSA>, cities, city/<id>     (--list shows every file)
 //   node scripts/kit_fetch_data.mjs --check         verify local files only, never download (exit 1 if missing/different)
 //   node scripts/kit_fetch_data.mjs --dest-root .   write under another project's root (kit used as a submodule)
 // Env: KIT_DATA_BASE_URL overrides the manifest's baseUrl (e.g. a mirror).
@@ -20,9 +22,16 @@ const root = resolve(opt('--dest-root') ?? join(here, '..'));
 const base = (process.env.KIT_DATA_BASE_URL ?? manifest.baseUrl).replace(/\/$/, '');
 const sha = (buf) => createHash('sha256').update(buf).digest('hex');
 
+const unknown = (only ?? []).filter((t) => !manifest.files.some((f) => f.tags.includes(t)));
+if (unknown.length || (args.includes('--only') && !only)) { console.error(`FAIL: unknown or missing --only tag: ${unknown.join(', ')} (see --list)`); process.exit(1); }
+const wanted = manifest.files.filter((f) => !only || f.tags.some((t) => only.includes(t)));
+if (args.includes('--list')) {
+  for (const f of wanted) console.log(`${(f.bytes / 1048576).toFixed(2).padStart(6)} MB  ${f.dest}  [${f.tags.join(' ')}]`);
+  process.exit(0);
+}
+
 let failed = 0;
-for (const f of manifest.files) {
-  if (only && !only.includes(f.needs)) continue;
+for (const f of wanted) {
   const dest = join(root, f.dest);
   if (existsSync(dest) && sha(readFileSync(dest)) === f.sha256) { console.log(`ok       ${f.dest}`); continue; }
   if (check) { console.error(`MISSING/DIFFERENT ${f.dest}`); failed++; continue; }

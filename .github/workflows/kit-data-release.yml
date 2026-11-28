@@ -1,11 +1,14 @@
+# Publishes the files of data-manifest.json as a GitHub Release, then proves a clean checkout can fetch them.
+# A release tag is never overwritten: changed data gets a new tag, so older kit commits keep working.
 name: kit-data-release
 
 on:
   workflow_dispatch:
-    inputs:
-      tag:
-        description: 'release tag that holds the large data files'
-        default: data-v1
+  push:
+    branches: [main]
+    paths:
+      - data-manifest.json
+      - .github/workflows/kit-data-release.yml
 
 permissions:
   contents: write
@@ -18,12 +21,19 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-      - name: Files must match data-manifest.json
-        run: node scripts/kit_fetch_data.mjs --check
-      - name: Create the release if needed and upload the files
+      - name: Publish (only when the release does not exist yet)
         env:
           GH_TOKEN: ${{ github.token }}
-          TAG: ${{ inputs.tag }}
+        run: bash scripts/kit_data_publish.sh
+      - name: Fetch every file into an empty directory and verify checksums
+        run: node scripts/kit_fetch_data.mjs --dest-root "$RUNNER_TEMP/fetch-test"
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: The music script still reproduces the published loop
+        continue-on-error: true
         run: |
-          gh release view "$TAG" >/dev/null 2>&1 || gh release create "$TAG" --title "Kit data ($TAG)" --notes "Large generated files kept out of git. Fetch with: node scripts/kit_fetch_data.mjs"
-          gh release upload "$TAG" public/kit/map/regions/zcta.json public/kit/music/pad-loop.wav --clobber
+          pip install -q numpy scipy
+          python3 scripts/kit_make_music.py --out "$RUNNER_TEMP/music" > /dev/null
+          want=$(node -p "require('./data-manifest.json').files.find(f => f.name === 'pad-loop.wav').sha256")
+          echo "$want  $RUNNER_TEMP/music/pad-loop.wav" | sha256sum -c
