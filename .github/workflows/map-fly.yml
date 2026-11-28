@@ -1,5 +1,5 @@
 # Renders the fly-through demo (stills, 4K crops, one landscape video + contact sheet) and measures seconds per frame
-# over the whole timeline. Commits the results to kit-map. Runs when its files change on kit-map, or manually.
+# over the whole timeline. Manual; results are uploaded as a 14-day artifact.
 name: Map fly
 on:
   workflow_dispatch:
@@ -7,21 +7,8 @@ on:
       video:
         description: 'render the landscape video (true | false)'
         default: 'true'
-  push:
-    branches: [kit-map]
-    paths:
-      - .github/workflows/map-fly.yml
-      - scripts/map_fly_stills.mjs
-      - src/kit/demo/FlyDemo.tsx
-      - src/kit/map/FlyMap.tsx
-      - src/kit/map/mapCamera.ts
-      - src/kit/map/MapPin.tsx
-      - src/kit/map/MapCallout.tsx
-      - src/kit/map/Arc.tsx
-      - src/kit/map/RouteDraw.tsx
-      - src/kit/map/overlayGeometry.ts
 permissions:
-  contents: write
+  contents: read
 concurrency:
   group: map-fly
   cancel-in-progress: false
@@ -31,13 +18,13 @@ jobs:
     timeout-minutes: 45
     steps:
       - uses: actions/checkout@v4
-        with:
-          ref: kit-map
       - uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: npm
       - run: npm ci
+      - name: Fetch baked map data and audio (kept out of git)
+        run: npm run kit:fetch-data
       - run: sudo apt-get update && sudo apt-get install -y imagemagick ffmpeg
       - name: Typecheck (once, before rendering)
         run: npx tsc --noEmit
@@ -55,19 +42,18 @@ jobs:
           mkdir -p docs/previews/kit-map/fly/video
           npx remotion render src/kit/demo/entry.tsx Kit-Fly-Landscape docs/previews/kit-map/fly/video/fly-landscape.mp4 --concurrency=2 2>&1 | grep -v "^Bundling\|^Copying" | tail -5 | tee -a docs/map-bake-logs/fly.log
           ffmpeg -y -loglevel error -i docs/previews/kit-map/fly/video/fly-landscape.mp4 -vf "fps=1,scale=480:-1,tile=5x3" -frames:v 1 docs/previews/kit-map/fly/video/fly-landscape-sheet.png
-      - name: Commit results
+      - name: Collect new outputs (never committed)
         if: always()
         run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add docs/previews/kit-map/fly docs/map-bake-logs
-          if git diff --cached --quiet; then echo "no change"; exit 0; fi
-          git commit -m "kit-map: fly stills + perf [skip ci]"
-          for i in 1 2 3 4 5 6; do
-            git pull --rebase origin kit-map && git push origin HEAD:kit-map && exit 0
-            sleep $((RANDOM % 15 + 5))
-          done
-          exit 1
+          mkdir -p out/artifact
+          git ls-files -z -o -m docs/previews docs/map-bake-logs | xargs -0 -r cp --parents -t out/artifact
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: map-fly
+          path: out/artifact
+          retention-days: 14
+          if-no-files-found: warn
       - name: Fail if the render failed
         if: steps.render.outcome == 'failure'
         run: exit 1

@@ -7,3 +7,17 @@ tmp
 docs/previews/**/*.png
 docs/previews/**/*.mp4
 docs/previews/**/*.mov
+
+# generated data: published as a GitHub Release (data-manifest.json), fetched with `npm run kit:fetch-data`
+public/kit/map/regions/states.json
+public/kit/map/regions/counties.json
+public/kit/map/regions/cbsa.json
+public/kit/map/regions/outline.json
+public/kit/map/regions/zcta.json
+public/kit/map/regions/tracts/
+public/kit/map/regions/zcta-metro/
+public/kit/map/cities/*.json
+!public/kit/map/cities/*.report.json
+!public/kit/map/cities/alignment.json
+!public/kit/map/cities/credits.json
+public/kit/music/*.wav

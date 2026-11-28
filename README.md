@@ -9,6 +9,7 @@ Pinned: `remotion` / `@remotion/*` **4.0.250**, `react` **18.3.1**, TypeScript s
 ```bash
 git clone git@github.com:buildwith-manish/ios-motion-kit.git && cd ios-motion-kit
 npm install
+npm run kit:fetch-data                  # map data + music, not stored in git (see "Large files" below)
 npx remotion studio src/index.ts        # all demo compositions
 npx tsc --noEmit                        # typecheck
 ```
@@ -21,9 +22,11 @@ git submodule add git@github.com:buildwith-manish/ios-motion-kit.git src/kit-ven
 git submodule update --init
 git -C src/kit-vendor checkout v0.1.0      # optional: pin a tag
 
-# 2. make the kit's public/kit assets (sfx, music, demo) available as staticFile('kit/...')
-mkdir -p public && cp -R src/kit-vendor/public/kit public/kit       # copy (always works), or:
-ln -s ../src/kit-vendor/public/kit public/kit                       # symlink (see note)
+# 2. download only the data this video needs, into the video repo's public/ (plain Node, no install needed)
+node src/kit-vendor/scripts/kit_fetch_data.mjs --dest-root . --only audio,states,city/chicago
+
+# 3. make the kit's public/kit assets (sfx, music, demo) available as staticFile('kit/...')
+mkdir -p public/kit && cp -R src/kit-vendor/public/kit/. public/kit/
 ```
 
 **tsconfig.json** (video repo) must have `"resolveJsonModule": true` (the kit imports JSON) and:
@@ -48,15 +51,24 @@ Config.overrideWebpackConfig((config) => ({
 ```
 
 Do **not** run `npm install` inside `src/kit-vendor/` (it would install a second copy of `react`/`remotion`). The video repo supplies them.
-Symlink note: the symlink form was tested with Remotion 4.0.250 (`remotion bundle` copied all `public/kit` files). If your setup ever misses the audio, use the `cp -R` form.
 
 ### Update
 
 ```bash
 git submodule update --remote src/kit-vendor     # pull latest main of the kit
 git add src/kit-vendor && git commit -m "chore: bump ios-motion-kit"
-cp -R src/kit-vendor/public/kit/. public/kit/     # only if you use the copy form
+cp -R src/kit-vendor/public/kit/. public/kit/
+node src/kit-vendor/scripts/kit_fetch_data.mjs --dest-root . --only audio,states,city/chicago   # your tags
 ```
+
+## Large files (not in git)
+
+Baked map data and the music loop are listed in `data-manifest.json` and stored as assets of a GitHub Release.
+`npm run kit:fetch-data` downloads and checksums them; `-- --only <tags>` takes just some (`--list` shows the tags:
+`audio`, `map`, `states`, `counties`, `cbsa`, `outline`, `zcta`, `tracts/<FIPS>`, `zcta-metro/<CBSA>`, `city/<id>`).
+The music can also be made locally with `npm run kit:audio` (Python 3 with numpy and scipy).
+The "Bake map regions" and "Bake map cities" workflows publish changed data as a new release and update the manifest.
+Repo size rules: [docs/repo-rules.md](docs/repo-rules.md).
 
 ## Use a theme
 

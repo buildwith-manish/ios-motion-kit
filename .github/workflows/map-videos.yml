@@ -1,14 +1,10 @@
 # Renders the two kit-map demos as short videos (1080p), a short 4K clip, and contact sheets to review the motion.
-# Commits them to kit-map. Runs when this file changes on kit-map, or manually.
+# Manual; uploaded as a 14-day artifact.
 name: Map videos
 on:
   workflow_dispatch:
-  push:
-    branches: [kit-map]
-    paths:
-      - .github/workflows/map-videos.yml
 permissions:
-  contents: write
+  contents: read
 concurrency:
   group: map-videos
   cancel-in-progress: false
@@ -18,13 +14,13 @@ jobs:
     timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4
-        with:
-          ref: kit-map
       - uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: npm
       - run: npm ci
+      - name: Fetch baked map data and audio (kept out of git)
+        run: npm run kit:fetch-data
       - run: sudo apt-get update && sudo apt-get install -y imagemagick ffmpeg
       - name: Render
         id: render
@@ -48,19 +44,18 @@ jobs:
             npx remotion render src/kit/demo/entry.tsx Kit-Map-Choropleth-Landscape "$OUT/choropleth-landscape-4k-clip.mp4" --scale=2 --frames=0-89 --codec=h264 --crf=20 --concurrency=2 --log=error
             ffprobe -v error -select_streams v:0 -show_entries stream=width,height,nb_frames -of csv=p=0 "$OUT/choropleth-landscape-4k-clip.mp4" | sed 's/^/4k clip w,h,frames: /'
           } 2>&1 | tee docs/map-bake-logs/videos.log
-      - name: Commit videos + log
+      - name: Collect new outputs (never committed)
         if: always()
         run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add docs/previews/kit-map/video docs/map-bake-logs
-          if git diff --cached --quiet; then echo "no change"; exit 0; fi
-          git commit -m "kit-map: demo videos + contact sheets [skip ci]"
-          for i in 1 2 3 4 5 6; do
-            git pull --rebase origin kit-map && git push origin HEAD:kit-map && exit 0
-            sleep $((RANDOM % 15 + 5))
-          done
-          exit 1
+          mkdir -p out/artifact
+          git ls-files -z -o -m docs/previews docs/map-bake-logs | xargs -0 -r cp --parents -t out/artifact
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: map-videos
+          path: out/artifact
+          retention-days: 14
+          if-no-files-found: warn
       - name: Fail if the render failed
         if: steps.render.outcome == 'failure'
         run: exit 1

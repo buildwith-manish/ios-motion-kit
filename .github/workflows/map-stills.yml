@@ -1,5 +1,5 @@
-# Renders kit-map demo stills (1080p + 4K crops + city stills) and measures seconds per frame; commits them to kit-map.
-# Runs when this file or the stills script changes on kit-map (or manually once the workflow is on the default branch).
+# Renders kit-map demo stills (1080p + 4K crops + city stills) and measures seconds per frame; uploads them as a 14-day artifact.
+# Manual only. Never commit the 4K output.
 name: Map stills
 on:
   workflow_dispatch:
@@ -7,13 +7,8 @@ on:
       cities:
         description: 'city ids (blank = all in cities.json)'
         default: ''
-  push:
-    branches: [kit-map]
-    paths:
-      - .github/workflows/map-stills.yml
-      - scripts/map_stills.mjs
 permissions:
-  contents: write
+  contents: read
 concurrency:
   group: map-stills
   cancel-in-progress: false
@@ -22,13 +17,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-        with:
-          ref: kit-map
       - uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: npm
       - run: npm ci
+      - name: Fetch baked map data and audio (kept out of git)
+        run: npm run kit:fetch-data
       # the stills script crops its 4K review images with ImageMagick, which the runner image may not ship
       - run: sudo apt-get update && sudo apt-get install -y imagemagick
       - name: Render
@@ -40,19 +35,18 @@ jobs:
           ARGS=""
           if [ -n "${{ inputs.cities }}" ]; then ARGS="--cities=${{ inputs.cities }}"; fi
           node scripts/map_stills.mjs $ARGS 2>&1 | tee docs/map-bake-logs/stills.log
-      - name: Commit stills + log
+      - name: Collect new outputs (never committed)
         if: always()
         run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add docs/previews/kit-map docs/map-bake-logs
-          if git diff --cached --quiet; then echo "no change"; exit 0; fi
-          git commit -m "kit-map: stills + perf [skip ci]"
-          for i in 1 2 3 4 5 6; do
-            git pull --rebase origin kit-map && git push origin HEAD:kit-map && exit 0
-            sleep $((RANDOM % 15 + 5))
-          done
-          exit 1
+          mkdir -p out/artifact
+          git ls-files -z -o -m docs/previews docs/map-bake-logs | xargs -0 -r cp --parents -t out/artifact
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: map-stills
+          path: out/artifact
+          retention-days: 14
+          if-no-files-found: warn
       - name: Fail if the render failed
         if: steps.render.outcome == 'failure'
         run: exit 1

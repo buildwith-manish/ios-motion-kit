@@ -11,6 +11,9 @@
     "kit:contrast": "node scripts/kit_contrast_tokens.mjs",
     "kit:sizeguard": "node scripts/kit_size_guard.mjs",
     "kit:fetch-data": "node scripts/kit_fetch_data.mjs",
+    "kit:data-manifest": "node scripts/kit_data_manifest.mjs",
+    "kit:audio": "python3 scripts/kit_make_music.py",
+    "kit:shrink-previews": "bash scripts/kit_shrink_previews.sh",
     "test:unit": "vitest run",
     "test:visual": "node scripts/kit-visual-regression.mjs",
     "test:visual:update": "node scripts/kit-visual-regression.mjs --update"

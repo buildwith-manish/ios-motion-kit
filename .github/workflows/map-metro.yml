@@ -1,5 +1,5 @@
 # Renders the MetroMap review stills (hero/dim, three zooms, reveal moments, 4K crops) and measures seconds per frame
-# at 1080p and 4K for the light and rich tiers. Commits them to kit-map. Runs when its files change on kit-map, or manually.
+# at 1080p and 4K for the light and rich tiers. Manual; results are uploaded as a 14-day artifact.
 name: Map metro
 on:
   workflow_dispatch:
@@ -7,16 +7,8 @@ on:
       only:
         description: 'all | review | perf'
         default: 'all'
-  push:
-    branches: [kit-map]
-    paths:
-      - .github/workflows/map-metro.yml
-      - scripts/map_metro_stills.mjs
-      - src/kit/map/Metro*.ts*
-      - src/kit/map/metro*.ts
-      - src/kit/demo/MetroDemo.tsx
 permissions:
-  contents: write
+  contents: read
 concurrency:
   group: map-metro
   cancel-in-progress: false
@@ -26,13 +18,13 @@ jobs:
     timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4
-        with:
-          ref: kit-map
       - uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: npm
       - run: npm ci
+      - name: Fetch baked map data and audio (kept out of git)
+        run: npm run kit:fetch-data
       - run: sudo apt-get update && sudo apt-get install -y imagemagick
       - name: Typecheck (once, before rendering)
         run: npx tsc --noEmit
@@ -43,19 +35,18 @@ jobs:
           set -o pipefail
           mkdir -p docs/map-bake-logs
           node scripts/map_metro_stills.mjs --only=${{ inputs.only || 'all' }} 2>&1 | grep -v "^Bundling\|^Copying" | tee docs/map-bake-logs/metro.log
-      - name: Commit stills + log
+      - name: Collect new outputs (never committed)
         if: always()
         run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add docs/previews/kit-map/metro docs/map-bake-logs
-          if git diff --cached --quiet; then echo "no change"; exit 0; fi
-          git commit -m "kit-map: metro stills + perf [skip ci]"
-          for i in 1 2 3 4 5 6; do
-            git pull --rebase origin kit-map && git push origin HEAD:kit-map && exit 0
-            sleep $((RANDOM % 15 + 5))
-          done
-          exit 1
+          mkdir -p out/artifact
+          git ls-files -z -o -m docs/previews docs/map-bake-logs | xargs -0 -r cp --parents -t out/artifact
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: map-metro
+          path: out/artifact
+          retention-days: 14
+          if-no-files-found: warn
       - name: Fail if the render failed
         if: steps.render.outcome == 'failure'
         run: exit 1
