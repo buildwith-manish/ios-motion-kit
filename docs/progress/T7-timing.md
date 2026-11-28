@@ -13,8 +13,8 @@
 - `npx tsx scripts/kit-timing-table.ts` — generated `docs/kit-timing-table.txt` (40 word rows, 3 scene starts, 6 cues).
 - `KIT_CHROME=/usr/bin/google-chrome node scripts/kit-timing-stills.mjs` — rendered `docs/previews/kit/timing-landscape-1080p.jpg` and `docs/previews/kit/timing-landscape-4k.jpg`; both inspected.
 - `npx tsc --noEmit` — passed.
-- GitHub Actions QA: pending.
+- Targeted GitHub Actions run `46115853987` passed contrast, safe-area, and motion checks for the landscape, vertical, and 30 fps compositions; see `docs/progress/T7-qa.txt`.
 
 ## NOT DONE
 
-- Contrast, safe-area, and motion checks will be recorded from the `kit-qa` Actions run.
+- No full-motion playback review on alternate browsers.
