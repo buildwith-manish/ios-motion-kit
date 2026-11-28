@@ -5,7 +5,9 @@ name: sfx-build
 #   2. regenerate every WAV from scripts/kit_make_sfx.py,
 #   3. measure again (clicks, harshness, length, level, consistency) and build the report + listening page,
 #   4. upload everything as an artifact and summarise old vs new in the job summary,
-#   5. only when `commit` is ticked: commit the regenerated WAVs and manifest back to the branch.
+#   5. only when asked: commit the regenerated WAVs and manifest back to the branch.
+# Ask by ticking `commit` on a manual run, or by putting [sfx-commit] in the message of the newest commit of a push that
+# triggers this workflow (manual runs are only offered once this file is on the default branch).
 # Run it from the Actions tab (sfx-build > Run workflow), or it runs by itself on pushes to feat/sfx-report that touch the generator.
 
 on:
@@ -93,7 +95,7 @@ jobs:
           if-no-files-found: error
 
       - name: Commit regenerated sounds
-        if: github.event_name == 'workflow_dispatch' && inputs.commit
+        if: (github.event_name == 'workflow_dispatch' && inputs.commit) || (github.event_name == 'push' && contains(github.event.head_commit.message, '[sfx-commit]'))
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
