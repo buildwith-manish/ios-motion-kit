@@ -60,6 +60,11 @@ node scripts/kit_loudness.mjs --comp Kit-Audio-Demo
 
 # 7. Source lint for forbidden device-style identifiers and strings
 node scripts/kit_no_device_chrome.mjs
+
+# 8. Unit and fixed-frame visual regression checks
+npm run test:unit
+npm run test:visual
+npm run test:visual:update  # refresh intentionally, then inspect the baseline diff
 ```
 
 Exit codes for the checks: **0** pass, **1** problems found (`--no-fail` turns this into 0), **2** could not run.

@@ -101,6 +101,18 @@ Chromium missing? `npm i --no-save @sparticuz/chromium`, extract it to `/tmp/chr
 `LD_LIBRARY_PATH=/tmp` and `--browser-executable=/tmp/chromium --chrome-mode=chrome-for-testing --gl=swangle`.
 Scripts: `scripts/kit-*.mjs` / `scripts/kit_*.mjs` (stills, audits, QA); `scripts/kit-camera-audit.ts` runs with `npx tsx`; the `.py` generators need `numpy` + `scipy` (`kit-font-metrics.py` needs `fonttools`).
 
+## Test and visual regression
+
+```bash
+npm run test:unit                 # Vitest pure-function tests
+npm run test:visual               # fixed-frame comparison against tests/visual/baselines/
+npm run test:visual:update        # intentionally refresh baselines; inspect the image changes before committing
+```
+
+The PR workflow runs TypeScript, unit tests, source/contrast checks, representative contrast/safe-area/motion QA, and
+the fixed-frame visual suite. Visual renders use `KIT_CHROME` when supplied, then the QA helper's Remotion, Playwright,
+and optional `@sparticuz/chromium` fallbacks. Browser caches and actual/diff PNGs are kept as workflow artifacts.
+
 ## The 7 kits (`src/kit/`)
 
 | Kit | What it gives you |
