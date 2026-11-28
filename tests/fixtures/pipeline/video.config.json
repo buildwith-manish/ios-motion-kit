@@ -1,17 +1,74 @@
 {
   "script": "scripts/lines.csv",
   "fps": 30,
-  "shot": {"onset": 0.1, "tail": 0.3, "maxShot": 20},
+  "shot": {
+    "onset": 0.1,
+    "tail": 0.3,
+    "maxShot": 20
+  },
   "silenceLimit": 0.6,
   "sections": [
-    {"id": "coldOpen", "idPrefixes": ["s01"]},
-    {"id": "method", "idPrefixes": ["s02"]},
-    {"id": "outro", "idPrefixes": ["s03"], "default": true}
+    {
+      "id": "coldOpen",
+      "idPrefixes": [
+        "s01"
+      ]
+    },
+    {
+      "id": "method",
+      "idPrefixes": [
+        "s02"
+      ]
+    },
+    {
+      "id": "outro",
+      "idPrefixes": [
+        "s03"
+      ],
+      "default": true
+    }
   ],
-  "intro": {"seconds": 2, "after": "coldOpen"},
-  "chapters": [{"section": "method", "title": "The method"}, {"section": "outro", "title": "Wrap up"}],
+  "intro": {
+    "seconds": 2,
+    "after": "coldOpen"
+  },
+  "chapters": [
+    {
+      "section": "method",
+      "title": "The method"
+    },
+    {
+      "section": "outro",
+      "title": "Wrap up"
+    }
+  ],
   "chapterCardSeconds": 1,
   "endScreenSeconds": 2,
   "dataFile": "src/data.json",
-  "figures": {"entities": "cities", "nameField": "name"}
+  "figures": {
+    "entities": "cities",
+    "nameField": "name"
+  },
+  "cues": {
+    "module": "src/cues.ts",
+    "export": "CUES"
+  },
+  "stills": {
+    "scenes": [
+      {
+        "id": "open",
+        "shot": "s01a",
+        "moments": [
+          {
+            "name": "start"
+          },
+          {
+            "name": "rent",
+            "word": "rent",
+            "offsetSeconds": 0.5
+          }
+        ]
+      }
+    ]
+  }
 }
