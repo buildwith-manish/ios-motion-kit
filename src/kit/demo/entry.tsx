@@ -34,3 +34,4 @@ export {KitNumberRollCompositions} from './NumberRollDemo';
 export {KitFinishCompositions} from './FinishDemo';
 export {KitIconsCompositions} from '../icons/IconsDemo';
 export {KitTimingCompositions} from '../timing/TimingDemo';
+export {KitUiCompositions} from '../ui/UiDemo';

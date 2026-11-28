@@ -57,6 +57,9 @@ node scripts/kit_render.mjs --profile final  --comp Kit-Camera-Demo --start 2 --
 # 6. Loudness, analysis only (-14 LUFS +/- 1, true peak <= -1 dBTP)
 node scripts/kit_loudness.mjs out/kit-qa/Kit-Audio-Demo-final.mp4
 node scripts/kit_loudness.mjs --comp Kit-Audio-Demo
+
+# 7. Source lint for forbidden device-style identifiers and strings
+node scripts/kit_no_device_chrome.mjs
 ```
 
 Exit codes for the checks: **0** pass, **1** problems found (`--no-fail` turns this into 0), **2** could not run.
