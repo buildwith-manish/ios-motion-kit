@@ -37,6 +37,7 @@ jobs:
           - { suite: ui, entry: src/kit/ui/entry.tsx, comp: 'Kit-Ui-Demo,Kit-Ui-Demo-Vertical,Kit-Ui-Demo-30fps', times: '2,4.5,7.5,8.5' }
           - { suite: charts, entry: src/kit/demo/entry.tsx, comp: 'Kit-Charts-Demo,Kit-Charts-Demo-Vertical,Kit-Charts-Demo-30fps', times: '2.4,5.6,8.8,12,15.2,18.4,21.6,24.8,28,31.2' }
           - { suite: scenes, entry: src/kit/scenes/entry.tsx, comp: Kit-Scenes-Demo, times: '2,7,12,17,22,27' }
+          - { suite: production, entry: src/kit/production/entry.tsx, comp: 'Kit-Production-Demo,Kit-Production-Demo-Vertical', times: '1.5,4,8,13,18' }
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4

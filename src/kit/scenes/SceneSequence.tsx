@@ -15,6 +15,8 @@ import {
   Takeaway,
 } from './templates';
 import {ChoroplethScene, FlyToCityScene, RegionHighlightScene, TileGridScene} from './mapTemplates';
+import {ChapterCard} from '../production/ChapterCard';
+import {DisclaimerCard} from '../production/DisclaimerCard';
 import {layoutSceneSequence} from './sequence';
 import type {SceneDefinition, ScenePlacement, SceneSequenceOptions, SceneSequenceRenderOptions} from './types';
 
@@ -40,7 +42,11 @@ const SceneTemplate: React.FC<{frame: number; theme: Theme; placement: ScenePlac
     case 'takeaway':
       return <Takeaway frame={frame} start={start} theme={theme} title={scene.title} eyebrow={scene.eyebrow} body={scene.body} />;
     case 'endCard':
-      return <EndCard frame={frame} start={start} theme={theme} title={scene.title} subtitle={scene.subtitle} actionLabel={scene.actionLabel} />;
+      return <EndCard frame={frame} start={start} theme={theme} title={scene.title} subtitle={scene.subtitle} actionLabel={scene.actionLabel} platform={scene.platform} videoTitle={scene.videoTitle} handle={scene.handle} linkText={scene.linkText} bioLines={scene.bioLines} />;
+    case 'chapter':
+      return <ChapterCard frame={frame} start={start} theme={theme} chapters={scene.chapters} current={scene.current} duration={scene.duration} kicker={scene.kicker} />;
+    case 'disclaimer':
+      return <DisclaimerCard frame={frame} start={start} theme={theme} text={scene.text} title={scene.title} duration={scene.duration} />;
     case 'mapHero':
       return <MapHero frame={frame} start={start} theme={theme} title={scene.title} subtitle={scene.subtitle} origin={scene.origin} destination={scene.destination} />;
     case 'choropleth':

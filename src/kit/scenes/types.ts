@@ -79,6 +79,30 @@ export interface EndCardSceneData extends SceneBase {
   title: string;
   subtitle?: string;
   actionLabel?: string;
+  /** Adds a tap demo under the card: 'youtube' related-video tap, 'facebook' pinned-comment tap, 'instagram' bio-link tap. */
+  platform?: 'youtube' | 'facebook' | 'instagram';
+  /** Title shown on the opened video card (platform demos). */
+  videoTitle?: string;
+  /** Channel / page / profile handle (platform demos). */
+  handle?: string;
+  /** Pinned-comment link (facebook) or bio link text (instagram). */
+  linkText?: string;
+  /** Instagram bio lines (up to 4). */
+  bioLines?: readonly string[];
+}
+
+/** A roadmap chapter card. `chapters` lists every chapter (the strip); `current` is the 1-based one this scene shows. */
+export interface ChapterSceneData extends SceneBase {
+  type: 'chapter';
+  chapters: readonly {title: string; sub?: string}[];
+  current: number;
+  kicker?: string;
+}
+
+export interface DisclaimerSceneData extends SceneBase {
+  type: 'disclaimer';
+  text: string;
+  title?: string;
 }
 
 export interface MapHeroSceneData extends SceneBase {
@@ -191,6 +215,8 @@ export type SceneDefinition =
   | NeededVsEarnedSceneData
   | TakeawaySceneData
   | EndCardSceneData
+  | ChapterSceneData
+  | DisclaimerSceneData
   | MapHeroSceneData
   | ChoroplethSceneData
   | RegionHighlightSceneData

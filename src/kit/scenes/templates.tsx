@@ -8,6 +8,8 @@ import type {FormatPresetName, FormatSpec} from '../text/format';
 import {radius, safeRect, space, textStyle, unit} from '../tokens';
 import type {Theme} from '../tokens';
 import {rgba} from '../tokens/color';
+import {PlatformTapDemo} from '../production/PlatformEndCard';
+import type {EndCardPlatform} from '../production/logic';
 
 export interface SceneTemplateProps {
   frame: number;
@@ -186,9 +188,14 @@ export interface EndCardProps extends SceneTemplateProps {
   title: string;
   subtitle?: string;
   actionLabel?: string;
+  platform?: EndCardPlatform;
+  videoTitle?: string;
+  handle?: string;
+  linkText?: string;
+  bioLines?: readonly string[];
 }
 
-export const EndCard: React.FC<EndCardProps> = ({frame, start, theme, title, subtitle, actionLabel}) => {
+export const EndCard: React.FC<EndCardProps> = ({frame, start, theme, title, subtitle, actionLabel, platform, videoTitle, handle, linkText, bioLines}) => {
   const u = unit(theme);
   return (
     <SceneLayout frame={frame} start={start} theme={theme}>
@@ -197,6 +204,7 @@ export const EndCard: React.FC<EndCardProps> = ({frame, start, theme, title, sub
         {subtitle && <div style={{...textStyle(theme, 'body', {color: 'secondary'}), marginTop: space(theme, 4)}}>{subtitle}</div>}
         {actionLabel && <div style={{display: 'inline-flex', marginTop: space(theme, 6), padding: `${space(theme, 3)}px ${space(theme, 6)}px`, borderRadius: radius(theme, 'pill'), background: theme.colors.accent, ...textStyle(theme, 'caption', {weight: 'bold'}), color: theme.colors.onAccent}}>{actionLabel}</div>}
       </Glass>
+      {platform && <PlatformTapDemo frame={frame} start={start} theme={theme} platform={platform} videoTitle={videoTitle} handle={handle} linkText={linkText} bioLines={bioLines} />}
     </SceneLayout>
   );
 };
