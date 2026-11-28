@@ -79,11 +79,11 @@ def find_clicks(x, sr, spike_db=25.0):
     The high-passed signal is cut into 2 ms windows every 0.5 ms; each window's RMS is compared with the median RMS of the
     windows within +-20 ms. Neighbouring hits are merged into one click.
     """
+    win, hop = int(round(CLICK_WINDOW_MS * 1e-3 * sr)), int(round(CLICK_HOP_MS * 1e-3 * sr))
+    if len(x) < win + hop:  # too short to judge, and sosfiltfilt would raise on very short input
+        return []
     sos = signal.butter(4, CLICK_HP_HZ, btype="high", fs=sr, output="sos")
     hp = signal.sosfiltfilt(sos, x)
-    win, hop = int(round(CLICK_WINDOW_MS * 1e-3 * sr)), int(round(CLICK_HOP_MS * 1e-3 * sr))
-    if len(hp) < win + hop:
-        return []
     csum = np.concatenate([[0.0], np.cumsum(hp**2)])
     starts = np.arange(0, len(hp) - win + 1, hop)
     rms = np.sqrt((csum[starts + win] - csum[starts]) / win)

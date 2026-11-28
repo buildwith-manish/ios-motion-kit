@@ -62,6 +62,7 @@ jobs:
           python -B scripts/sfx_build_page.py
 
       - name: Key check (every tonal peak within 15 cents of a C major pentatonic note)
+        shell: bash # explicit bash sets pipefail, so a failed check is not hidden by tee
         run: python -B scripts/sfx_key_check.py | tee dist/sfx-report/key-check.txt
 
       - name: Compare with the baseline (job summary)

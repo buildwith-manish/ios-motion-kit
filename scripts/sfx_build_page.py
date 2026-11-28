@@ -67,7 +67,7 @@ JS = """
       players.forEach(function(p){ if (p !== a) p.pause(); });
       mark(a);
     });
-    a.addEventListener('pause', function(){ if (active && a === current && !a.ended) stop(); });
+    a.addEventListener('pause', function(){ if (active && a === current && a.paused && !a.ended) stop(); });
     a.addEventListener('pointerdown', function(){ if (active) stop(); });
   });
   document.getElementById('only').addEventListener('change', function(e){ stop(); document.body.classList.toggle('only-flagged', e.target.checked); });
