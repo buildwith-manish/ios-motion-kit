@@ -53,6 +53,10 @@ jobs:
       - run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg
       - run: node scripts/kit_contrast_check.mjs --comp "${{ matrix.comp }}" --entry "${{ matrix.entry }}" --times "${{ matrix.times }}" --no-images --out "out/main-qa/${{ matrix.suite }}/contrast"
       - run: node scripts/kit_safe_area_check.mjs --comp "${{ matrix.comp }}" --entry "${{ matrix.entry }}" --times "${{ matrix.times }}" --no-images --out "out/main-qa/${{ matrix.suite }}/safe-area"
+      - name: Safe-area findings as annotations (diagnostic only)
+        if: failure()
+        run: |
+          for f in $(find out/main-qa/${{ matrix.suite }}/safe-area -name '*.json' | head -3); do python3 -c "import json,sys;print('::error::'+json.dumps(json.load(open(sys.argv[1])))[:3500])" "$f"; done
       - run: node scripts/kit_motion_audit.mjs --comp "${{ matrix.comp }}" --entry "${{ matrix.entry }}" --fps 5 --scale 0.15 --min-static 2 --out "out/main-qa/${{ matrix.suite }}/motion"
       - uses: actions/upload-artifact@v4
         if: always()
