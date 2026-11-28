@@ -1,2 +1,3 @@
 export * from './components';
-export * from './motion';
+export {springProgress as uiSpringProgress, uiMotionAt, uiMotionStyle, useUIMotion} from './motion';
+export type {UIMotionProps, UIMotionState} from './motion';

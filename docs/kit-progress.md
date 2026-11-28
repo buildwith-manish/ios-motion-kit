@@ -463,6 +463,17 @@ The GitHub token was used for clone and push only (the camera session cloned wit
 
 - No T6 build, tests, typecheck, QA run, render, or performance measurement has been run; these are deferred until the implementation pass is complete.
 
+## T9 — Tests and CI
+
+### Built
+
+- Added Vitest coverage across pure kit APIs, fixed-frame PNG comparisons with an explicit baseline-update command, and PR Actions for TypeScript, unit, source, visual, and representative QA checks.
+- Added browser caching/fallback handling and artifact uploads for QA and visual output; documented local commands in the root and QA READMEs.
+
+### Remaining
+
+- Initial visual baselines and the final deferred verification pass are still outstanding.
+
 ## T8 — Camera and motion upgrades
 
 ### Built

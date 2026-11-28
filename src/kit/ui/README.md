@@ -25,7 +25,7 @@ import {Button, ListGroup, Pill, Widget} from '../kit';
 | `<AlertCard>` | Generic icon, title and body card. | `frame`, `start`, `end` |
 | `<Widget>` | Label, number, optional sparkline and delta slot. | `frame`, `start`, `end` |
 | `<Sheet>` / `<Tooltip>` | Bottom-rising summary surface and anchored hint. | `frame`, `start`, `end` |
-| `uiMotionAt`, `springProgress` | Pure presence and spring progress helpers. | seconds, fps and frame |
+| `uiMotionAt`, `uiSpringProgress` | Pure presence and spring progress helpers. | seconds, fps and frame |
 
 `src/kit/ui/UiDemo.tsx` registers landscape, vertical and 30 fps dashboard compositions. Use
 `src/kit/ui/entry.tsx` with the QA scripts' `--entry` option to inspect them independently.

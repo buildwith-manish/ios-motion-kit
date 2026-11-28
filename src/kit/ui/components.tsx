@@ -253,7 +253,7 @@ export const Sheet: React.FC<SheetProps> = ({title, children, height = 460, ...p
   return (
     <div aria-hidden style={{position: 'absolute', inset: 0, zIndex: 40, opacity: motion.opacity, pointerEvents: 'none', ...props.style}}>
       <div style={{position: 'absolute', inset: 0, background: rgba(theme.colors.background.deep, 0.62 * motion.opacity)}} />
-      <Glass tier="sheet" theme={theme} className={props.className} style={{position: 'absolute', left: safe.left, bottom: 0, width: safe.width, height: sheetHeight, boxSizing: 'border-box', padding: space(theme, 7), borderBottomLeftRadius: 0, borderBottomRightRadius: 0, transform: `translate3d(0, ${travel}px, 0)`, opacity: motion.enter * (1 - motion.exit)}}>
+      <Glass tier="sheet" theme={theme} className={props.className} style={{position: 'absolute', left: safe.left, bottom: 0, width: safe.width, height: sheetHeight, boxSizing: 'border-box', padding: space(theme, 8), borderBottomLeftRadius: 0, borderBottomRightRadius: 0, transform: `translate3d(0, ${travel}px, 0)`, opacity: motion.enter * (1 - motion.exit)}}>
         <div style={{...textStyle(theme, 'title'), marginBottom: space(theme, 4)}}>{title}</div>
         {children}
       </Glass>

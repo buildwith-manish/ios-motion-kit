@@ -28,7 +28,7 @@ export const layoutSceneSequence = (
 
   const transitions: (SceneTransitionWindow | undefined)[] = scenes.map((scene, index) => {
     if (index === scenes.length - 1) {
-      if (scene.transition && scene.transition !== false) throw new RangeError(`Last scene "${scene.id}" cannot have an outgoing transition`);
+      if (scene.transition !== undefined && scene.transition !== false) throw new RangeError(`Last scene "${scene.id}" cannot have an outgoing transition`);
       return undefined;
     }
     if (scene.transition === false) return undefined;

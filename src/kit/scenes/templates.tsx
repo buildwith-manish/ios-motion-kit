@@ -89,7 +89,7 @@ export const StatCard: React.FC<StatCardProps> = ({frame, start, theme, label, v
   const u = unit(theme);
   return (
     <SceneLayout frame={frame} start={start} theme={theme}>
-      <Glass tier="card" theme={theme} style={{width: 'min(100%, 1120px)', boxSizing: 'border-box', padding: space(theme, 9), borderRadius: radius(theme, 'xxl'), textAlign: 'center'}}>
+      <Glass tier="card" theme={theme} style={{width: 'min(100%, 1120px)', boxSizing: 'border-box', padding: space(theme, 8), borderRadius: radius(theme, 'xxl'), textAlign: 'center'}}>
         <div style={{...textStyle(theme, 'body', {color: 'secondary', weight: 'bold'}), marginBottom: space(theme, 4)}}>{label}</div>
         <NumberText frame={frame} start={start + 0.25} duration={0.9} theme={theme} to={value} from={from} prefix={prefix} suffix={suffix} decimals={decimals} fontSize={104 * u} />
         {delta && <div style={{...textStyle(theme, 'caption', {color: 'accent', weight: 'bold'}), marginTop: space(theme, 4)}}>{delta}</div>}
@@ -133,7 +133,7 @@ export interface ComparisonProps extends SceneTemplateProps {
 export const Comparison: React.FC<ComparisonProps> = ({frame, start, theme, title, left, right, prefix, suffix, decimals}) => {
   const u = unit(theme);
   const card = (item: ComparisonValue, direction: 'left' | 'right') => (
-    <Glass tier="card" theme={theme} style={{flex: '1 1 0', minWidth: 0, padding: space(theme, 7), borderRadius: radius(theme, 'xl'), textAlign: 'center', boxShadow: direction === 'right' ? `inset 0 0 0 1px ${rgba(theme.colors.accent, 0.38)}` : undefined}}>
+    <Glass tier="card" theme={theme} style={{flex: '1 1 0', minWidth: 0, padding: space(theme, 8), borderRadius: radius(theme, 'xl'), textAlign: 'center', boxShadow: direction === 'right' ? `inset 0 0 0 1px ${rgba(theme.colors.accent, 0.38)}` : undefined}}>
       <div style={{...textStyle(theme, 'caption', {color: 'secondary', weight: 'bold'}), marginBottom: space(theme, 4)}}>{item.label}</div>
       <NumberText frame={frame} start={start + 0.45} duration={0.9} theme={theme} to={item.value} prefix={prefix} suffix={suffix} decimals={decimals} fontSize={66 * u} />
     </Glass>
@@ -189,7 +189,7 @@ export const EndCard: React.FC<EndCardProps> = ({frame, start, theme, title, sub
   const u = unit(theme);
   return (
     <SceneLayout frame={frame} start={start} theme={theme}>
-      <Glass tier="card" theme={theme} style={{width: 'min(100%, 1180px)', boxSizing: 'border-box', padding: space(theme, 9), borderRadius: radius(theme, 'xxl'), textAlign: 'center'}}>
+      <Glass tier="card" theme={theme} style={{width: 'min(100%, 1180px)', boxSizing: 'border-box', padding: space(theme, 8), borderRadius: radius(theme, 'xxl'), textAlign: 'center'}}>
         <div style={{...textStyle(theme, 'title', {weight: 'bold'}), fontSize: fitSceneTitle(title, safeRect(theme, 'title').width, theme.type.title.size * u * 1.15), lineHeight: 1.08}}>{title}</div>
         {subtitle && <div style={{...textStyle(theme, 'body', {color: 'secondary'}), marginTop: space(theme, 4)}}>{subtitle}</div>}
         {actionLabel && <div style={{display: 'inline-flex', marginTop: space(theme, 6), padding: `${space(theme, 3)}px ${space(theme, 6)}px`, borderRadius: radius(theme, 'pill'), background: theme.colors.accent, color: theme.colors.onAccent, ...textStyle(theme, 'caption', {weight: 'bold'})}}>{actionLabel}</div>}
