@@ -24,6 +24,7 @@ jobs:
       - run: npm run test:unit
       - run: node scripts/kit_no_device_chrome.mjs
       - run: node scripts/kit_contrast_tokens.mjs
+      - run: node scripts/kit_size_guard.mjs
 
   qa:
     runs-on: ubuntu-latest

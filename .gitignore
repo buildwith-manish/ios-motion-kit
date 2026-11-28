@@ -2,3 +2,8 @@ node_modules
 out
 tmp
 .cache/
+
+# big outputs belong in workflow artifacts, not git (see docs/repo-rules.md)
+docs/previews/**/*.png
+docs/previews/**/*.mp4
+docs/previews/**/*.mov
