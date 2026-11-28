@@ -1,0 +1,109 @@
+name: sfx-build
+
+# Heavy SFX work runs here, not on a laptop or in a chat sandbox, so it survives anyone going offline:
+#   1. measure the sounds currently committed (the baseline),
+#   2. regenerate every WAV from scripts/kit_make_sfx.py,
+#   3. measure again (clicks, harshness, length, level, consistency) and build the report + listening page,
+#   4. upload everything as an artifact and summarise old vs new in the job summary,
+#   5. only when `commit` is ticked: commit the regenerated WAVs and manifest back to the branch.
+# Run it from the Actions tab (sfx-build > Run workflow), or it runs by itself on pushes to feat/sfx-report that touch the generator.
+
+on:
+  workflow_dispatch:
+    inputs:
+      commit:
+        description: Commit the regenerated WAVs and manifest to this branch (leave off while still tuning; WAVs are large)
+        type: boolean
+        default: false
+      strict:
+        description: Fail the job if any sound is flagged
+        type: boolean
+        default: false
+  push:
+    branches: [feat/sfx-report]
+    paths:
+      - scripts/kit_make_sfx.py
+      - scripts/sfx_key.py
+      - scripts/sfx_report*
+      - scripts/sfx_build_page.py
+      - .github/workflows/sfx-build.yml
+
+permissions:
+  contents: write # only used by the optional commit-back step
+
+concurrency:
+  group: sfx-build-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6.3.0
+        with:
+          python-version: '3.13'
+          cache: pip
+          cache-dependency-path: scripts/sfx_report_requirements.txt
+      - run: pip install -r scripts/sfx_report_requirements.txt
+
+      - name: Baseline (the sounds committed on this branch right now)
+        run: python -B scripts/sfx_report.py --sfx public/kit/sfx --out dist/sfx-baseline
+
+      - name: Regenerate every sound
+        run: python -B scripts/kit_make_sfx.py > dist/generator-table.txt
+
+      - name: Measure the regenerated sounds, build the report and listening page
+        run: |
+          python -B scripts/sfx_report.py
+          python -B scripts/sfx_build_page.py
+
+      - name: Key check (every tonal peak within 15 cents of a C major pentatonic note)
+        run: python -B scripts/sfx_key_check.py | tee dist/sfx-report/key-check.txt
+
+      - name: Compare with the baseline (job summary)
+        run: |
+          python - <<'PY' >> "$GITHUB_STEP_SUMMARY"
+          import json
+          old = json.load(open('dist/sfx-baseline/report.json'))
+          new = json.load(open('dist/sfx-report/report.json'))
+          so, sn = old['summary'], new['summary']
+          clicks = lambda r: sum(len(x['metrics']['clicks']) for x in r['sounds'])
+          print('## SFX build')
+          print(f"| | baseline (committed) | regenerated |\n|---|---|---|")
+          print(f"| sounds flagged | {so['flagged']} / {so['sounds']} | {sn['flagged']} / {sn['sounds']} |")
+          print(f"| clicks found | {clicks(old)} | {clicks(new)} |")
+          for k in sorted(set(so['by_flag']) | set(sn['by_flag'])):
+              print(f"| {k} | {so['by_flag'].get(k, 0)} | {sn['by_flag'].get(k, 0)} |")
+          print()
+          print(open('dist/sfx-report/report.md').read())
+          PY
+
+      - name: Upload report, listening page and regenerated files
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: sfx-build
+          path: |
+            dist/sfx-report
+            dist/sfx-baseline/report.md
+            dist/generator-table.txt
+            public/kit/sfx
+          retention-days: 14
+          if-no-files-found: error
+
+      - name: Commit regenerated sounds
+        if: github.event_name == 'workflow_dispatch' && inputs.commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add public/kit/sfx src/kit/audio/sfx-manifest.json
+          if git diff --cached --quiet; then echo "Nothing to commit: committed sounds already match the generator."; exit 0; fi
+          git commit -q -m "sfx: regenerate sounds (CI, run ${{ github.run_id }})"
+          git push origin "HEAD:${GITHUB_REF_NAME}"
+
+      - name: Gate (strict)
+        if: github.event_name == 'workflow_dispatch' && inputs.strict
+        run: |
+          flagged=$(python -c "import json; print(json.load(open('dist/sfx-report/report.json'))['summary']['flagged'])")
+          if [ "$flagged" -gt 0 ]; then echo "::error::$flagged sounds flagged (strict mode)."; exit 1; fi
