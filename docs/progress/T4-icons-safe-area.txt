@@ -1,0 +1,14 @@
+bundling src/kit/icons/entry.tsx ...
+browser: KIT_CHROME
+Kit-Icons-Demo: 12 frames, 0 finding(s)
+Kit-Icons-Demo-Vertical: 12 frames, 0 finding(s)
+Kit-Icons-Demo-30fps: 12 frames, 0 finding(s)
+
+Outside the title-safe area
+composition              type  what        overshoot  seen  samples
+-----------------------  ----  ----------  ---------  ----  -------
+Kit-Icons-Demo           -     all inside  -          -     -
+Kit-Icons-Demo-Vertical  -     all inside  -          -     -
+Kit-Icons-Demo-30fps     -     all inside  -          -     -
+
+JSON: ../../../../tmp/t4-icons-safe-area/safe-area.json

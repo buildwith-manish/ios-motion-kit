@@ -413,3 +413,30 @@ The GitHub token was used for clone and push only (the camera session cloned wit
 - Perf measured on this sandbox only (2 CPUs, software GL); no hardware-GL or CI-runner numbers.
 - `quiet` and `reducedMotion` are exercised by the pure-function checks and code, but not by a dedicated still.
 - The 30 fps variant was checked with 2 stills and the three QA scripts, not watched as video.
+
+## T4 — Icon kit
+
+### Built
+
+- `src/kit/icons/` vendors 80 Lucide v0.468.0 SVGs with the ISC `LICENSE` and source/commit `NOTICE`; `scripts/kit_build_icons.mjs` generates typed inline-SVG components.
+- Added `<Icon>` with theme-token tones, size-aware stroke width, explicit draw-on progress, and `<IconTile>` with glass or tinted surfaces.
+- Added landscape, vertical, and 30 fps compositions showing all 80 icons in midnight, light, and mono themes with a staggered spring draw-on; the demo contains no emoji or device chrome.
+- API documentation: `src/kit/icons/README.md`. Stills: `docs/previews/kit/icons-landscape-1080p.jpg` and `icons-grid-4k-crop.jpg`.
+
+### Deviations
+
+- The icon subset is pinned to Lucide v0.468.0 / commit `f12b0de`; source SVGs remain vendored so regeneration does not require network access.
+- The long icon names are visually ellipsized to keep the 80-icon grid legible at the required canvas sizes; full `name` values remain in the API and accessible labels.
+
+### Verified
+
+- `scripts/kit-icon-audit.ts` confirms each of the 80 public icon names renders non-empty SVG geometry.
+- Contrast: an initial vertical-demo low-contrast label was fixed by using the theme's primary text token. Final contrast QA reports zero findings across all three compositions (`docs/progress/T4-icons-contrast-final.txt`).
+- Safe-area QA reports zero findings across all three compositions (`docs/progress/T4-icons-safe-area.txt`).
+- The 1080p still and 4K detail crop were rendered and visually inspected.
+- `npx tsc --noEmit` passes.
+
+### NOT verified
+
+- Motion audit remains pending; complete the kit QA workflow before moving to T7.
+- No full-motion playback review on alternate browsers.
