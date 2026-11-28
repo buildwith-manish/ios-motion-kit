@@ -17,3 +17,4 @@ export * from './ui';
 export * from './scenes';
 export * from './map';
 export * from './charts';
+export * from './data/manifest';

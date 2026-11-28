@@ -42,7 +42,7 @@ export const runSampled = async ({args, qa, visit, finish}) => {
         await view.seek(sample.frame);
         const dom = await collectDom(view.page);
         const shot = await captureFrame(view.page, comp);
-        visit({comp, sample, dom, shot, state});
+        await visit({comp, sample, dom, shot, state, page: view.page});
         progress(`${comp.id}: ${++n}/${samples.length}`);
       }
       await view.close();

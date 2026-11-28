@@ -1,0 +1,14 @@
+{
+  "designWidth": {"landscape": 1920, "portrait": 1080},
+  "minText": 28,
+  "minLabel": 36,
+  "hero": {"min": 120, "max": 200},
+  "heroZone": {"left": 96, "top": 136, "right": 1824, "bottom": 974},
+  "heroZoneMinShare": 0.6,
+  "maxSecondary": 3,
+  "rail": {"left": 1264, "top": 54, "right": 1824, "bottom": 118},
+  "footer": {"left": 96, "top": 998, "right": 1824, "bottom": 1032},
+  "overlapTolerancePx": 2,
+  "minOpacity": 0.5,
+  "chipVisibleOpacity": 0.05
+}

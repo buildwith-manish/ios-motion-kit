@@ -10,6 +10,8 @@
     "lint": "tsc --noEmit",
     "kit:contrast": "node scripts/kit_contrast_tokens.mjs",
     "kit:sizeguard": "node scripts/kit_size_guard.mjs",
+    "kit:data-check": "node scripts/kit_data_check.mjs",
+    "kit:layout-lint": "node scripts/kit_layout_lint.mjs",
     "kit:fetch-data": "node scripts/kit_fetch_data.mjs",
     "kit:data-manifest": "node scripts/kit_data_manifest.mjs",
     "kit:audio": "python3 scripts/kit_make_music.py",

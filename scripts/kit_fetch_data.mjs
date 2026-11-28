@@ -7,6 +7,7 @@
 //   node scripts/kit_fetch_data.mjs --check         verify local files only, never download (exit 1 if missing/different)
 //   node scripts/kit_fetch_data.mjs --dest-root .   write under another project's root (kit used as a submodule)
 // Env: KIT_DATA_BASE_URL overrides the manifest's baseUrl (e.g. a mirror).
+//      KIT_TOKEN (or GH_TOKEN / GITHUB_TOKEN): needed when the kit repo is private; release assets are then fetched through the GitHub API.
 import {createHash} from 'node:crypto';
 import {existsSync, mkdirSync, readFileSync, renameSync, writeFileSync} from 'node:fs';
 import {dirname, join, resolve} from 'node:path';
@@ -20,6 +21,27 @@ const only = opt('--only')?.split(',').map((s) => s.trim());
 const check = args.includes('--check');
 const root = resolve(opt('--dest-root') ?? join(here, '..'));
 const base = (process.env.KIT_DATA_BASE_URL ?? manifest.baseUrl).replace(/\/$/, '');
+const token = process.env.KIT_TOKEN ?? process.env.GH_TOKEN ?? process.env.GITHUB_TOKEN;
+const rel = /^https:\/\/github\.com\/([^/]+)\/([^/]+)\/releases\/download\/([^/]+)$/.exec(base);
+let assets;
+const download = async (name) => {
+  if (token && rel) {
+    const api = `https://api.github.com/repos/${rel[1]}/${rel[2]}`;
+    const auth = {Authorization: `Bearer ${token}`, 'X-GitHub-Api-Version': '2022-11-28'};
+    if (!assets) {
+      const r = await fetch(`${api}/releases/tags/${rel[3]}`, {headers: {...auth, Accept: 'application/vnd.github+json'}});
+      if (!r.ok) throw new Error(`HTTP ${r.status} reading release ${rel[3]} (is KIT_TOKEN valid and allowed to read the kit repo?)`);
+      assets = new Map((await r.json()).assets.map((a) => [a.name, a.id]));
+    }
+    if (!assets.has(name)) throw new Error(`asset ${name} is not in release ${rel[3]}`);
+    const res = await fetch(`${api}/releases/assets/${assets.get(name)}`, {headers: {...auth, Accept: 'application/octet-stream'}, redirect: 'follow'});
+    if (!res.ok) throw new Error(`HTTP ${res.status} downloading ${name}`);
+    return Buffer.from(await res.arrayBuffer());
+  }
+  const res = await fetch(`${base}/${name}`);
+  if (!res.ok) throw new Error(`HTTP ${res.status}${res.status === 404 && !token ? ' (private kit repo? set KIT_TOKEN)' : ''}`);
+  return Buffer.from(await res.arrayBuffer());
+};
 const sha = (buf) => createHash('sha256').update(buf).digest('hex');
 
 const unknown = (only ?? []).filter((t) => !manifest.files.some((f) => f.tags.includes(t)));
@@ -38,9 +60,7 @@ for (const f of wanted) {
   let done = false;
   for (let attempt = 1; attempt <= 3 && !done; attempt++) {
     try {
-      const res = await fetch(`${base}/${f.name}`);
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      const buf = Buffer.from(await res.arrayBuffer());
+      const buf = await download(f.name);
       if (sha(buf) !== f.sha256) throw new Error('checksum mismatch');
       mkdirSync(dirname(dest), {recursive: true});
       writeFileSync(dest + '.part', buf); renameSync(dest + '.part', dest);
