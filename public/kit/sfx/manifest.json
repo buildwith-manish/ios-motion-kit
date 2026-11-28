@@ -103,12 +103,12 @@
       ],
       "duration": 0.07,
       "peakDb": -3.0,
-      "peakTime": 0.0044,
-      "rmsDb": -17.39,
-      "lufs": -15.5,
+      "peakTime": 0.0049,
+      "rmsDb": -18.26,
+      "lufs": -18.54,
       "wet": 0.04,
       "notes": [
-        "D7"
+        "D6"
       ]
     },
     {
@@ -122,12 +122,12 @@
       ],
       "duration": 0.07,
       "peakDb": -3.0,
-      "peakTime": 0.0054,
-      "rmsDb": -17.52,
-      "lufs": -15.6,
+      "peakTime": 0.0043,
+      "rmsDb": -18.26,
+      "lufs": -18.11,
       "wet": 0.04,
       "notes": [
-        "E7"
+        "E6"
       ]
     },
     {
@@ -141,12 +141,12 @@
       ],
       "duration": 0.07,
       "peakDb": -3.0,
-      "peakTime": 0.0049,
-      "rmsDb": -16.99,
-      "lufs": -15.76,
+      "peakTime": 0.0055,
+      "rmsDb": -17.71,
+      "lufs": -18.36,
       "wet": 0.04,
       "notes": [
-        "C7"
+        "C6"
       ]
     },
     {
@@ -218,8 +218,8 @@
       "duration": 0.19,
       "peakDb": -3.0,
       "peakTime": 0.0056,
-      "rmsDb": -14.8,
-      "lufs": -16.34,
+      "rmsDb": -16.0,
+      "lufs": -17.7,
       "wet": 0.08,
       "notes": [
         "G4",
@@ -237,9 +237,9 @@
       ],
       "duration": 0.19,
       "peakDb": -3.0,
-      "peakTime": 0.0063,
-      "rmsDb": -14.57,
-      "lufs": -16.09,
+      "peakTime": 0.0084,
+      "rmsDb": -15.57,
+      "lufs": -17.27,
       "wet": 0.08,
       "notes": [
         "A4",
@@ -258,8 +258,8 @@
       "duration": 0.19,
       "peakDb": -3.0,
       "peakTime": 0.0066,
-      "rmsDb": -14.55,
-      "lufs": -16.13,
+      "rmsDb": -15.64,
+      "lufs": -17.38,
       "wet": 0.08,
       "notes": [
         "E4",
@@ -310,8 +310,8 @@
       "duration": 0.52,
       "peakDb": -3.0,
       "peakTime": 0.2051,
-      "rmsDb": -17.37,
-      "lufs": -17.57,
+      "rmsDb": -17.26,
+      "lufs": -17.64,
       "wet": 0.06
     },
     {
@@ -713,8 +713,8 @@
       "duration": 0.03,
       "peakDb": -3.0,
       "peakTime": 0.005,
-      "rmsDb": -12.85,
-      "lufs": -10.56,
+      "rmsDb": -14.03,
+      "lufs": -11.97,
       "wet": 0.03,
       "notes": [
         "G7"
@@ -731,9 +731,9 @@
       ],
       "duration": 0.03,
       "peakDb": -3.0,
-      "peakTime": 0.0049,
-      "rmsDb": -12.49,
-      "lufs": -10.51,
+      "peakTime": 0.0046,
+      "rmsDb": -13.87,
+      "lufs": -11.91,
       "wet": 0.03,
       "notes": [
         "A7"
@@ -750,9 +750,9 @@
       ],
       "duration": 0.03,
       "peakDb": -3.0,
-      "peakTime": 0.0048,
-      "rmsDb": -12.52,
-      "lufs": -10.62,
+      "peakTime": 0.0046,
+      "rmsDb": -13.72,
+      "lufs": -12.07,
       "wet": 0.03,
       "notes": [
         "E7"
@@ -837,9 +837,9 @@
       ],
       "duration": 0.03,
       "peakDb": -3.0,
-      "peakTime": 0.005,
-      "rmsDb": -12.63,
-      "lufs": -13.77,
+      "peakTime": 0.0041,
+      "rmsDb": -13.47,
+      "lufs": -14.76,
       "wet": 0.03
     },
     {
@@ -857,8 +857,8 @@
       "duration": 0.03,
       "peakDb": -3.0,
       "peakTime": 0.0049,
-      "rmsDb": -12.9,
-      "lufs": -13.41,
+      "rmsDb": -14.07,
+      "lufs": -14.75,
       "wet": 0.03
     },
     {
@@ -876,8 +876,8 @@
       "duration": 0.03,
       "peakDb": -3.0,
       "peakTime": 0.0047,
-      "rmsDb": -12.95,
-      "lufs": -13.1,
+      "rmsDb": -14.16,
+      "lufs": -14.56,
       "wet": 0.03
     },
     {
@@ -895,8 +895,8 @@
       "duration": 0.03,
       "peakDb": -3.0,
       "peakTime": 0.0049,
-      "rmsDb": -12.32,
-      "lufs": -12.11,
+      "rmsDb": -13.64,
+      "lufs": -13.52,
       "wet": 0.03
     },
     {
@@ -914,8 +914,8 @@
       "duration": 0.03,
       "peakDb": -3.0,
       "peakTime": 0.0047,
-      "rmsDb": -12.6,
-      "lufs": -11.66,
+      "rmsDb": -13.83,
+      "lufs": -13.15,
       "wet": 0.03
     },
     {
@@ -933,8 +933,8 @@
       "duration": 0.03,
       "peakDb": -3.0,
       "peakTime": 0.0049,
-      "rmsDb": -12.56,
-      "lufs": -10.89,
+      "rmsDb": -13.83,
+      "lufs": -12.39,
       "wet": 0.03
     },
     {
@@ -952,8 +952,8 @@
       "duration": 0.03,
       "peakDb": -3.0,
       "peakTime": 0.005,
-      "rmsDb": -12.31,
-      "lufs": -10.63,
+      "rmsDb": -13.53,
+      "lufs": -12.09,
       "wet": 0.03
     },
     {
@@ -970,9 +970,9 @@
       ],
       "duration": 0.03,
       "peakDb": -3.0,
-      "peakTime": 0.0048,
-      "rmsDb": -12.5,
-      "lufs": -10.6,
+      "peakTime": 0.0046,
+      "rmsDb": -13.72,
+      "lufs": -12.06,
       "wet": 0.03
     },
     {
@@ -990,8 +990,8 @@
       "duration": 0.03,
       "peakDb": -3.0,
       "peakTime": 0.005,
-      "rmsDb": -12.88,
-      "lufs": -10.57,
+      "rmsDb": -14.05,
+      "lufs": -11.97,
       "wet": 0.03
     },
     {
@@ -1008,9 +1008,9 @@
       ],
       "duration": 0.03,
       "peakDb": -3.0,
-      "peakTime": 0.005,
-      "rmsDb": -12.49,
-      "lufs": -10.49,
+      "peakTime": 0.0046,
+      "rmsDb": -13.87,
+      "lufs": -11.9,
       "wet": 0.03
     },
     {
@@ -1027,9 +1027,9 @@
       ],
       "duration": 0.03,
       "peakDb": -3.0,
-      "peakTime": 0.005,
-      "rmsDb": -12.17,
-      "lufs": -10.06,
+      "peakTime": 0.0047,
+      "rmsDb": -13.42,
+      "lufs": -11.36,
       "wet": 0.03
     },
     {
@@ -1047,8 +1047,8 @@
       "duration": 0.03,
       "peakDb": -3.0,
       "peakTime": 0.0046,
-      "rmsDb": -12.25,
-      "lufs": -10.19,
+      "rmsDb": -13.6,
+      "lufs": -11.6,
       "wet": 0.03
     },
     {
@@ -1293,9 +1293,9 @@
       ],
       "duration": 0.19,
       "peakDb": -3.0,
-      "peakTime": 0.0089,
-      "rmsDb": -13.75,
-      "lufs": -15.81,
+      "peakTime": 0.009,
+      "rmsDb": -14.77,
+      "lufs": -17.09,
       "wet": 0.08
     },
     {
@@ -1312,9 +1312,9 @@
       ],
       "duration": 0.19,
       "peakDb": -3.0,
-      "peakTime": 0.008,
-      "rmsDb": -14.45,
-      "lufs": -16.25,
+      "peakTime": 0.0081,
+      "rmsDb": -15.1,
+      "lufs": -17.11,
       "wet": 0.08
     },
     {
@@ -1332,8 +1332,8 @@
       "duration": 0.19,
       "peakDb": -3.0,
       "peakTime": 0.007,
-      "rmsDb": -14.39,
-      "lufs": -16.09,
+      "rmsDb": -15.17,
+      "lufs": -17.15,
       "wet": 0.08
     },
     {
@@ -1351,8 +1351,8 @@
       "duration": 0.19,
       "peakDb": -3.0,
       "peakTime": 0.0059,
-      "rmsDb": -15.19,
-      "lufs": -16.81,
+      "rmsDb": -16.38,
+      "lufs": -18.18,
       "wet": 0.08
     },
     {
@@ -1370,8 +1370,8 @@
       "duration": 0.19,
       "peakDb": -3.0,
       "peakTime": 0.0055,
-      "rmsDb": -14.51,
-      "lufs": -16.0,
+      "rmsDb": -15.77,
+      "lufs": -17.46,
       "wet": 0.08
     },
     {
@@ -1388,9 +1388,9 @@
       ],
       "duration": 0.19,
       "peakDb": -3.0,
-      "peakTime": 0.0117,
-      "rmsDb": -14.33,
-      "lufs": -16.11,
+      "peakTime": 0.0082,
+      "rmsDb": -14.73,
+      "lufs": -16.59,
       "wet": 0.08
     },
     {
@@ -1407,9 +1407,9 @@
       ],
       "duration": 0.19,
       "peakDb": -3.0,
-      "peakTime": 0.0074,
-      "rmsDb": -14.49,
-      "lufs": -16.22,
+      "peakTime": 0.0075,
+      "rmsDb": -15.41,
+      "lufs": -17.35,
       "wet": 0.08
     },
     {
@@ -1427,8 +1427,8 @@
       "duration": 0.19,
       "peakDb": -3.0,
       "peakTime": 0.0066,
-      "rmsDb": -14.5,
-      "lufs": -16.09,
+      "rmsDb": -15.61,
+      "lufs": -17.33,
       "wet": 0.08
     },
     {
@@ -1446,8 +1446,8 @@
       "duration": 0.19,
       "peakDb": -3.0,
       "peakTime": 0.0056,
-      "rmsDb": -14.8,
-      "lufs": -16.34,
+      "rmsDb": -16.0,
+      "lufs": -17.7,
       "wet": 0.08
     },
     {
@@ -1464,9 +1464,9 @@
       ],
       "duration": 0.19,
       "peakDb": -3.0,
-      "peakTime": 0.0071,
-      "rmsDb": -14.32,
-      "lufs": -15.8,
+      "peakTime": 0.0084,
+      "rmsDb": -15.81,
+      "lufs": -17.52,
       "wet": 0.08
     },
     {
@@ -1483,9 +1483,9 @@
       ],
       "duration": 0.19,
       "peakDb": -3.0,
-      "peakTime": 0.006,
-      "rmsDb": -14.64,
-      "lufs": -15.99,
+      "peakTime": 0.0052,
+      "rmsDb": -16.17,
+      "lufs": -17.7,
       "wet": 0.08
     },
     {
@@ -1502,9 +1502,9 @@
       ],
       "duration": 0.19,
       "peakDb": -3.0,
-      "peakTime": 0.007,
-      "rmsDb": -14.47,
-      "lufs": -15.61,
+      "peakTime": 0.0087,
+      "rmsDb": -15.47,
+      "lufs": -16.88,
       "wet": 0.08
     }
   ]
