@@ -1,0 +1,21 @@
+bundling src/kit/demo/entry.tsx ...
+browser: KIT_CHROME
+Kit-Camera-Demo: 20 frames, 2 finding(s)
+Kit-Camera-Demo-Vertical: 20 frames, 4 finding(s)
+Kit-Camera-Demo-30fps: 20 frames, 2 finding(s)
+Kit-Camera-Depth-Compare: 6 frames, 0 finding(s)
+
+Outside the title-safe area
+composition               type  what               overshoot     seen             samples
+------------------------  ----  -----------------  ------------  ---------------  -------
+Kit-Camera-Demo           text  Card A             left 96px     0:08.00-0:09.50  4
+Kit-Camera-Demo           text  depth 0.35 · far   left 96px     0:08.00-0:09.50  4
+Kit-Camera-Demo-Vertical  text  Card B             bottom 358px  0:00.00-0:01.00  3
+Kit-Camera-Demo-Vertical  text  depth 0.70 · near  bottom 407px  0:00.00-0:07.00  10
+Kit-Camera-Demo-Vertical  text  Card A             top 187px     0:08.00-0:09.50  4
+Kit-Camera-Demo-Vertical  text  depth 0.35 · far   top 49px      0:08.50-0:09.50  3
+Kit-Camera-Demo-30fps     text  Card A             left 96px     0:08.00-0:09.50  4
+Kit-Camera-Demo-30fps     text  depth 0.35 · far   left 96px     0:08.00-0:09.50  4
+Kit-Camera-Depth-Compare  -     all inside         -             -                -
+
+JSON: ../../../../tmp/t4-safe-area/safe-area.json
