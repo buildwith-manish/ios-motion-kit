@@ -15,6 +15,9 @@ import {KitDatavizCompositions} from './DatavizDemo';
 import {KitAtmosphereCompositions} from './AtmosphereDemo';
 import {KitIconsCompositions as KitIconsCompositionsRoot} from '../icons/IconsDemo';
 import {KitTimingCompositions} from '../timing/TimingDemo';
+import {KitMapCompositions} from './MapDemo';
+import {KitMetroCompositions} from './MetroDemo';
+import {KitFlyCompositions} from './FlyDemo';
 
 registerRoot(() => (
   <>
@@ -28,6 +31,9 @@ registerRoot(() => (
     <KitAtmosphereCompositions />
     <KitIconsCompositionsRoot />
     <KitTimingCompositions />
+    <KitMapCompositions />
+    <KitMetroCompositions />
+    <KitFlyCompositions />
   </>
 ));
 export {KitNumberRollCompositions} from './NumberRollDemo';

@@ -1,0 +1,83 @@
+{
+  "courtesy": "Source: U.S. Census Bureau",
+  "license": "Public domain (U.S. Government Work)",
+  "dataset": "TIGER/Line Shapefiles (ROADS, AREAWATER, LINEARWATER, AREALM)",
+  "vintages": [
+    "2025"
+  ],
+  "cities": [
+    {
+      "id": "atlanta",
+      "counties": [
+        "13089",
+        "13121"
+      ]
+    },
+    {
+      "id": "chicago",
+      "counties": [
+        "17031"
+      ]
+    },
+    {
+      "id": "dallas",
+      "counties": [
+        "48113"
+      ]
+    },
+    {
+      "id": "houston",
+      "counties": [
+        "48201"
+      ]
+    },
+    {
+      "id": "los-angeles",
+      "counties": [
+        "06037"
+      ]
+    },
+    {
+      "id": "miami",
+      "counties": [
+        "12086"
+      ]
+    },
+    {
+      "id": "new-york",
+      "counties": [
+        "34003",
+        "34017",
+        "36047",
+        "36061",
+        "36081"
+      ]
+    },
+    {
+      "id": "philadelphia",
+      "counties": [
+        "34007",
+        "42045",
+        "42091",
+        "42101"
+      ]
+    },
+    {
+      "id": "phoenix",
+      "counties": [
+        "04013"
+      ]
+    },
+    {
+      "id": "washington",
+      "counties": [
+        "11001",
+        "24031",
+        "24033",
+        "51013",
+        "51059",
+        "51510"
+      ]
+    }
+  ]
+}

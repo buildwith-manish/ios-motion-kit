@@ -3,6 +3,7 @@ import {
   KitAudioCompositions,
   KitCameraCompositions,
   KitDatavizCompositions,
+  KitMapCompositions,
   KitDemoCompositions,
   KitQaCompositions,
   KitTextCompositions,
@@ -19,5 +20,6 @@ export const Root: React.FC = () => (
     <KitTextCompositions />
     <KitQaCompositions />
     <KitDatavizCompositions />
+    <KitMapCompositions />
   </>
 );

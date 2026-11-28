@@ -1,0 +1,34 @@
+phoenix: box 14 km at 33.4484,-112.074; counties 04013
+[merge-layers] Use the target= option to specify multiple layers for merging
+[o] Wrote /home/runner/work/ios-motion-kit/ios-motion-kit/.cache/city-tmp/phoenix/roads.json
+  roads: 4478 features in box (TIGER2025)
+[merge-layers] Use the target= option to specify multiple layers for merging
+[dissolve2] Dissolved 1,253 features into 4 features
+[o] Wrote /home/runner/work/ios-motion-kit/ios-motion-kit/.cache/city-tmp/phoenix/areawater.json
+  areawater: 2 features in box (TIGER2025)
+[merge-layers] Use the target= option to specify multiple layers for merging
+[o] Wrote /home/runner/work/ios-motion-kit/ios-motion-kit/.cache/city-tmp/phoenix/linearwater.json
+  linearwater: 118 features in box (TIGER2025)
+[merge-layers] Use the target= option to specify multiple layers for merging
+[dissolve2] Dissolved 1,235 features into 30 features
+[o] Wrote /home/runner/work/ios-motion-kit/ios-motion-kit/.cache/city-tmp/phoenix/arealm.json
+  arealm: 12 features in box (TIGER2025)
+┌─────────┬───────────┬─────────┬───────┬───────────────────────────┬─────────┬───────────┬───────┬────────────┬───────┬───────┬──────┬─────────┬───────┐
+│ (index) │ city      │ detail  │ kb    │ budget                    │ primary │ secondary │ water │ waterPolys │ parks │ local │ ramp │ service │ other │
+├─────────┼───────────┼─────────┼───────┼───────────────────────────┼─────────┼───────────┼───────┼────────────┼───────┼───────┼──────┼─────────┼───────┤
+│ 0       │ 'phoenix' │ 'light' │ 27.8  │ { scale: 1, dropped: [] } │ 36      │ 9         │ 124   │ 0          │ 0     │       │      │         │       │
+│ 1       │ 'phoenix' │ 'rich'  │ 251.1 │ { scale: 1, dropped: [] } │ 37      │ 9         │ 130   │ 14         │ 31    │ 4006  │ 253  │ 0       │ 96    │
+└─────────┴───────────┴─────────┴───────┴───────────────────────────┴─────────┴───────────┴───────┴────────────┴───────┴───────┴──────┴─────────┴───────┘
+MTFCC codes in the data but not in the table (audit against the official list): {
+  K1231: 1,
+  K2540: 1,
+  K1237: 1,
+  K2582: 1,
+  K1236: 1,
+  K2561: 1,
+  K2457: 1,
+  K1233: 1,
+  K1235: 1,
+  K1238: 1,
+  K1121: 1
+}

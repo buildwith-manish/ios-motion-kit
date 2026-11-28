@@ -15,3 +15,4 @@ export * from './icons';
 export * from './timing';
 export * from './ui';
 export * from './scenes';
+export * from './map';

@@ -1,0 +1,72 @@
+{
+ "washington": {
+  "x": 1338.1974,
+  "y": 433.3088,
+  "unitsPerMetre": 0.0003201088,
+  "unitsPerMetreNorth": 0.0003285372,
+  "rotationDeg": -11.4351
+ },
+ "new-york": {
+  "x": 1405.2588,
+  "y": 351.5243,
+  "unitsPerMetre": 0.0003204539,
+  "unitsPerMetreNorth": 0.0003281825,
+  "rotationDeg": -13.2624
+ },
+ "houston": {
+  "x": 835.5142,
+  "y": 816.926,
+  "unitsPerMetre": 0.0003230236,
+  "unitsPerMetreNorth": 0.0003255762,
+  "rotationDeg": -0.383
+ },
+ "chicago": {
+  "x": 1038.1598,
+  "y": 367.9713,
+  "unitsPerMetre": 0.0003208658,
+  "unitsPerMetreNorth": 0.0003277606,
+  "rotationDeg": -5.0495
+ },
+ "philadelphia": {
+  "x": 1380.7077,
+  "y": 385.4616,
+  "unitsPerMetre": 0.0003202665,
+  "unitsPerMetreNorth": 0.0003283749,
+  "rotationDeg": -12.5635
+ },
+ "miami": {
+  "x": 1330.7597,
+  "y": 917.3191,
+  "unitsPerMetre": 0.0003263999,
+  "unitsPerMetreNorth": 0.0003222097,
+  "rotationDeg": -9.5328
+ },
+ "los-angeles": {
+  "x": 163.7673,
+  "y": 585.229,
+  "unitsPerMetre": 0.0003207612,
+  "unitsPerMetreNorth": 0.0003278711,
+  "rotationDeg": 13.4061
+ },
+ "phoenix": {
+  "x": 338.8834,
+  "y": 643.3378,
+  "unitsPerMetre": 0.0003209892,
+  "unitsPerMetreNorth": 0.0003276384,
+  "rotationDeg": 9.6868
+ },
+ "dallas": {
+  "x": 791.8759,
+  "y": 707.9896,
+  "unitsPerMetre": 0.0003212785,
+  "unitsPerMetreNorth": 0.0003273436,
+  "rotationDeg": 0.4772
+ },
+ "atlanta": {
+  "x": 1159.8607,
+  "y": 651.8327,
+  "unitsPerMetre": 0.0003208718,
+  "unitsPerMetreNorth": 0.0003277581,
+  "rotationDeg": -7.0034
+ }
+}

@@ -1,0 +1,63 @@
+[merge-layers] Use the target= option to specify multiple layers for merging
+[dissolve2] Dissolved 141 features into 4 features
+[o] Wrote /home/runner/work/ios-motion-kit/ios-motion-kit/.cache/verify/washington-0.json
+[merge-layers] Use the target= option to specify multiple layers for merging
+[dissolve2] Dissolved 1,456 features into 4 features
+[o] Wrote /home/runner/work/ios-motion-kit/ios-motion-kit/.cache/verify/washington-1.json
+[merge-layers] Use the target= option to specify multiple layers for merging
+[dissolve2] Dissolved 679 features into 4 features
+[o] Wrote /home/runner/work/ios-motion-kit/ios-motion-kit/.cache/verify/washington-2.json
+[merge-layers] Use the target= option to specify multiple layers for merging
+[dissolve2] Dissolved 7 features into 2 features
+[o] Wrote /home/runner/work/ios-motion-kit/ios-motion-kit/.cache/verify/washington-3.json
+[merge-layers] Use the target= option to specify multiple layers for merging
+[dissolve2] Dissolved 1,718 features into 4 features
+[o] Wrote /home/runner/work/ios-motion-kit/ios-motion-kit/.cache/verify/washington-4.json
+[merge-layers] Use the target= option to specify multiple layers for merging
+[dissolve2] Dissolved 24 features into 3 features
+[o] Wrote /home/runner/work/ios-motion-kit/ios-motion-kit/.cache/verify/washington-5.json
+[dissolve2] Dissolved 4,025 features into 5 features
+[o] Wrote /home/runner/work/ios-motion-kit/ios-motion-kit/.cache/verify/washington-merged.json
+| washington | 6 | 11 | 4 | 7 | 0 | 0.0000% | pass |
+[merge-layers] Use the target= option to specify multiple layers for merging
+[dissolve2] Dissolved 515 features into 4 features
+[o] Wrote /home/runner/work/ios-motion-kit/ios-motion-kit/.cache/verify/new-york-0.json
+[merge-layers] Use the target= option to specify multiple layers for merging
+[dissolve2] Dissolved 127 features into 4 features
+[o] Wrote /home/runner/work/ios-motion-kit/ios-motion-kit/.cache/verify/new-york-1.json
+[merge-layers] Use the target= option to specify multiple layers for merging
+[dissolve2] Dissolved 38 features into 5 features
+[o] Wrote /home/runner/work/ios-motion-kit/ios-motion-kit/.cache/verify/new-york-2.json
+[merge-layers] Use the target= option to specify multiple layers for merging
+[dissolve2] Dissolved 13 features into 4 features
+[o] Wrote /home/runner/work/ios-motion-kit/ios-motion-kit/.cache/verify/new-york-3.json
+[merge-layers] Use the target= option to specify multiple layers for merging
+[dissolve2] Dissolved 71 features into 6 features
+[o] Wrote /home/runner/work/ios-motion-kit/ios-motion-kit/.cache/verify/new-york-4.json
+[dissolve2] Dissolved 764 features into 6 features
+[o] Wrote /home/runner/work/ios-motion-kit/ios-motion-kit/.cache/verify/new-york-merged.json
+| new-york | 5 | 15 | 5 | 209 | 0 | 0.0000% | pass |
+[merge-layers] Use the target= option to specify multiple layers for merging
+[dissolve2] Dissolved 418 features into 3 features
+[o] Wrote /home/runner/work/ios-motion-kit/ios-motion-kit/.cache/verify/philadelphia-0.json
+[merge-layers] Use the target= option to specify multiple layers for merging
+[dissolve2] Dissolved 55 features into 4 features
+[o] Wrote /home/runner/work/ios-motion-kit/ios-motion-kit/.cache/verify/philadelphia-1.json
+[merge-layers] Use the target= option to specify multiple layers for merging
+[dissolve2] Dissolved 69 features into 5 features
+[o] Wrote /home/runner/work/ios-motion-kit/ios-motion-kit/.cache/verify/philadelphia-2.json
+[merge-layers] Use the target= option to specify multiple layers for merging
+[dissolve2] Dissolved 186 features into 3 features
+[o] Wrote /home/runner/work/ios-motion-kit/ios-motion-kit/.cache/verify/philadelphia-3.json
+[dissolve2] Dissolved 728 features into 5 features
+[o] Wrote /home/runner/work/ios-motion-kit/ios-motion-kit/.cache/verify/philadelphia-merged.json
+| philadelphia | 4 | 8 | 3 | 125 | 0 | 0.0000% | pass |
+[merge-layers] Use the target= option to specify multiple layers for merging
+[dissolve2] Dissolved 506 features into 3 features
+[o] Wrote /home/runner/work/ios-motion-kit/ios-motion-kit/.cache/verify/atlanta-0.json
+[merge-layers] Use the target= option to specify multiple layers for merging
+[dissolve2] Dissolved 861 features into 3 features
+[o] Wrote /home/runner/work/ios-motion-kit/ios-motion-kit/.cache/verify/atlanta-1.json
+[dissolve2] Dissolved 1,367 features into 4 features
+[o] Wrote /home/runner/work/ios-motion-kit/ios-motion-kit/.cache/verify/atlanta-merged.json
+| atlanta | 2 | 4 | 3 | 2 | 0 | 0.0000% | pass |

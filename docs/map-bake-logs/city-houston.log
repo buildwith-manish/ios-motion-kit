@@ -1,0 +1,22 @@
+houston: box 14 km at 29.7604,-95.3698; counties 48201
+[merge-layers] Use the target= option to specify multiple layers for merging
+[o] Wrote /home/runner/work/ios-motion-kit/ios-motion-kit/.cache/city-tmp/houston/roads.json
+  roads: 6690 features in box (TIGER2025)
+[merge-layers] Use the target= option to specify multiple layers for merging
+[dissolve2] Dissolved 5,889 features into 6 features
+[o] Wrote /home/runner/work/ios-motion-kit/ios-motion-kit/.cache/city-tmp/houston/areawater.json
+  areawater: 2 features in box (TIGER2025)
+[merge-layers] Use the target= option to specify multiple layers for merging
+[o] Wrote /home/runner/work/ios-motion-kit/ios-motion-kit/.cache/city-tmp/houston/linearwater.json
+  linearwater: 84 features in box (TIGER2025)
+[merge-layers] Use the target= option to specify multiple layers for merging
+[dissolve2] Dissolved 6,251 features into 36 features
+[o] Wrote /home/runner/work/ios-motion-kit/ios-motion-kit/.cache/city-tmp/houston/arealm.json
+  arealm: 6 features in box (TIGER2025)
+┌─────────┬───────────┬─────────┬──────┬─────────────────────────────┬─────────┬───────────┬───────┬────────────┬───────┬───────┬──────┬─────────┬───────┐
+│ (index) │ city      │ detail  │ kb   │ budget                      │ primary │ secondary │ water │ waterPolys │ parks │ local │ ramp │ service │ other │
+├─────────┼───────────┼─────────┼──────┼─────────────────────────────┼─────────┼───────────┼───────┼────────────┼───────┼───────┼──────┼─────────┼───────┤
+│ 0       │ 'houston' │ 'light' │ 64.1 │ { scale: 1, dropped: [] }   │ 89      │ 39        │ 88    │ 0          │ 0     │       │      │         │       │
+│ 1       │ 'houston' │ 'rich'  │ 358  │ { scale: 1.5, dropped: [] } │ 89      │ 39        │ 97    │ 15         │ 1     │ 4082  │ 536  │ 134     │ 934   │
+└─────────┴───────────┴─────────┴──────┴─────────────────────────────┴─────────┴───────────┴───────┴────────────┴───────┴───────┴──────┴─────────┴───────┘
+MTFCC codes in the data but not in the table (audit against the official list): { K1236: 1, K2540: 1, K1231: 1, K1235: 1, K1237: 1 }

@@ -1,0 +1,89 @@
+Downloading Chrome Headless Shell https://www.remotion.dev/chrome-headless-shell
+Customize this behavior by adding a onBrowserDownload function to openBrowser().
+Downloading Chrome Headless Shell - 9.6 Mb/88.2 Mb
+Downloading Chrome Headless Shell - 19.1 Mb/88.2 Mb
+Downloading Chrome Headless Shell - 28.6 Mb/88.2 Mb
+Downloading Chrome Headless Shell - 38.2 Mb/88.2 Mb
+Downloading Chrome Headless Shell - 47.7 Mb/88.2 Mb
+Downloading Chrome Headless Shell - 57.3 Mb/88.2 Mb
+Downloading Chrome Headless Shell - 66.8 Mb/88.2 Mb
+Downloading Chrome Headless Shell - 76.4 Mb/88.2 Mb
+Downloading Chrome Headless Shell - 85.9 Mb/88.2 Mb
+Downloading Chrome Headless Shell - 88.2 Mb/88.2 Mb
+Kit-Map-Night-Landscape us 0.59 s/frame
+Kit-Map-Night-Landscape state 0.40 s/frame
+Kit-Map-Night-Landscape metro 1.05 s/frame
+Kit-Map-Night-Portrait us 0.48 s/frame
+Kit-Map-Night-Portrait state 0.41 s/frame
+Kit-Map-Night-Portrait metro 1.19 s/frame
+Kit-Map-Light-Landscape us 0.71 s/frame
+Kit-Map-Light-Landscape state 0.45 s/frame
+Kit-Map-Light-Landscape metro 1.02 s/frame
+Kit-Map-Light-Portrait us 0.43 s/frame
+Kit-Map-Light-Portrait state 0.36 s/frame
+Kit-Map-Light-Portrait metro 1.02 s/frame
+Kit-Map-Mono-Landscape us 0.53 s/frame
+Kit-Map-Mono-Landscape state 0.40 s/frame
+Kit-Map-Mono-Landscape metro 0.99 s/frame
+Kit-Map-Mono-Portrait us 0.45 s/frame
+Kit-Map-Mono-Portrait state 0.39 s/frame
+Kit-Map-Mono-Portrait metro 1.03 s/frame
+city washington light 0.30 s/frame
+city washington rich 0.38 s/frame
+city new-york light 0.31 s/frame
+city new-york rich 0.35 s/frame
+city houston light 0.29 s/frame
+city houston rich 0.41 s/frame
+city chicago light 0.28 s/frame
+city chicago rich 0.36 s/frame
+city philadelphia light 0.28 s/frame
+city philadelphia rich 0.37 s/frame
+city miami light 0.26 s/frame
+city miami rich 0.31 s/frame
+city los-angeles light 0.28 s/frame
+city los-angeles rich 0.36 s/frame
+city phoenix light 0.26 s/frame
+city phoenix rich 0.33 s/frame
+city dallas light 0.28 s/frame
+city dallas rich 0.34 s/frame
+city atlanta light 0.28 s/frame
+city atlanta rich 0.33 s/frame
+highlight-midnight-landscape-co 0.50 s/frame
+highlight-midnight-landscape-handover 0.50 s/frame
+highlight-midnight-landscape-mo 0.50 s/frame
+highlight-midnight-landscape-ga 0.50 s/frame
+choropleth-midnight-landscape-sequential-filling 0.44 s/frame
+choropleth-midnight-landscape-sequential-settled 0.46 s/frame
+choropleth-midnight-landscape-diverging-settled 0.45 s/frame
+highlight-light-landscape-co 0.51 s/frame
+highlight-light-landscape-handover 0.52 s/frame
+highlight-light-landscape-mo 0.52 s/frame
+highlight-light-landscape-ga 0.50 s/frame
+choropleth-light-landscape-sequential-settled 0.44 s/frame
+choropleth-light-landscape-diverging-settled 0.42 s/frame
+highlight-mono-landscape-co 0.50 s/frame
+highlight-mono-landscape-handover 0.50 s/frame
+highlight-mono-landscape-mo 0.50 s/frame
+highlight-mono-landscape-ga 0.48 s/frame
+choropleth-mono-landscape-sequential-settled 0.44 s/frame
+choropleth-mono-landscape-diverging-settled 0.44 s/frame
+highlight-midnight-portrait-co 0.49 s/frame
+highlight-midnight-portrait-handover 0.49 s/frame
+highlight-midnight-portrait-mo 0.48 s/frame
+highlight-midnight-portrait-ga 0.49 s/frame
+choropleth-midnight-portrait-sequential-filling 0.44 s/frame
+choropleth-midnight-portrait-sequential-settled 0.44 s/frame
+choropleth-midnight-portrait-diverging-settled 0.44 s/frame
+highlight-light-portrait-co 0.50 s/frame
+highlight-light-portrait-handover 0.51 s/frame
+highlight-light-portrait-mo 0.48 s/frame
+highlight-light-portrait-ga 0.49 s/frame
+choropleth-light-portrait-sequential-settled 0.46 s/frame
+choropleth-light-portrait-diverging-settled 0.46 s/frame
+highlight-mono-portrait-co 0.49 s/frame
+highlight-mono-portrait-handover 0.49 s/frame
+highlight-mono-portrait-mo 0.49 s/frame
+highlight-mono-portrait-ga 0.49 s/frame
+choropleth-mono-portrait-sequential-settled 0.45 s/frame
+choropleth-mono-portrait-diverging-settled 0.47 s/frame
+max 1.19 s/frame, median 0.46 s/frame (budget 1.5 s)

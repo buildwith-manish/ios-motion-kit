@@ -1,0 +1,129 @@
+# Bakes city street/water/park detail from Census TIGER/Line (one job per city), then alignment + credits, and commits to kit-map.
+# Run: Actions -> "Bake map cities" -> Run workflow (cities blank = every city in cities.json that is not baked yet).
+name: Bake map cities
+on:
+  workflow_dispatch:
+    inputs:
+      cities:
+        description: 'city ids, comma separated (blank = all missing)'
+        default: ''
+      detail:
+        description: 'light | rich | both'
+        default: 'both'
+      budget:
+        description: 'rich size budget per city, KB'
+        default: '400'
+      force:
+        description: 'rebake even if the file exists (true/false)'
+        default: 'false'
+  push:
+    branches: [kit-map]
+    paths:
+      - .github/workflows/map-bake.yml
+      - scripts/map_bake_city.mjs
+permissions:
+  contents: write
+concurrency:
+  group: map-bake
+  cancel-in-progress: false
+jobs:
+  plan:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.m.outputs.matrix }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: kit-map
+      - id: m
+        env:
+          CITIES: ${{ inputs.cities }}
+          DETAIL: ${{ inputs.detail || 'both' }}
+          FORCE: ${{ inputs.force }}
+        run: |
+          node -e "
+          const fs=require('fs');
+          const all=JSON.parse(fs.readFileSync('public/kit/map/cities.json','utf8')).map(c=>c.id);
+          const want=(process.env.CITIES||'').split(',').map(s=>s.trim()).filter(Boolean);
+          const d=process.env.DETAIL;
+          const missing=id=>(d!=='light'&&!fs.existsSync('public/kit/map/cities/'+id+'.json'))||(d!=='rich'&&!fs.existsSync('public/kit/map/cities/'+id+'.light.json'));
+          const ids=want.length?want:(process.env.FORCE==='true'?all:all.filter(missing));
+          fs.appendFileSync(process.env.GITHUB_OUTPUT,'matrix='+JSON.stringify({id:ids})+'\n');
+          console.log(ids);
+          "
+  bake:
+    needs: plan
+    if: ${{ fromJSON(needs.plan.outputs.matrix).id[0] != null }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJSON(needs.plan.outputs.matrix) }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: kit-map
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - uses: actions/cache@v4
+        with:
+          path: .cache/census
+          key: tiger-${{ matrix.id }}-${{ github.run_id }}
+          restore-keys: tiger-${{ matrix.id }}-
+      - name: Bake ${{ matrix.id }}
+        id: bake
+        continue-on-error: true
+        run: |
+          set -o pipefail
+          mkdir -p docs/map-bake-logs
+          node scripts/map_bake_city.mjs ${{ matrix.id }} --detail=${{ inputs.detail || 'both' }} --budget=${{ inputs.budget || '400' }} --force=${{ inputs.force == 'true' && '1' || '' }} 2>&1 | tee docs/map-bake-logs/city-${{ matrix.id }}.log
+      # Artifacts are not used (the repo's artifact storage quota can be exhausted): each job commits its own files.
+      - name: Commit ${{ matrix.id }} (data + log, even on failure)
+        if: always()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add public/kit/map/cities docs/map-bake-logs
+          if git diff --cached --quiet; then echo "no change"; exit 0; fi
+          git commit -m "kit-map: bake city ${{ matrix.id }} [skip ci]"
+          for i in 1 2 3 4 5 6; do
+            git pull --rebase origin kit-map && git push origin HEAD:kit-map && exit 0
+            sleep $((RANDOM % 15 + 5))
+          done
+          exit 1
+      - name: Fail the job if the bake failed
+        if: steps.bake.outcome == 'failure'
+        run: exit 1
+  finish:
+    needs: [plan, bake]
+    if: ${{ always() && needs.plan.result == 'success' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: kit-map
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - name: Alignment (needs regions/outline.json), credits, table
+        run: |
+          mkdir -p docs/map-bake-logs
+          (node scripts/map_bake_alignment.mjs 2>&1 | tee docs/map-bake-logs/alignment.log) || echo "alignment failed (see log)"
+          node scripts/map_bake_city_report.mjs 2>&1 | tee docs/map-bake-logs/report.log || true
+      - name: Commit
+        if: always()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add public/kit/map/cities docs
+          if git diff --cached --quiet; then echo "no change"; exit 0; fi
+          git commit -m "kit-map: city alignment, credits, bake table [skip ci]"
+          for i in 1 2 3 4 5 6; do
+            git pull --rebase origin kit-map && git push origin HEAD:kit-map && exit 0
+            sleep $((RANDOM % 15 + 5))
+          done
+          exit 1

@@ -1,0 +1,86 @@
+{
+ "rows": [
+  {
+   "city": "washington",
+   "detail": "light",
+   "kb": 90.2,
+   "budget": {
+    "scale": 1,
+    "dropped": []
+   },
+   "primary": 90,
+   "secondary": 271,
+   "water": 111,
+   "waterPolys": 0,
+   "parks": 0
+  },
+  {
+   "city": "washington",
+   "detail": "rich",
+   "kb": 384.7,
+   "budget": {
+    "scale": 2,
+    "dropped": []
+   },
+   "primary": 87,
+   "secondary": 269,
+   "local": 4345,
+   "ramp": 593,
+   "service": 156,
+   "other": 64,
+   "water": 99,
+   "waterPolys": 25,
+   "parks": 34
+  }
+ ],
+ "unmapped": {
+  "K2543": 1,
+  "K2540": 1,
+  "K2432": 1,
+  "K1235": 1,
+  "K1229": 1,
+  "K2582": 1,
+  "K1231": 1,
+  "K2452": 1,
+  "K2424": 1,
+  "K1226": 1,
+  "K2564": 1,
+  "K1233": 1,
+  "K1236": 1,
+  "K1238": 1,
+  "K2561": 1,
+  "K2457": 1,
+  "K2165": 1,
+  "K1121": 1
+ },
+ "counties": [
+  "11001",
+  "24031",
+  "24033",
+  "51013",
+  "51059",
+  "51510"
+ ],
+ "sources": [
+  {
+   "layer": "roads",
+   "vintage": "2025",
+   "files": 6
+  },
+  {
+   "layer": "areawater",
+   "vintage": "2025",
+   "files": 6
+  },
+  {
+   "layer": "linearwater",
+   "vintage": "2025",
+   "files": 6
+  },
+  {
+   "layer": "arealm",
+   "vintage": "2025",
+   "files": 3
+  }
+ ]
+}

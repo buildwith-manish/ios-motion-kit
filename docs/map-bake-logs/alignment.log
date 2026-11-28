@@ -1,0 +1,11 @@
+wrote public/kit/map/cities/alignment.json
+washington     x=1338.1974 y=433.3088 upm=0.0003201088 aniso=2.63% rot=-11.4351deg skew=0.00348 corner-dev=0.00155u (4.8 m) land=true
+new-york       x=1405.2588 y=351.5243 upm=0.0003204539 aniso=2.41% rot=-13.2624deg skew=0.00357 corner-dev=0.00158u (4.9 m) land=true
+houston        x=835.5142 y=816.926 upm=0.0003230236 aniso=0.79% rot=-0.383deg skew=0.00312 corner-dev=0.00142u (4.4 m) land=true
+chicago        x=1038.1598 y=367.9713 upm=0.0003208658 aniso=2.15% rot=-5.0495deg skew=0.00364 corner-dev=0.00160u (5.0 m) land=true
+philadelphia   x=1380.7077 y=385.4616 upm=0.0003202665 aniso=2.53% rot=-12.5635deg skew=0.00353 corner-dev=0.00156u (4.9 m) land=true
+miami          x=1330.7597 y=917.3191 upm=0.0003263999 aniso=-1.28% rot=-9.5328deg skew=0.00301 corner-dev=0.00138u (4.2 m) land=true
+los-angeles    x=163.7673 y=585.229 upm=0.0003207612 aniso=2.22% rot=13.4061deg skew=0.00327 corner-dev=0.00147u (4.6 m) land=true
+phoenix        x=338.8834 y=643.3378 upm=0.0003209892 aniso=2.07% rot=9.6868deg skew=0.00325 corner-dev=0.00147u (4.6 m) land=true
+dallas         x=791.8759 y=707.9896 upm=0.0003212785 aniso=1.89% rot=0.4772deg skew=0.00322 corner-dev=0.00146u (4.5 m) land=true
+atlanta        x=1159.8607 y=651.8327 upm=0.0003208718 aniso=2.15% rot=-7.0034deg skew=0.00326 corner-dev=0.00147u (4.6 m) land=true

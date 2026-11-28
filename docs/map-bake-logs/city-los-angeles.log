@@ -1,0 +1,33 @@
+los-angeles: box 14 km at 34.0522,-118.2437; counties 06037
+[merge-layers] Use the target= option to specify multiple layers for merging
+[o] Wrote /home/runner/work/ios-motion-kit/ios-motion-kit/.cache/city-tmp/los-angeles/roads.json
+  roads: 6270 features in box (TIGER2025)
+[merge-layers] Use the target= option to specify multiple layers for merging
+[dissolve2] Dissolved 1,822 features into 6 features
+[o] Wrote /home/runner/work/ios-motion-kit/ios-motion-kit/.cache/city-tmp/los-angeles/areawater.json
+  areawater: 3 features in box (TIGER2025)
+[merge-layers] Use the target= option to specify multiple layers for merging
+[o] Wrote /home/runner/work/ios-motion-kit/ios-motion-kit/.cache/city-tmp/los-angeles/linearwater.json
+  linearwater: 26 features in box (TIGER2025)
+[merge-layers] Use the target= option to specify multiple layers for merging
+[dissolve2] Dissolved 8,113 features into 45 features
+[o] Wrote /home/runner/work/ios-motion-kit/ios-motion-kit/.cache/city-tmp/los-angeles/arealm.json
+  arealm: 13 features in box (TIGER2025)
+┌─────────┬───────────────┬─────────┬───────┬─────────────────────────────┬─────────┬───────────┬───────┬────────────┬───────┬───────┬──────┬─────────┬───────┐
+│ (index) │ city          │ detail  │ kb    │ budget                      │ primary │ secondary │ water │ waterPolys │ parks │ local │ ramp │ service │ other │
+├─────────┼───────────────┼─────────┼───────┼─────────────────────────────┼─────────┼───────────┼───────┼────────────┼───────┼───────┼──────┼─────────┼───────┤
+│ 0       │ 'los-angeles' │ 'light' │ 37.4  │ { scale: 1, dropped: [] }   │ 71      │ 9         │ 44    │ 0          │ 0     │       │      │         │       │
+│ 1       │ 'los-angeles' │ 'rich'  │ 356.8 │ { scale: 1.5, dropped: [] } │ 71      │ 9         │ 44    │ 16         │ 55    │ 4961  │ 758  │ 2       │ 112   │
+└─────────┴───────────────┴─────────┴───────┴─────────────────────────────┴─────────┴───────────┴───────┴────────────┴───────┴───────┴──────┴─────────┴───────┘
+MTFCC codes in the data but not in the table (audit against the official list): {
+  K2582: 1,
+  K2543: 1,
+  K1236: 1,
+  K2564: 1,
+  K1237: 1,
+  K2361: 1,
+  K1231: 1,
+  K2540: 1,
+  K1235: 1,
+  K1238: 1
+}

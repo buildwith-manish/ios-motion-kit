@@ -1,0 +1,61 @@
+# Checks that need census.gov: the MTFCC table against the official list, and the county-seam water merge on real data.
+# Runs when these files change on kit-map (or manually once the workflow exists on the default branch).
+name: Map verify
+on:
+  workflow_dispatch: {}
+  push:
+    branches: [kit-map]
+    paths:
+      - .github/workflows/map-verify.yml
+      - scripts/map_verify_mtfcc.mjs
+      - scripts/map_verify_seams.mjs
+      - scripts/map_merge.mjs
+      - scripts/map_bake_city.mjs
+permissions:
+  contents: write
+concurrency:
+  group: map-verify
+  cancel-in-progress: false
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: kit-map
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: sudo apt-get update && sudo apt-get install -y poppler-utils
+      - name: MTFCC table audit
+        id: mtfcc
+        continue-on-error: true
+        run: |
+          set -o pipefail
+          mkdir -p docs/map-bake-logs
+          node scripts/map_verify_mtfcc.mjs 2>&1 | tee docs/map-bake-logs/verify-mtfcc.log
+      - name: County-seam merge check
+        id: seams
+        continue-on-error: true
+        run: |
+          set -o pipefail
+          node scripts/map_verify_seams.mjs 2>&1 | tee docs/map-bake-logs/verify-seams.log
+      - name: Commit reports + logs
+        if: always()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/map-bake-logs
+          for f in docs/map-verify-mtfcc.md docs/map-verify-seams.md; do [ -f "$f" ] && git add "$f"; done
+          if git diff --cached --quiet; then echo "no change"; exit 0; fi
+          git commit -m "kit-map: verification reports [skip ci]"
+          for i in 1 2 3 4 5 6; do
+            git pull --rebase origin kit-map && git push origin HEAD:kit-map && exit 0
+            sleep $((RANDOM % 15 + 5))
+          done
+          exit 1
+      - name: Fail if a check failed
+        if: steps.mtfcc.outcome == 'failure' || steps.seams.outcome == 'failure'
+        run: exit 1

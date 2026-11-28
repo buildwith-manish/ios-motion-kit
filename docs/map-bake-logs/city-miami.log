@@ -1,0 +1,30 @@
+miami: box 14 km at 25.7617,-80.1918; counties 12086
+[merge-layers] Use the target= option to specify multiple layers for merging
+[o] Wrote /home/runner/work/ios-motion-kit/ios-motion-kit/.cache/city-tmp/miami/roads.json
+  roads: 3171 features in box (TIGER2025)
+[merge-layers] Use the target= option to specify multiple layers for merging
+[dissolve2] Dissolved 2,378 features into 6 features
+[o] Wrote /home/runner/work/ios-motion-kit/ios-motion-kit/.cache/city-tmp/miami/areawater.json
+  areawater: 5 features in box (TIGER2025)
+[merge-layers] Use the target= option to specify multiple layers for merging
+[o] Wrote /home/runner/work/ios-motion-kit/ios-motion-kit/.cache/city-tmp/miami/linearwater.json
+  linearwater: 24 features in box (TIGER2025)
+[merge-layers] Use the target= option to specify multiple layers for merging
+[dissolve2] Dissolved 2,269 features into 40 features
+[o] Wrote /home/runner/work/ios-motion-kit/ios-motion-kit/.cache/city-tmp/miami/arealm.json
+  arealm: 8 features in box (TIGER2025)
+┌─────────┬─────────┬─────────┬───────┬───────────────────────────┬─────────┬───────────┬───────┬────────────┬───────┬───────┬──────┬─────────┬───────┐
+│ (index) │ city    │ detail  │ kb    │ budget                    │ primary │ secondary │ water │ waterPolys │ parks │ local │ ramp │ service │ other │
+├─────────┼─────────┼─────────┼───────┼───────────────────────────┼─────────┼───────────┼───────┼────────────┼───────┼───────┼──────┼─────────┼───────┤
+│ 0       │ 'miami' │ 'light' │ 73.6  │ { scale: 1, dropped: [] } │ 26      │ 123       │ 83    │ 0          │ 0     │       │      │         │       │
+│ 1       │ 'miami' │ 'rich'  │ 310.3 │ { scale: 1, dropped: [] } │ 26      │ 125       │ 104   │ 51         │ 0     │ 2611  │ 231  │ 0       │ 80    │
+└─────────┴─────────┴─────────┴───────┴───────────────────────────┴─────────┴───────────┴───────┴────────────┴───────┴───────┴──────┴─────────┴───────┘
+MTFCC codes in the data but not in the table (audit against the official list): {
+  K1237: 1,
+  K1231: 1,
+  K1236: 1,
+  K2540: 1,
+  K1235: 1,
+  C3023: 1,
+  K2543: 1
+}

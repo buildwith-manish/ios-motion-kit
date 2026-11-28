@@ -1,0 +1,36 @@
+{
+  "courtesy": "Source: U.S. Census Bureau",
+  "license": "Public domain (U.S. Government Work)",
+  "vintage": "2025",
+  "layers": [
+    {
+      "name": "states",
+      "source": "https://www2.census.gov/geo/tiger/GENZ2025/shp/cb_2025_us_state_500k.zip"
+    },
+    {
+      "name": "counties",
+      "source": "https://www2.census.gov/geo/tiger/GENZ2025/shp/cb_2025_us_county_500k.zip"
+    },
+    {
+      "name": "cbsa",
+      "source": "https://www2.census.gov/geo/tiger/GENZ2025/shp/cb_2025_us_cbsa_500k.zip"
+    },
+    {
+      "name": "zcta",
+      "source": "https://www2.census.gov/geo/tiger/GENZ2020/shp/cb_2020_us_zcta520_500k.zip"
+    },
+    {
+      "name": "outline",
+      "source": "https://www2.census.gov/geo/tiger/GENZ2025/shp/cb_2025_us_state_500k.zip"
+    },
+    {
+      "name": "tracts/08",
+      "source": "https://www2.census.gov/geo/tiger/GENZ2025/shp/cb_2025_08_tract_500k.zip"
+    },
+    {
+      "name": "zcta-metro/19740",
+      "source": "https://www2.census.gov/geo/tiger/GENZ2020/shp/cb_2020_us_zcta520_500k.zip"
+    }
+  ],
+  "note": "ZCTAs (ZIP Code Tabulation Areas) approximate ZIP codes; they are not exact ZIP boundaries (the Postal Service does not publish ZIP boundary data). See src/kit/map/README.md."
+}

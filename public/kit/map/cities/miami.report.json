@@ -1,0 +1,70 @@
+{
+ "rows": [
+  {
+   "city": "miami",
+   "detail": "light",
+   "kb": 73.6,
+   "budget": {
+    "scale": 1,
+    "dropped": []
+   },
+   "primary": 26,
+   "secondary": 123,
+   "water": 83,
+   "waterPolys": 0,
+   "parks": 0
+  },
+  {
+   "city": "miami",
+   "detail": "rich",
+   "kb": 310.3,
+   "budget": {
+    "scale": 1,
+    "dropped": []
+   },
+   "primary": 26,
+   "secondary": 125,
+   "local": 2611,
+   "ramp": 231,
+   "service": 0,
+   "other": 80,
+   "water": 104,
+   "waterPolys": 51,
+   "parks": 0
+  }
+ ],
+ "unmapped": {
+  "K1237": 1,
+  "K1231": 1,
+  "K1236": 1,
+  "K2540": 1,
+  "K1235": 1,
+  "C3023": 1,
+  "K2543": 1
+ },
+ "counties": [
+  "12086"
+ ],
+ "sources": [
+  {
+   "layer": "roads",
+   "vintage": "2025",
+   "files": 1
+  },
+  {
+   "layer": "areawater",
+   "vintage": "2025",
+   "files": 1
+  },
+  {
+   "layer": "linearwater",
+   "vintage": "2025",
+   "files": 1
+  },
+  {
+   "layer": "arealm",
+   "vintage": "2025",
+   "files": 1
+  }
+ ]
+}
