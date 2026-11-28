@@ -1,0 +1,29 @@
+name: kit-data-release
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'release tag that holds the large data files'
+        default: data-v1
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Files must match data-manifest.json
+        run: node scripts/kit_fetch_data.mjs --check
+      - name: Create the release if needed and upload the files
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ inputs.tag }}
+        run: |
+          gh release view "$TAG" >/dev/null 2>&1 || gh release create "$TAG" --title "Kit data ($TAG)" --notes "Large generated files kept out of git. Fetch with: node scripts/kit_fetch_data.mjs"
+          gh release upload "$TAG" public/kit/map/regions/zcta.json public/kit/music/pad-loop.wav --clobber

@@ -10,6 +10,7 @@
     "lint": "tsc --noEmit",
     "kit:contrast": "node scripts/kit_contrast_tokens.mjs",
     "kit:sizeguard": "node scripts/kit_size_guard.mjs",
+    "kit:fetch-data": "node scripts/kit_fetch_data.mjs",
     "test:unit": "vitest run",
     "test:visual": "node scripts/kit-visual-regression.mjs",
     "test:visual:update": "node scripts/kit-visual-regression.mjs --update"

@@ -1,0 +1,9 @@
+{
+  "release": "data-v1",
+  "baseUrl": "https://github.com/buildwith-manish/ios-motion-kit/releases/download/data-v1",
+  "note": "Large generated data kept out of git. Fetch with: node scripts/kit_fetch_data.mjs",
+  "files": [
+    {"name": "zcta.json", "dest": "public/kit/map/regions/zcta.json", "needs": "map", "bytes": 8008779, "sha256": "89ce4b9cafe6b545dbb38508df4e5271c1560642c715858e073ff87b685d1b80", "what": "National ZIP-area (ZCTA) boundaries, only needed when a video draws every US ZIP area at once; per-metro files stay in git"},
+    {"name": "pad-loop.wav", "dest": "public/kit/music/pad-loop.wav", "needs": "audio", "bytes": 12288044, "sha256": "6c7985a27e6497d2f4e9d393813aaa4739f9e9664bc30821b141db6d7202f6f8", "what": "Ambient music bed (64 s seamless loop); regenerate with scripts/kit_make_music.py (seeded)"}
+  ]
+}
