@@ -2,7 +2,7 @@
 //   npm run kit:review -- --comp <id> [--times 1,3,5] [--portrait] [--entry file] [--loudness] [--out dist/review]
 // Writes <out>/<comp>/{still-<t>s.png, contact-sheet.png, review.md, qa/*}. Report only: exits 0 unless it cannot run (2).
 // --portrait reviews <comp>-Vertical. --loudness also runs kit_loudness (renders the composition's mix; needs ffmpeg).
-import {existsSync, readFileSync, writeFileSync} from 'node:fs';
+import {existsSync, readdirSync, readFileSync, writeFileSync} from 'node:fs';
 import path from 'node:path';
 import {spawnSync} from 'node:child_process';
 import {createRequire} from 'node:module';
@@ -10,7 +10,6 @@ import {fileURLToPath} from 'node:url';
 import {renderStill, selectComposition} from '@remotion/renderer';
 import {DEFAULT_ENTRY, ensureDir, fail, getBundle, openRemotionBrowser, parseArgs} from './kit_qa_common.mjs';
 import {mergeReview} from './kit_review_merge.mjs';
-import {tileSheet} from './pipeline/tile.mjs';
 
 // CI can only read annotations here, so surface failures as ::error:: lines too.
 const annotate = (level, title, msg) => console.log(`::${level} title=${title}::${String(msg).split('\n').slice(0, 3).join(' | ').slice(0, 500)}`);
@@ -42,13 +41,31 @@ for (const t of times) {
 }
 await puppeteerInstance.close({silent: true});
 
-// 2. Contact sheet. sharp is installed up front: tile.mjs's own lazy install fails because Node caches the first failed import.
-try { createRequire(path.join(process.cwd(), 'x.js')).resolve('sharp'); } catch {
-  const r = spawnSync('npm', ['install', '--no-save', '--no-audit', '--no-fund', 'sharp'], {stdio: 'inherit'});
-  if (r.status !== 0) fail('could not install sharp (needed for the contact sheet)');
-}
+// 2. Contact sheet (labelled tiles). sharp is loaded with CommonJS require: tile.mjs's ESM import fails on CI runners.
+const cjs = createRequire(path.join(process.cwd(), 'x.js'));
+const loadSharp = () => {
+  try { return cjs('sharp'); } catch {
+    const r = spawnSync('npm', ['install', '--no-save', '--no-audit', '--no-fund', 'sharp'], {stdio: 'inherit'});
+    if (r.status !== 0) fail('could not install sharp (needed for the contact sheet)');
+    try { return cjs('sharp'); } catch (e) {
+      const dir = path.join(process.cwd(), 'node_modules', 'sharp');
+      fail(`sharp unusable after install: ${e.message.split('\n')[0]}; dir: ${existsSync(dir) ? readdirSync(dir).join(',') : 'missing'}`);
+    }
+  }
+};
 const portrait = comp.height > comp.width;
-await tileSheet({cwd: process.cwd(), items: stills.map((file, i) => ({file, label: `${times[i]}s`})), tileW: portrait ? 270 : 480, cols: portrait ? 5 : 3, out: path.join(out, 'contact-sheet.png'), aspect: comp.height / comp.width});
+const sharp = loadSharp();
+const tileW = portrait ? 270 : 480, cols = Math.min(portrait ? 5 : 3, stills.length), gap = 16;
+const tileH = Math.round(tileW * (comp.height / comp.width)), labelH = Math.round(tileW * 0.1), cellH = tileH + labelH;
+const rows = Math.ceil(stills.length / cols);
+const parts = [];
+for (let i = 0; i < stills.length; i++) {
+  const left = gap + (i % cols) * (tileW + gap), top = gap + Math.floor(i / cols) * (cellH + gap);
+  parts.push({input: await sharp(stills[i]).resize({width: tileW, height: tileH, fit: 'fill'}).png().toBuffer(), left, top});
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${tileW}" height="${labelH}"><text x="${tileW / 2}" y="${Math.round(labelH * 0.74)}" text-anchor="middle" fill="#e8eef7" font-family="Arial, Helvetica, sans-serif" font-size="${Math.round(labelH * 0.62)}">${times[i]}s</text></svg>`;
+  parts.push({input: Buffer.from(svg), left, top: top + tileH});
+}
+await sharp({create: {width: gap + cols * (tileW + gap), height: gap + rows * (cellH + gap), channels: 3, background: '#0b1426'}}).composite(parts).png().toFile(path.join(out, 'contact-sheet.png'));
 
 // 3. QA scripts (report only; each writes JSON into qa/<name>/).
 const run = (script, extra, name, jsonName) => {
