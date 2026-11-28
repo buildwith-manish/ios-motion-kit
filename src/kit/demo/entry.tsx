@@ -14,6 +14,7 @@ import {KitQaCompositions} from './QaDemo';
 import {KitDatavizCompositions} from './DatavizDemo';
 import {KitAtmosphereCompositions} from './AtmosphereDemo';
 import {KitIconsCompositions as KitIconsCompositionsRoot} from '../icons/IconsDemo';
+import {KitTimingCompositions} from '../timing/TimingDemo';
 
 registerRoot(() => (
   <>
@@ -26,8 +27,10 @@ registerRoot(() => (
     <KitDatavizCompositions />
     <KitAtmosphereCompositions />
     <KitIconsCompositionsRoot />
+    <KitTimingCompositions />
   </>
 ));
 export {KitNumberRollCompositions} from './NumberRollDemo';
 export {KitFinishCompositions} from './FinishDemo';
 export {KitIconsCompositions} from '../icons/IconsDemo';
+export {KitTimingCompositions} from '../timing/TimingDemo';
