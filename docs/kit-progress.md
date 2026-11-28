@@ -441,6 +441,17 @@ The GitHub token was used for clone and push only (the camera session cloned wit
 
 - No full-motion playback review on alternate browsers.
 
+## T5 — Glass UI kit
+
+### Built
+
+- Added frame-driven Pill, Chip, Badge, Button, Toggle, Segmented, ListGroup/ListRow, AlertCard, Widget, Sheet, and Tooltip components, with a dashboard demo in landscape, vertical, and 30 fps variants.
+- Added a standalone entry, API README, public exports, and `scripts/kit_no_device_chrome.mjs` source scan; documented the scan in the QA README.
+
+### Verification deferred
+
+- No T5 build, tests, typecheck, QA run, or still render has been run; these are deferred until the implementation pass is complete.
+
 ## T8 — Camera and motion upgrades
 
 ### Built
