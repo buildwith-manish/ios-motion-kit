@@ -6,7 +6,15 @@
 - Added a landscape/vertical dashboard plus a 30 fps variant, standalone entry point, API README, and shared kit exports.
 - Added `scripts/kit_no_device_chrome.mjs` and documented it in the QA README.
 
-## Verification deferred
+## Verification
 
-- Per the implementation-first instruction, no build, test, typecheck, QA script, or render was run for T5. Run the final verification pass after T6 and T9 implementation.
-- No render stills or performance measurements are included.
+- `npx tsc --noEmit` passed; `npm run test:unit` passed all 11 tests.
+- Contrast and safe-area checks passed for all three UI variants at 2, 4.5, 7.5, and 8.5 seconds.
+- Motion audit sampled 20 points per variant at 2 fps and 0.1 scale; no static stretch over 3 seconds was found.
+- Visual regression baseline `ui-frame-180.png` matches with zero differing pixels.
+- QA fixes: moved the tooltip into the dashboard content flow, excluded the intentionally dimmed modal background from contrast detection, and corrected the primary button text color.
+
+## Not done
+
+- No full-resolution render, full-motion playback review, or cross-browser comparison.
+- Motion-audit wall time is a low-resolution sampled QA measurement, not a production-render benchmark.

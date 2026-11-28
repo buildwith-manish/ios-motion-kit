@@ -110,8 +110,8 @@ npm run test:visual:update        # intentionally refresh baselines; inspect the
 ```
 
 The PR workflow runs TypeScript, unit tests, source/contrast checks, representative contrast/safe-area/motion QA, and
-the fixed-frame visual suite. Visual renders use `KIT_CHROME` when supplied, then the QA helper's Remotion, Playwright,
-and optional `@sparticuz/chromium` fallbacks. Browser caches and actual/diff PNGs are kept as workflow artifacts.
+the fixed-frame visual suite. It pins `@sparticuz/chromium` for consistent renders, caches the extracted browser, and
+uploads QA plus actual/diff PNG artifacts. Locally, set `KIT_CHROME` to override the QA helper's browser lookup.
 
 ## The 7 kits (`src/kit/`)
 

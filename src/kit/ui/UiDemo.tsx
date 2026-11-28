@@ -29,48 +29,53 @@ const UiDashboard: React.FC<{frame: number; theme: Theme}> = ({frame, theme}) =>
     <ThemeProvider theme={theme}>
       <Atmosphere frame={frame} preset="midnight-aurora" quiet theme={theme}>
         <div style={{position: 'absolute', left: safe.left, top: safe.top, width: safe.width, height: safe.height, display: 'flex', flexDirection: 'column', gap: space(theme, 4), boxSizing: 'border-box'}}>
-          <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: space(theme, 4), flexWrap: 'wrap'}}>
-            <div>
-              <div style={{...textStyle(theme, 'title', {weight: 'bold'}), fontSize: 34 * u}}>Monthly overview</div>
-              <div style={textStyle(theme, 'caption', {color: 'secondary'})}>A clear view of the household budget</div>
+          <div
+            data-qa-ignore={frame / theme.canvas.fps >= 7 && frame / theme.canvas.fps < 9.1 ? 'dimmed-background' : undefined}
+            style={{display: 'flex', flexDirection: 'column', gap: space(theme, 4)}}
+          >
+            <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: space(theme, 4), flexWrap: 'wrap'}}>
+              <div>
+                <div style={{...textStyle(theme, 'title', {weight: 'bold'}), fontSize: 34 * u}}>Monthly overview</div>
+                <div style={textStyle(theme, 'caption', {color: 'secondary'})}>A clear view of the household budget</div>
+              </div>
+              <Pill frame={frame} start={start} expandAt={2.2} response={response} label="Budget" expandedContent="Household plan" compactWidth={148} expandedWidth={320} />
             </div>
-            <Pill frame={frame} start={start} expandAt={2.2} response={response} label="Budget" expandedContent="Household plan" compactWidth={148} expandedWidth={320} />
-          </div>
-          <div style={{display: 'flex', alignItems: 'center', gap: space(theme, 3), flexWrap: 'wrap'}}>
-            <Chip frame={frame} start={start + 0.15} icon="wallet" label="Monthly" />
-            <Badge frame={frame} start={start + 0.25} tone="positive" label="On track" />
-            <Segmented
-              frame={frame}
-              start={start + 0.35}
-              response={response}
-              segments={[{id: 'week', label: 'Week'}, {id: 'month', label: 'Month'}, {id: 'year', label: 'Year'}]}
-              fromSelected="week"
-              selected="month"
-              selectionAt={3.1}
-              style={{minWidth: 250 * u}}
-            />
-            <Button frame={frame} start={start + 0.45} pressAt={4.25} label="Review" icon="arrow-right" />
-          </div>
-          <div style={{display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', gap: space(theme, 4)}}>
-            <Widget frame={frame} start={start + 0.55} label="Monthly rent" value={<NumberText frame={frame} theme={theme} prefix="$" from={0} to={2000} start={1.2} duration={0.75} fontSize={48 * u} />} delta={<span>+2.4% this month</span>} sparkline={<Sparkline theme={theme} />} />
-            <Widget frame={frame} start={start + 0.7} label="Available after bills" value={<NumberText frame={frame} theme={theme} prefix="$" from={0} to={840} start={1.8} duration={0.75} fontSize={48 * u} />} delta={<span>steady vs. last month</span>} />
-          </div>
-          <div style={{display: 'grid', gridTemplateColumns: landscape ? '1.2fr 0.8fr' : '1fr', gap: space(theme, 4), alignItems: 'start'}}>
-            <ListGroup
-              frame={frame}
-              start={start + 0.85}
-              rows={[
-                {id: 'housing', icon: 'wallet', label: 'Housing', value: '$2,000'},
-                {id: 'transport', icon: 'arrow-right', label: 'Transport', value: '$430'},
-                {id: 'family', icon: 'users', label: 'Family care', value: '$620'},
-              ]}
-            />
-            <div style={{display: 'flex', flexDirection: 'column', gap: space(theme, 3)}}>
-              <AlertCard frame={frame} start={start + 1} icon="shield" tone="positive" title="Plan looks balanced" body="Your monthly essentials stay within the target range." />
-              <Toggle frame={frame} start={start + 1.1} changedAt={5.2} checked label="Auto-save" />
+            <div style={{display: 'flex', alignItems: 'center', gap: space(theme, 3), flexWrap: 'wrap'}}>
+              <Chip frame={frame} start={start + 0.15} icon="wallet" label="Monthly" />
+              <Badge frame={frame} start={start + 0.25} tone="positive" label="On track" />
+              <Segmented
+                frame={frame}
+                start={start + 0.35}
+                response={response}
+                segments={[{id: 'week', label: 'Week'}, {id: 'month', label: 'Month'}, {id: 'year', label: 'Year'}]}
+                fromSelected="week"
+                selected="month"
+                selectionAt={3.1}
+                style={{minWidth: 250 * u}}
+              />
+              <Button frame={frame} start={start + 0.45} pressAt={4.25} label="Review" icon="arrow-right" />
+              <Tooltip frame={frame} start={3.5} end={5.4} label="Press to explore" placement="top" />
+            </div>
+            <div style={{display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', gap: space(theme, 4)}}>
+              <Widget frame={frame} start={start + 0.55} label="Monthly rent" value={<NumberText frame={frame} theme={theme} prefix="$" from={0} to={2000} start={1.2} duration={0.75} fontSize={48 * u} />} delta={<span>+2.4% this month</span>} sparkline={<Sparkline theme={theme} />} />
+              <Widget frame={frame} start={start + 0.7} label="Available after bills" value={<NumberText frame={frame} theme={theme} prefix="$" from={0} to={840} start={1.8} duration={0.75} fontSize={48 * u} />} delta={<span>steady vs. last month</span>} />
+            </div>
+            <div style={{display: 'grid', gridTemplateColumns: landscape ? '1.2fr 0.8fr' : '1fr', gap: space(theme, 4), alignItems: 'start'}}>
+              <ListGroup
+                frame={frame}
+                start={start + 0.85}
+                rows={[
+                  {id: 'housing', icon: 'wallet', label: 'Housing', value: '$2,000'},
+                  {id: 'transport', icon: 'arrow-right', label: 'Transport', value: '$430'},
+                  {id: 'family', icon: 'users', label: 'Family care', value: '$620'},
+                ]}
+              />
+              <div style={{display: 'flex', flexDirection: 'column', gap: space(theme, 3)}}>
+                <AlertCard frame={frame} start={start + 1} icon="shield" tone="positive" title="Plan looks balanced" body="Your monthly essentials stay within the target range." />
+                <Toggle frame={frame} start={start + 1.1} changedAt={5.2} checked label="Auto-save" />
+              </div>
             </div>
           </div>
-          <Tooltip frame={frame} start={3.5} end={5.4} label="Press to explore" style={{position: 'absolute', right: 0, top: 72 * u}} />
           <Sheet frame={frame} start={7} end={9.1} title="Quick summary" height={360}>
             <div style={{...textStyle(theme, 'body', {color: 'secondary'}), lineHeight: 1.45}}>Three planned expenses are on track. The next update is ready when you are.</div>
           </Sheet>
